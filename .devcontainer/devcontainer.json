@@ -1,0 +1,24 @@
+{
+    "name": "SmartScape Frontend Dev Container",
+    "image": "ghcr.io/nhaef/devcontainer-bun:latest",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "gaurav-gosain.GDSC-nextjs",
+                "oven.bun-vscode"
+            ],
+            "settings": {
+                "npm.packageManager": "bun"
+            }
+        }
+    },
+    "forwardPorts": [3000],
+    "portsAttributes": {
+        "3000": {
+            "label": "Next.js App",
+            "onAutoForward": "notify"
+        }
+    },
+
+    "postStartCommand": "bun i"
+}
