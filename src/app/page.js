@@ -1,14 +1,13 @@
-"use client"; // Ensures this component runs as a client-side component
+"use client";
 
 import React from "react";
-import "./homeStyle.css"; // Importing global styles
-import Navbar from "./Navbar";
-
+import "./homeStyle.css";
+import HomePage from "./homePage";
 
 const Page = () => {
   return (
     <div className="app-container">
-      <Navbar />
+      <HomePage /> 
     </div>
   );
 };
