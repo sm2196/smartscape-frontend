@@ -58,7 +58,7 @@ function Navbar() {
       <section>
         <div className="container">
           <div className="content">
-          <h2>pls work</h2>
+          <h2>YOOOO</h2>
         </div>
         </div>
       </section>
