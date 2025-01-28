@@ -8,7 +8,7 @@ const AboutUs = () => {
       <Parallax speed={-10}>
         <div className="about-us-content">
           <div className="about-us-image">
-            <img src="./bg1.png" alt="Smart Home" />
+            <img src="/bg2.jpg" alt="Smart Home" />
           </div>
           <div className="about-us-text">
             <h2>About Us</h2>

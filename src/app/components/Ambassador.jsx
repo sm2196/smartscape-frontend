@@ -16,7 +16,7 @@ const AmbassadorForm = () => {
   }, []);
 
   return (
-    <div className="ambassador-page">
+    <div className="ambassador-section">
       {/* Parallax Background */}
       <div
         className="ambassador-form-wrapper"
@@ -24,10 +24,10 @@ const AmbassadorForm = () => {
       >
         <div className="ambassador-form-container">
           <div className="ambassador-form">
-            <span className="ambassador-heading">Become a SmartScape Ambassador</span>
-            <span className="ambassador-subtitle">
+            <h2 className="ambassador-heading">Become a SmartScape Ambassador</h2>
+            <p className="ambassador-subtitle">
               Join our community of smart home enthusiasts and help others transform their living spaces.
-            </span>
+            </p>
 
             <input className="ambassador-input" type="text" placeholder="Full Name" />
             <input className="ambassador-input" type="email" placeholder="Email Address" />
@@ -36,17 +36,12 @@ const AmbassadorForm = () => {
             <textarea className="ambassador-textarea" placeholder="Tell us about yourself"></textarea>
 
             <div className="ambassador-button-container">
-              <div className="ambassador-send-button">Become an Ambassador</div>
-              <div className="ambassador-reset-button-container">
-                <div className="ambassador-reset-button" id="reset-btn">Logout</div>
-              </div>
+              <button className="ambassador-send-button">Become an Ambassador</button>
+              <button className="ambassador-reset-button">Logout</button>
             </div>
           </div>
         </div>
       </div>
-
-      {/* Extra space to allow scrolling */}
-      <div className="ambassador-scroll-space"></div>
     </div>
   );
 };

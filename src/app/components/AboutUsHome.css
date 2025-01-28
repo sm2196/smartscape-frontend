@@ -44,7 +44,7 @@ body {
 /* Image Section */
 .about-us-image img {
   width: 300px;
-  height: auto;
+  height: 300px;
   border-radius: 15px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
@@ -56,15 +56,17 @@ body {
 }
 
 .about-us-text h2 {
-  font-size: 3rem;
-  color: #222;
+  font-size: 40px;
+  color: #0A1630;
   margin-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .about-us-text h3 {
-  font-size: 1.5rem;
+  font-size: 20px;
   color: #444;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .about-us-text p {
