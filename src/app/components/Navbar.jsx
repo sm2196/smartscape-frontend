@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import "./Navbar.css";
 import { FaBars, FaTimes } from "react-icons/fa";
 import SMIcons from "./SMNavIcons";
+import AboutUs from "./AboutUsHome";
 
 function SMNavbar() {
   const [SMclick, setSMClick] = useState(false);

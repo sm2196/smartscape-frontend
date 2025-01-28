@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+
 /* Ensure proper spacing between sections */
 .ambassador-section {
   position: relative;
@@ -99,3 +102,5 @@
   background: #1a3d7c;
   color: white;
 }
+
+

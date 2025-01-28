@@ -4,12 +4,11 @@
 .SMMainPic-container {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center; /* Centers content vertically */
   align-items: center;
   margin: 0;
-  /* height: 1100px; */
   padding: 0;
-  min-height: 100vh; /* Ensures the container fully covers the screen height */
+  height: 100vh; /* Ensures it fully covers the screen height */
   width: 100vw; /* Ensures it spans the entire screen width */
   position: relative;
   background-image: url("/try6.jpg"); /* Background image */
@@ -39,18 +38,26 @@
 /* Content Styling */
 .SMMainPic-container > * {
   position: relative;
-  z-index: 2; /* Content above the overlay */
+  z-index: 2; /* Ensures content stays above overlay */
 }
 
+/* Centering the text */
 .SMMainPic-container > h1 {
   color: #fff;
-  font-size: 4.5rem; /* Dynamically scaled for large screens */
+  font-size: 4.5rem; /* Large text for emphasis */
   font-family: "Bree Serif", serif;
   text-align: center;
-  margin: 0 20px;
+  margin: 0;
   line-height: 1.2; /* Better readability */
+  position: absolute;
+  top: 50%; /* Move to center */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust precisely */
+  width: 100%;
+  padding: 0 20px;
 }
 
+/* Subtitle styling (if needed) */
 .SMMainPic-container > p {
   margin-top: 15px;
   color: #b8b2b2;
@@ -62,24 +69,24 @@
   padding: 0 15px; /* Ensure proper spacing on smaller screens */
 }
 
-/* Responsive Design for Smaller Screens */
+/* Responsive Design for Medium Screens */
 @media screen and (max-width: 960px) {
   .SMMainPic-container > h1 {
-    font-size: 3.5rem; /* Reduce heading size for medium screens */
+    font-size: 3.5rem;
   }
 
   .SMMainPic-container > p {
-    font-size: 1.3rem; /* Adjust text size for readability */
+    font-size: 1.3rem;
   }
 }
 
+/* Responsive Design for Small Screens */
 @media screen and (max-width: 768px) {
   .SMMainPic-container > h1 {
-    font-size: 2.5rem; /* Further reduce heading size */
-    margin-top: -50px; /* Adjust spacing */
+    font-size: 2.5rem;
   }
 
   .SMMainPic-container > p {
-    font-size: 1.1rem; /* Text remains readable on small screens */
+    font-size: 1.1rem;
   }
 }

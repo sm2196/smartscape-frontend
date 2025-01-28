@@ -52,8 +52,6 @@ function Footer() {
         </div>
       </div>
       <section className='social-media'>
-
-          <small className='website-rights'>SmartScape © 2025</small>
           <div className='social-icons'>
             <Link
               className='social-icon-link facebook'
