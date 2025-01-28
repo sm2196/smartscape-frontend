@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Ambassador.css';
+import './pages/JoinUs.css';
 
 const AmbassadorForm = () => {
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -36,8 +37,12 @@ const AmbassadorForm = () => {
             <textarea className="ambassador-textarea" placeholder="Tell us about yourself"></textarea>
 
             <div className="ambassador-button-container">
-              <button className="ambassador-send-button">Become an Ambassador</button>
-              <button className="ambassador-reset-button">Logout</button>
+            <div className="join-us-wrapper">
+              <button> <span>Become an ambassador</span></button>
+            </div>
+            <div className="join-us-wrapper">
+              <button> <span>Logout</span></button>
+            </div>
             </div>
           </div>
         </div>

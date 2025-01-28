@@ -28,7 +28,7 @@ const ProcessFlow = () => {
   return (
     <div className="parallax-background">
       <div className="process-flow">
-        <h1 className="flow-title">How It <span>Works</span></h1>
+        <h1 className="flow-title"><span>How It Works</span></h1>
         <p className="flow-subtitle">Follow these simple steps to get started and make the most of our platform.</p>
         <div className="flow-timeline">
           {steps.map((step, index) => (

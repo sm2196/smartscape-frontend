@@ -1,6 +1,7 @@
 import React from 'react';
 import { Parallax } from 'react-scroll-parallax';
 import './AboutUsHome.css';
+import './pages/JoinUs.css';
 
 const AboutUs = () => {
   return (
@@ -16,7 +17,9 @@ const AboutUs = () => {
             <p>
               At SmartScape, we're revolutionizing the way you live by transforming your home into a smarter, more sustainable space. From monitoring your energy and water usage to enhancing security and reducing environmental impact, we empower you to take control of your home effortlessly.
             </p>
-            <button className="read-more-button">Read More</button>
+            <div className="join-us-wrapper">
+              <button> <span>Read More</span></button>
+            </div>
           </div>
         </div>
       </Parallax>

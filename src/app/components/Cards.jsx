@@ -5,7 +5,7 @@ import CardItem from './CardItem';
 function Cards() {
   return (
     <div className='SMcards'>
-      <h1>What's special about us?</h1>
+      <h1><span>What's special about us?</span></h1>
       <div className='SMcards__container'>
         <div className='SMcards__wrapper'>
           <ul className='SMcards__items'>

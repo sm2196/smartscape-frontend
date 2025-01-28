@@ -96,7 +96,7 @@ function Footer() {
               <i className='fab fa-linkedin' />
             </Link>
           </div>
-        
+
       </section>
     </div>
   );
