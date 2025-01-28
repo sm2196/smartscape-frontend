@@ -8,7 +8,7 @@ function MainPicSection() {
   return (
     <Parallax speed={-10}> {/* Apply the parallax effect */}
       <div className="SMMainPic-container">
-        <h1>YOUR HOME AT YOUR FINGERTIPS</h1>
+        <h1><span>YOUR HOME AT YOUR FINGERTIPS</span></h1>
         <JoinUs />
       </div>
     </Parallax>
