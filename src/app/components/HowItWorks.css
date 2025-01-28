@@ -1,0 +1,99 @@
+
+.process-flow {
+  font-family: "Roboto", sans-serif;
+  text-align: center;
+  padding: 3rem 2rem;
+  background: transparent;
+  color: #000000;
+  position: relative;
+}
+
+.parallax-background {
+  background: url("/path-to-your-image.jpg") no-repeat center center fixed;
+  background-size: cover;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.flow-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+
+.flow-subtitle {
+  font-size: 1.4rem;
+  margin-bottom: 2rem;
+  color: #34495e;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+}
+
+.flow-timeline {
+  position: relative;
+  max-width: 750px;
+  margin: auto;
+}
+
+.flow-item {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1.5rem 0;
+}
+
+.flow-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.flow-item.left {
+  flex-direction: row-reverse;
+}
+
+.flow-icon {
+  font-size: 4rem;
+  background: linear-gradient(135deg, #4a5f96, #6c5ce7);
+  color: white;
+  padding: 1.8rem;
+  border-radius: 50%;
+  margin: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 110px;
+  height: 110px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.flow-content {
+  background: rgba(255, 255, 255, 0.35);
+  padding: 1.5rem 2rem;
+  border-radius: 12px;
+  width: 55%;
+  font-size: 1.2rem;
+  text-align: left;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.flow-title-item {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+.flow-description {
+  font-size: 1.1rem;
+  color: #2c3e50;
+  line-height: 1.5;
+}

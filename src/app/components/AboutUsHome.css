@@ -1,0 +1,105 @@
+/* General Styles */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+  margin: 0;
+  font-family: 'PT Sans', sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scroll issues */
+}
+
+/* Container for the About Us Section */
+.about-us-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background-image: url('/bg1.png');  */
+  background-color: #fff;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Parallax background effect */
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 20px;
+  position: relative;
+}
+
+/* About Us Content */
+.about-us-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; /* Ensure content inside is centered */
+  width: 100%; /* Full-width container to adapt to the parent's centering */
+  max-width: 1200px; /* Keep the content width manageable */
+  background-color: rgba(255, 255, 255, 0.9); /* Slightly translucent white background */
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transform: translateY(-50px); /* Slight upward movement */
+  animation: fadeIn 1.2s ease-in-out; /* Smooth entrance animation */
+  margin: 0 auto; /* Center horizontally */
+  height: 500px;
+}
+
+/* Image Section */
+.about-us-image img {
+  width: 300px;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Text Section */
+.about-us-text {
+  max-width: 800px;
+  padding-left: 20px;
+}
+
+.about-us-text h2 {
+  font-size: 3rem;
+  color: #222;
+  margin-bottom: 10px;
+}
+
+.about-us-text h3 {
+  font-size: 1.5rem;
+  color: #444;
+  margin-bottom: 20px;
+}
+
+.about-us-text p {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* Read More Button */
+.read-more-button {
+  padding: 10px 20px;
+  border: 2px solid #222;
+  background-color: transparent;
+  color: #222;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.read-more-button:hover {
+  background-color: #222;
+  color: #fff;
+}
+
+/* Parallax Animation (Optional Fade-In) */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50px);
+  }
+}

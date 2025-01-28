@@ -1,0 +1,138 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* Parallax Background */
+.ambassador-form-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: url("/bg1.png") no-repeat center center fixed;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  z-index: 1;
+  background-attachment: fixed; /* Enables Parallax Effect */
+}
+
+/* Prevent blending issues */
+.ambassador-form-wrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #152447;
+  z-index: -1;
+}
+
+/* Glassmorphism Form */
+.ambassador-form-container {
+  max-width: 650px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.3);
+  border-left: 6px solid #4A5F96;
+  backdrop-filter: blur(8px);
+}
+
+.ambassador-heading {
+  display: block;
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.ambassador-subtitle {
+  display: block;
+  color: #a5bcd6;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.ambassador-input,
+.ambassador-textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: border 0.3s ease-in-out;
+}
+
+.ambassador-input::placeholder,
+.ambassador-textarea::placeholder {
+  color: #cdd9e5;
+}
+
+.ambassador-input:focus,
+.ambassador-textarea:focus {
+  border-left: 5px solid #4A5F96;
+}
+
+.ambassador-textarea {
+  resize: none;
+  height: 100px;
+}
+
+.ambassador-button-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.ambassador-send-button {
+  flex: 1;
+  background: linear-gradient(135deg, #4A5F96, #6c5ce7);
+  padding: 12px;
+  color: #ffffff;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.ambassador-send-button:hover {
+  background: #ffffff;
+  color: #4A5F96;
+  border: 1px solid #4A5F96;
+}
+
+.ambassador-reset-button-container {
+  margin-left: 10px;
+}
+
+.ambassador-reset-button {
+  background: #ffffff;
+  color: #4A5F96;
+  padding: 12px;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.ambassador-reset-button:hover {
+  background: #4A5F96;
+  color: #ffffff;
+}

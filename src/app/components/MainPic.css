@@ -1,26 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Fuggles&family=Roboto+Condensed:wght@700&family=Satisfy&display=swap');
 
+/* Main Container with Enhanced Parallax Effect */
 .SMMainPic-container {
-  /* background: url('/images/img-home.jpg') center center/cover no-repeat; */
-  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  box-shadow: inset 0 0 0 1000px rgba(0, 0, 0, 0.2);
-  object-fit: contain;
-  padding-top: 5rem;
   margin: 0;
-  visibility: visible;
-  min-height: 100vh;
-  font-family: "Bree Serif", sans-serif;
-  background-image: url("/try6.jpg");
-  background-position: center;
-  background-size: contain;
-  background-size: 100% auto;
-  height: 1054px;
+  /* height: 1100px; */
+  padding: 0;
+  min-height: 100vh; /* Ensures the container fully covers the screen height */
+  width: 100vw; /* Ensures it spans the entire screen width */
+  position: relative;
+  background-image: url("/try6.jpg"); /* Background image */
+  background-attachment: fixed; /* Enables the parallax effect */
+  background-position: center center; /* Centers the image */
+  background-size: cover; /* Ensures the image completely fills the container */
+  background-repeat: no-repeat; /* Prevents tiling of the image */
+  z-index: 0; /* Keeps content layered above */
+  overflow: hidden; /* Prevents any unexpected scrolling issues */
 }
 
+/* Overlay Effect */
 .SMMainPic-container::before {
   content: "";
   position: absolute;
@@ -28,44 +29,57 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(61, 61, 61, 0.425);
-  z-index: 1; /* Ensures it covers the background but is behind content */
+  background: linear-gradient(
+    rgba(0, 0, 0, 0.5),
+    rgba(0, 0, 0, 0.5)
+  ); /* Smooth semi-transparent dark overlay */
+  z-index: 1; /* Keeps overlay behind the content */
 }
 
+/* Content Styling */
 .SMMainPic-container > * {
-  position: relative; /* Keep the content above the overlay */
-  z-index: 2;
+  position: relative;
+  z-index: 2; /* Content above the overlay */
 }
 
 .SMMainPic-container > h1 {
   color: #fff;
-  font-size: 80px;
-  margin-top: -100px;
+  font-size: 4.5rem; /* Dynamically scaled for large screens */
+  font-family: "Bree Serif", serif;
+  text-align: center;
+  margin: 0 20px;
+  line-height: 1.2; /* Better readability */
 }
 
 .SMMainPic-container > p {
   margin-top: 15px;
-  color: #B8B2B2;
-  font-size: 28px;
+  color: #b8b2b2;
+  font-size: 1.5rem; /* Adjust for readability on large and small screens */
   font-family: "Bree Serif", serif;
   font-weight: 400;
-  font-style: normal;
+  text-align: center;
+  line-height: 1.6;
+  padding: 0 15px; /* Ensure proper spacing on smaller screens */
 }
 
+/* Responsive Design for Smaller Screens */
 @media screen and (max-width: 960px) {
   .SMMainPic-container > h1 {
-    font-size: 70px;
-    margin-top: -150px;
+    font-size: 3.5rem; /* Reduce heading size for medium screens */
+  }
+
+  .SMMainPic-container > p {
+    font-size: 1.3rem; /* Adjust text size for readability */
   }
 }
 
 @media screen and (max-width: 768px) {
   .SMMainPic-container > h1 {
-    font-size: 50px;
-    margin-top: -100px;
+    font-size: 2.5rem; /* Further reduce heading size */
+    margin-top: -50px; /* Adjust spacing */
   }
 
   .SMMainPic-container > p {
-    font-size: 30px;
+    font-size: 1.1rem; /* Text remains readable on small screens */
   }
 }

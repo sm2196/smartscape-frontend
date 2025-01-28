@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import "./homeStyle.css";
-import HomePage from "./homePage";
+import App from "./App";
+import "./App.css";
 
 const Page = () => {
   return (
     <div className="app-container">
-      <HomePage /> 
+      <App />
     </div>
   );
 };
