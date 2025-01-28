@@ -1,6 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
-.join-us-wrapper button {
+.SM-joinButton-us-wrapper button {
   outline: none;
   cursor: pointer;
   border: none;
@@ -18,18 +18,18 @@
   color: #000000;
 }
 
-.join-us-wrapper button span {
+.SM-joinButton-us-wrapper button span {
   position: relative;
   z-index: 10;
   transition: color 0.4s;
 }
 
-.join-us-wrapper button:hover span {
+.SM-joinButton-us-wrapper button:hover span {
   color: #fffafa;
 }
 
-.join-us-wrapper button::before,
-.join-us-wrapper button::after {
+.SM-joinButton-us-wrapper button::before,
+.SM-joinButton-us-wrapper button::after {
   position: absolute;
   top: 0;
   left: 0;
@@ -38,7 +38,7 @@
   z-index: 0;
 }
 
-.join-us-wrapper button::before {
+.SM-joinButton-us-wrapper button::before {
   content: "";
   background: #fffafa;
   width: 120%;
@@ -47,6 +47,6 @@
   transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
 }
 
-.join-us-wrapper button:hover::before {
+.SM-joinButton-us-wrapper button:hover::before {
   transform: translate3d(100%, 0, 0);
 }
