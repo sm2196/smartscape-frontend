@@ -1,12 +1,13 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
 
 .SMcards {
-  padding: 80px 1rem;
+  padding: 80px 0;
   background: linear-gradient(to bottom, #f8f9fa, #ffffff);
   position: relative;
   z-index: 1;
   will-change: transform;
-  margin-top: -2px; /* Prevent gap between sections */
+  margin-top: -2px;
+  overflow: hidden;
 }
 
 .SMcards h1 {
@@ -17,44 +18,50 @@
   margin-bottom: 3rem;
   opacity: 0;
   animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.SMcards__container {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
   padding: 0 1rem;
 }
 
-.SMcards__wrapper {
-  position: relative;
-  margin: 30px 0;
+.SMcards__container {
   width: 100%;
-  will-change: transform;
+  margin: 0 auto;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  padding: 20px 0;
+}
+
+.SMcards__container::-webkit-scrollbar {
+  display: none;
+}
+
+.SMcards__wrapper {
+  display: flex;
+  padding: 0 40px;
+  gap: 2rem;
+  width: max-content;
+  margin: 0 auto;
 }
 
 .SMcards__items {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 2rem;
-  width: 100%;
-  opacity: 0;
-  animation: fadeInUp 0.8s ease-out 0.2s forwards;
+  opacity: 1;
+  transition: transform 0.5s ease;
 }
 
 .SMcards__item {
-  flex: 1;
-  min-width: 280px;
-  max-width: 350px;
+  flex: 0 0 350px;
+  width: 350px;
   margin: 0;
   border-radius: 15px;
   transform: translateY(0);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform;
+  scroll-snap-align: center;
 }
 
 .SMcards__item:hover {
@@ -130,24 +137,39 @@
   }
 }
 
+@keyframes scrollHint {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-10px);
+  }
+  40% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
 /* Responsive Design */
 @media screen and (max-width: 1024px) {
   .SMcards {
-    padding: 60px 1rem;
+    padding: 60px 0;
   }
 
   .SMcards h1 {
     font-size: 2.2rem;
   }
 
-  .SMcards__items {
-    gap: 1.5rem;
+  .SMcards__wrapper {
+    padding: 0 20px;
   }
 }
 
 @media screen and (max-width: 768px) {
   .SMcards {
-    padding: 40px 1rem;
+    padding: 40px 0;
   }
 
   .SMcards h1 {
@@ -155,7 +177,8 @@
   }
 
   .SMcards__item {
-    margin-bottom: 1.5rem;
+    flex: 0 0 300px;
+    width: 300px;
   }
 
   .SMcards__item__text {
@@ -189,5 +212,9 @@
   .SMcards__item,
   .SMcards__item__img {
     transition: none;
+  }
+
+  .SMcards__container {
+    scroll-behavior: auto;
   }
 }

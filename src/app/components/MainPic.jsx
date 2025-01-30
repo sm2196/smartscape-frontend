@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Parallax } from "react-scroll-parallax";
 import "../App.css";
 import "./MainPic.css";
@@ -11,8 +11,6 @@ import { Link } from 'react-router-dom';
 import './Cards.css';
 import { FaUserPlus, FaFileAlt, FaCheckCircle, FaCogs, FaMobileAlt } from "react-icons/fa";
 import './Ambassador.css';
-import { useState } from 'react';
-
 
 const MainPicSection = () => {
   return (
@@ -103,7 +101,7 @@ const HowItWorks = () => {
 
 function CardItem(props) {
   return (
-    <li className='SMcards__item'>
+    <div className='SMcards__item'>
       <Link className='SMcards__item__link' to={props.path}>
         <figure className='SMcards__item__pic-wrap' data-category={props.label}>
           <img
@@ -116,7 +114,7 @@ function CardItem(props) {
           <h5 className='SMcards__item__text'>{props.text}</h5>
         </div>
       </Link>
-    </li>
+    </div>
   );
 }
 
@@ -126,46 +124,41 @@ function Cards() {
       <h1><span>What's special about us?</span></h1>
       <div className='SMcards__container'>
         <div className='SMcards__wrapper'>
-          <Parallax translateX={[-10, 10]} className='SMcards__items'>
-            <CardItem
-              src='/bulb.jpg'
-              text='Monitor your electricity consumption... and Your home'
-              label='1'
-              path='/services'
-            />
-            <CardItem
-              src='/device.jpg'
-              text='Save your bills. Turn off devices during peak hours.'
-              label='2'
-              path='/services'
-            />
-          </Parallax>
-          <Parallax translateX={[10, -10]} className='SMcards__items'>
-            <CardItem
-              src='/control.jpg'
-              text='Control all your devices on the run.'
-              label='3'
-              path='/services'
-            />
-            <CardItem
-              src='/cam.jpg'
-              text='Watch for intruders!'
-              label='4'
-              path='/products'
-            />
-            <CardItem
-              src='/off.jpg'
-              text='Emergency shutdown and Do Not Disturb modes'
-              label='5'
-              path='/sign-up'
-            />
-          </Parallax>
+          <CardItem
+            src='/bulb.jpg'
+            text='Monitor your electricity consumption... and Your home'
+            label='1'
+            path='/services'
+          />
+          <CardItem
+            src='/device.jpg'
+            text='Save your bills. Turn off devices during peak hours.'
+            label='2'
+            path='/services'
+          />
+          <CardItem
+            src='/control.jpg'
+            text='Control all your devices on the run.'
+            label='3'
+            path='/services'
+          />
+          <CardItem
+            src='/cam.jpg'
+            text='Watch for intruders!'
+            label='4'
+            path='/products'
+          />
+          <CardItem
+            src='/off.jpg'
+            text='Emergency shutdown and Do Not Disturb modes'
+            label='5'
+            path='/sign-up'
+          />
         </div>
       </div>
     </Parallax>
   );
 }
-
 
 const AmbassadorForm = () => {
   const [formData, setFormData] = useState({
@@ -186,24 +179,25 @@ const AmbassadorForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission
     console.log('Form submitted:', formData);
   };
 
   return (
     <div className="ambassador-section">
-      <Parallax className="ambassador-form-wrapper" speed={-15}>
+      <Parallax
+        translateY={[-20, 20]}
+        className="ambassador-form-wrapper"
+        style={{ position: 'relative' }}
+      >
         <div className="ambassador-form-container">
           <form className="ambassador-form" onSubmit={handleSubmit}>
             <h2 className="ambassador-heading">
               Become a SmartScape Ambassador
               <div className="ambassador-heading-underline"></div>
             </h2>
-
             <p className="ambassador-subtitle">
               Join our community of smart home enthusiasts and help others transform their living spaces.
             </p>
-
             <input
               className="ambassador-input"
               type="text"
@@ -213,7 +207,6 @@ const AmbassadorForm = () => {
               onChange={handleChange}
               required
             />
-
             <input
               className="ambassador-input"
               type="email"
@@ -223,7 +216,6 @@ const AmbassadorForm = () => {
               onChange={handleChange}
               required
             />
-
             <input
               className="ambassador-input"
               type="tel"
@@ -233,7 +225,6 @@ const AmbassadorForm = () => {
               onChange={handleChange}
               required
             />
-
             <input
               className="ambassador-input"
               type="text"
@@ -242,7 +233,6 @@ const AmbassadorForm = () => {
               value={formData.socialMedia}
               onChange={handleChange}
             />
-
             <textarea
               className="ambassador-textarea"
               name="about"
@@ -251,7 +241,6 @@ const AmbassadorForm = () => {
               onChange={handleChange}
               required
             ></textarea>
-
             <div className="ambassador-button-container">
               <button type="submit" className="join-us-wrapper">
                 <span>Become an ambassador</span>
@@ -266,7 +255,6 @@ const AmbassadorForm = () => {
     </div>
   );
 };
-
 
 const Main = () => {
   return (
