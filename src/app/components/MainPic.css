@@ -1,26 +1,22 @@
-@import url('https://fonts.googleapis.com/css2?family=Bree+Serif&family=Fuggles&family=Roboto+Condensed:wght@700&family=Satisfy&display=swap');
-
-/* Main Container with Enhanced Parallax Effect */
 .SMMainPic-container {
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Centers content vertically */
+  justify-content: center;
   align-items: center;
   margin: 0;
   padding: 0;
-  height: 100vh; /* Ensures it fully covers the screen height */
-  width: 100vw; /* Ensures it spans the entire screen width */
+  height: 100vh;
+  width: 100%;
   position: relative;
-  background-image: url("/try6.jpg"); /* Background image */
-  background-attachment: fixed; /* Enables the parallax effect */
-  background-position: center center; /* Centers the image */
-  background-size: cover; /* Ensures the image completely fills the container */
-  background-repeat: no-repeat; /* Prevents tiling of the image */
-  z-index: 0; /* Keeps content layered above */
-  overflow: hidden; /* Prevents any unexpected scrolling issues */
+  background-image: url("/try6.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: 1;
+  will-change: transform;
+  transform-style: preserve-3d;
 }
 
-/* Overlay Effect */
 .SMMainPic-container::before {
   content: "";
   position: absolute;
@@ -31,62 +27,78 @@
   background: linear-gradient(
     rgba(0, 0, 0, 0.5),
     rgba(0, 0, 0, 0.5)
-  ); /* Smooth semi-transparent dark overlay */
-  z-index: 1; /* Keeps overlay behind the content */
+  );
+  z-index: 1;
+  transition: opacity 0.3s ease;
 }
 
-/* Content Styling */
 .SMMainPic-container > * {
   position: relative;
-  z-index: 2; /* Ensures content stays above overlay */
+  z-index: 2;
 }
 
-/* Centering the text */
 .SMMainPic-container > h1 {
   color: #fff;
-  font-size: 4.5rem; /* Large text for emphasis */
+  font-size: 4.5rem;
   font-family: "Bree Serif", serif;
   text-align: center;
   margin: 0;
-  line-height: 1.2; /* Better readability */
+  line-height: 1.2;
   position: absolute;
-  top: 50%; /* Move to center */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Adjust precisely */
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
   width: 100%;
   padding: 0 20px;
+  opacity: 0;
+  animation: fadeInUp 1s ease-out forwards;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Subtitle styling (if needed) */
-.SMMainPic-container > p {
-  margin-top: 15px;
-  color: #b8b2b2;
-  font-size: 1.5rem; /* Adjust for readability on large and small screens */
-  font-family: "Bree Serif", serif;
-  font-weight: 400;
-  text-align: center;
-  line-height: 1.6;
-  padding: 0 15px; /* Ensure proper spacing on smaller screens */
+.SMMainPic-container > h1 span {
+  display: block;
 }
 
-/* Responsive Design for Medium Screens */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -30%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .SMMainPic-container > h1 {
+    font-size: 4rem;
+  }
+}
+
 @media screen and (max-width: 960px) {
   .SMMainPic-container > h1 {
     font-size: 3.5rem;
   }
-
-  .SMMainPic-container > p {
-    font-size: 1.3rem;
-  }
 }
 
-/* Responsive Design for Small Screens */
 @media screen and (max-width: 768px) {
   .SMMainPic-container > h1 {
     font-size: 2.5rem;
   }
+}
 
-  .SMMainPic-container > p {
-    font-size: 1.1rem;
+@media screen and (max-width: 480px) {
+  .SMMainPic-container > h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .SMMainPic-container > h1 {
+    animation: none;
+    opacity: 1;
   }
 }
