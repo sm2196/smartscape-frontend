@@ -9,7 +9,18 @@ import "./HowItWorks.css";
 import "./Parallax.css";
 import { Link } from 'react-router-dom';
 import './Cards.css';
-import { FaUserPlus, FaFileAlt, FaCheckCircle, FaCogs, FaMobileAlt } from "react-icons/fa";
+import {
+  FaUserPlus,
+  FaFileAlt,
+  FaCheckCircle,
+  FaCogs,
+  FaMobileAlt,
+  FaFacebookF,
+  FaInstagram,
+  FaYoutube,
+  FaTwitter,
+  FaLinkedinIn
+} from "react-icons/fa";
 import './Ambassador.css';
 import './SMFooter.css';
 
@@ -324,46 +335,51 @@ function SMfooter() {
       <section className='social-media'>
         <div className='social-media-wrap'>
           <div className='social-icons'>
-            <Link
-              className='social-icon-link'
-              to='/'
+            <a
+              className='social-icon-link facebook'
+              href='https://facebook.com'
               target='_blank'
+              rel='noopener noreferrer'
               aria-label='Facebook'
             >
-              <i className='fab fa-facebook-f' />
-            </Link>
-            <Link
-              className='social-icon-link'
-              to='/'
+              <FaFacebookF />
+            </a>
+            <a
+              className='social-icon-link instagram'
+              href='https://instagram.com'
               target='_blank'
+              rel='noopener noreferrer'
               aria-label='Instagram'
             >
-              <i className='fab fa-instagram' />
-            </Link>
-            <Link
-              className='social-icon-link'
-              to='/'
+              <FaInstagram />
+            </a>
+            <a
+              className='social-icon-link youtube'
+              href='https://youtube.com'
               target='_blank'
+              rel='noopener noreferrer'
               aria-label='Youtube'
             >
-              <i className='fab fa-youtube' />
-            </Link>
-            <Link
-              className='social-icon-link'
-              to='/'
+              <FaYoutube />
+            </a>
+            <a
+              className='social-icon-link twitter'
+              href='https://twitter.com'
               target='_blank'
+              rel='noopener noreferrer'
               aria-label='Twitter'
             >
-              <i className='fab fa-twitter' />
-            </Link>
-            <Link
-              className='social-icon-link'
-              to='/'
+              <FaTwitter />
+            </a>
+            <a
+              className='social-icon-link linkedin'
+              href='https://linkedin.com'
               target='_blank'
+              rel='noopener noreferrer'
               aria-label='LinkedIn'
             >
-              <i className='fab fa-linkedin' />
-            </Link>
+              <FaLinkedinIn />
+            </a>
           </div>
         </div>
       </section>
