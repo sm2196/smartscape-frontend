@@ -11,6 +11,7 @@ import { Link } from 'react-router-dom';
 import './Cards.css';
 import { FaUserPlus, FaFileAlt, FaCheckCircle, FaCogs, FaMobileAlt } from "react-icons/fa";
 import './Ambassador.css';
+import './SMFooter.css';
 
 const MainPicSection = () => {
   return (
@@ -260,6 +261,119 @@ const AmbassadorForm = () => {
   );
 };
 
+function SMfooter() {
+  return (
+    <div className='SMfooter-container'>
+      <section className='SMfooter-subscription'>
+        <p className='SMfooter-subscription-heading'>
+          Join our newsletter to know us better
+        </p>
+        <p className='SMfooter-subscription-text'>
+          Stay updated with our latest smart home solutions
+        </p>
+        <div className='input-areas'>
+          <form>
+            <input
+              className='SMfooter-input'
+              name='email'
+              type='email'
+              placeholder='Your Email'
+            />
+            <div className="SM-FooterButton-wrapper">
+              <button type="submit">
+                <span>Subscribe</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <div className='SMfooter-links'>
+        <div className='SMfooter-link-wrapper'>
+          <div className='SMfooter-link-items'>
+            <h2>About Us</h2>
+            <Link to='/sign-up'>How it works</Link>
+            <Link to='/'>Why choose us</Link>
+            <Link to='/'>Testimonials</Link>
+            <Link to='/'>Careers</Link>
+          </div>
+          <div className='SMfooter-link-items'>
+            <h2>Contact Us</h2>
+            <Link to='/'>Contact</Link>
+            <Link to='/'>Support</Link>
+            <Link to='/'>Customer Care</Link>
+            <Link to='/'>Technical Help</Link>
+          </div>
+        </div>
+        <div className='SMfooter-link-wrapper'>
+          <div className='SMfooter-link-items'>
+            <h2>Resources</h2>
+            <Link to='/'>Submit Video</Link>
+            <Link to='/'>Ambassadors</Link>
+            <Link to='/'>FAQ</Link>
+            <Link to='/'>Blog</Link>
+          </div>
+          <div className='SMfooter-link-items'>
+            <h2>Connect</h2>
+            <Link to='/'>Instagram</Link>
+            <Link to='/'>Facebook</Link>
+            <Link to='/'>Youtube</Link>
+            <Link to='/'>Twitter</Link>
+          </div>
+        </div>
+      </div>
+      <section className='social-media'>
+        <div className='social-media-wrap'>
+          <div className='social-icons'>
+            <Link
+              className='social-icon-link'
+              to='/'
+              target='_blank'
+              aria-label='Facebook'
+            >
+              <i className='fab fa-facebook-f' />
+            </Link>
+            <Link
+              className='social-icon-link'
+              to='/'
+              target='_blank'
+              aria-label='Instagram'
+            >
+              <i className='fab fa-instagram' />
+            </Link>
+            <Link
+              className='social-icon-link'
+              to='/'
+              target='_blank'
+              aria-label='Youtube'
+            >
+              <i className='fab fa-youtube' />
+            </Link>
+            <Link
+              className='social-icon-link'
+              to='/'
+              target='_blank'
+              aria-label='Twitter'
+            >
+              <i className='fab fa-twitter' />
+            </Link>
+            <Link
+              className='social-icon-link'
+              to='/'
+              target='_blank'
+              aria-label='LinkedIn'
+            >
+              <i className='fab fa-linkedin' />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <div className='website-rights'>
+        <p>SmartScape © {new Date().getFullYear()} | All Rights Reserved</p>
+      </div>
+    </div>
+  );
+}
+
 const Main = () => {
   return (
     <>
@@ -268,6 +382,7 @@ const Main = () => {
       <HowItWorks />
       <Cards />
       <AmbassadorForm />
+      <SMfooter />
     </>
   );
 };

@@ -20,7 +20,7 @@ function Home() {
         {/* <Parallax speed={5}>
           <Form />
         </Parallax> */}
-        <Footer />
+        {/* <Footer /> */}
       </div>
     </ParallaxProvider>
   );
