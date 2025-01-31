@@ -118,22 +118,64 @@
   margin-top: 30px;
 }
 
-.ambassador-button-container .join-us-wrapper {
+.ambassador-button-container .SM-AmbassadorButton-wrapper {
   flex: 1;
-  max-width: 200px;
+  max-width: 250px;
+  width: 100%;
 }
 
-.join-us-wrapper button {
+/* Ambassador Button Styles */
+.SM-AmbassadorButton-wrapper {
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.9s forwards;
+  margin-top: 2rem;
+}
+
+.SM-AmbassadorButton-wrapper button {
   width: 100%;
-  padding: 12px 25px;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem 0.9rem 1.5rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
   position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
   overflow: hidden;
+  background: #0A1630;
+  color: #000000;
+  border: 1px solid #0A1630;
+  white-space: nowrap;
+}
+
+.SM-AmbassadorButton-wrapper button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SM-AmbassadorButton-wrapper button:hover span {
+  color: #ededed;
+}
+
+.SM-AmbassadorButton-wrapper button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 100%;
+  background: #f0f3fb;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+  z-index: 0;
+}
+
+.SM-AmbassadorButton-wrapper button:hover::before {
+  transform: translate3d(100%, 0, 0);
 }
 
 @keyframes formFadeIn {
@@ -144,6 +186,17 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
@@ -177,9 +230,14 @@
     align-items: center;
   }
 
-  .ambassador-button-container .join-us-wrapper {
+  .ambassador-button-container .SM-AmbassadorButton-wrapper {
     width: 100%;
     max-width: none;
+  }
+
+  .SM-AmbassadorButton-wrapper button {
+    padding: 0.8rem 1.8rem;
+    font-size: 16px;
   }
 }
 
@@ -192,6 +250,10 @@
 
   .ambassador-form-wrapper {
     background-attachment: scroll;
+  }
+
+  .SM-AmbassadorButton-wrapper button:hover {
+    transform: none;
   }
 }
 
@@ -206,5 +268,14 @@
   .ambassador-input:focus,
   .ambassador-textarea:focus {
     transform: none;
+  }
+
+  .SM-AmbassadorButton-wrapper {
+    animation: none;
+    opacity: 1;
+  }
+
+  .SM-AmbassadorButton-wrapper button {
+    transition: none;
   }
 }

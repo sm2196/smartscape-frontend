@@ -242,12 +242,16 @@ const AmbassadorForm = () => {
               required
             ></textarea>
             <div className="ambassador-button-container">
-              <button type="submit" className="join-us-wrapper">
-                <span>Become an ambassador</span>
-              </button>
-              <button type="button" className="join-us-wrapper">
-                <span>Back to Home</span>
-              </button>
+              <div className="SM-AmbassadorButton-wrapper">
+                <button type="submit">
+                  <span>Become an ambassador</span>
+                </button>
+              </div>
+              <div className="SM-AmbassadorButton-wrapper">
+                <button type="button">
+                  <span>Back to Home</span>
+                </button>
+              </div>
             </div>
           </form>
         </div>
