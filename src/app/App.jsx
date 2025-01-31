@@ -1,20 +1,24 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { ParallaxProvider } from 'react-scroll-parallax';
+import Navbar from './components/Navbar.jsx';
 import './App.css';
-import Home from './components/pages/Home';
+import Home from './components/pages/Home.jsx';
+import AboutUsPage from './components/pages/AboutUsPage.jsx';
+import Main from './components/pages/MainPic.jsx';
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        {/* <Route path="/services" element={<Services />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/sign-up" element={<SignUp />} /> */}
-      </Routes>
-    </Router>
+    <ParallaxProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Main />} />
+          <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
+      </Router>
+    </ParallaxProvider>
   );
 }
 

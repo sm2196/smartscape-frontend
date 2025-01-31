@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Parallax } from "react-scroll-parallax";
-import "../App.css";
-import "./MainPic.css";
-import "./AboutUsHome.css";
-import "./pages/JoinUs.css";
-import JoinUs from "./pages/joinus";
-import "./HowItWorks.css";
-import "./Parallax.css";
+import "../../App.css";
+import "../MainPic.css";
+import "../AboutUsHome.css";
+import "./JoinUs.css";
+import "../HowItWorks.css";
+import "../Parallax.css";
 import { Link } from 'react-router-dom';
-import './Cards.css';
+import '../Cards.css';
 import {
   FaUserPlus,
   FaFileAlt,
@@ -21,8 +20,9 @@ import {
   FaTwitter,
   FaLinkedinIn
 } from "react-icons/fa";
-import './Ambassador.css';
-import './SMFooter.css';
+import '../Ambassador.css';
+import '../SMFooter.css';
+import JoinUs from './JoinUs';
 
 const MainPicSection = () => {
   return (

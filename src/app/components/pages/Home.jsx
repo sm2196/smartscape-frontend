@@ -1,8 +1,7 @@
 import React from 'react';
 import { ParallaxProvider, Parallax } from 'react-scroll-parallax';
 import '../../App.css';
-import Main from '../MainPic'; // Import Main instead of separate components
-import Footer from '../Footer';
+import Main from './MainPic'; // Import Main instead of separate components
 
 function Home() {
   return (
