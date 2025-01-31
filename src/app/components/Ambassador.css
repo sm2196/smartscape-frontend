@@ -2,7 +2,7 @@
 
 .ambassador-section {
   position: relative;
-  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  background-color: #ffffff;
   min-height: 100vh;
   overflow: hidden;
   will-change: transform;
@@ -12,8 +12,7 @@
 }
 
 .ambassador-form-wrapper {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url('/ambassador-bg.jpg');
+  background-color: #ffffff;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;

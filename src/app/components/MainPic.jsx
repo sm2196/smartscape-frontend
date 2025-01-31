@@ -34,7 +34,7 @@ const AboutUs = () => {
           <p>
             At SmartScape, we're revolutionizing the way you live by transforming your home into a smarter, more sustainable space. From monitoring your energy and water usage to enhancing security and reducing environmental impact, we empower you to take control of your home effortlessly.
           </p>
-          <div className="SM-join-us-wrapper">
+          <div className="SM-AboutButton-us-wrapper">
             <button><span>Read More</span></button>
           </div>
         </div>
