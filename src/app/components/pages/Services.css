@@ -1,0 +1,263 @@
+.services-page {
+  min-height: 100vh;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+/* Hero Section */
+.services-hero {
+  height: 60vh;
+  background: linear-gradient(180deg, #0a1630 0%, #1a2942 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  padding: 0 20px;
+  margin-top: -80px; /* Adjust for navbar */
+}
+
+.services-hero-content h1 {
+  font-size: 4rem;
+  font-weight: 300;
+  margin-bottom: 20px;
+  letter-spacing: 2px;
+}
+
+.services-hero-content p {
+  font-size: 1.5rem;
+  opacity: 0.9;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Services Grid */
+.services-grid-container {
+  padding: 80px 20px;
+  background: #f8f9fa;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.service-card {
+  background: white;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.service-icon {
+  font-size: 2.5rem;
+  color: #0a1630;
+  margin-bottom: 20px;
+}
+
+.service-card h3 {
+  font-size: 1.5rem;
+  color: #0a1630;
+  margin-bottom: 15px;
+}
+
+.service-card p {
+  color: #666;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.service-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.service-card ul li {
+  color: #444;
+  margin-bottom: 10px;
+  padding-left: 20px;
+  position: relative;
+}
+
+.service-card ul li::before {
+  content: "•";
+  color: #0a1630;
+  position: absolute;
+  left: 0;
+}
+
+/* Additional Features Section */
+.additional-features {
+  padding: 80px 20px;
+  background: white;
+}
+
+.features-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.features-content h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #0a1630;
+  margin-bottom: 50px;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.feature {
+  text-align: center;
+  padding: 30px;
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  color: #0a1630;
+  margin-bottom: 20px;
+}
+
+.feature h3 {
+  font-size: 1.3rem;
+  color: #0a1630;
+  margin-bottom: 15px;
+}
+
+.feature p {
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Call to Action Section */
+.services-cta {
+  background: linear-gradient(180deg, #0a1630 0%, #1a2942 100%);
+  color: white;
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.services-cta h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.services-cta p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+}
+
+.cta-button {
+  background: white;
+  color: #0a1630;
+  border: none;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .features-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .services-hero-content h1 {
+    font-size: 3.5rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .services-hero-content h1 {
+    font-size: 2.8rem;
+  }
+
+  .services-hero-content p {
+    font-size: 1.2rem;
+  }
+
+  .service-card {
+    padding: 30px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .services-hero-content h1 {
+    font-size: 2.2rem;
+  }
+
+  .services-hero-content p {
+    font-size: 1rem;
+  }
+
+  .services-cta h2 {
+    font-size: 2rem;
+  }
+
+  .services-cta p {
+    font-size: 1rem;
+  }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.service-card {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .service-card {
+    animation: none;
+  }
+
+  .service-card:hover {
+    transform: none;
+  }
+
+  .cta-button:hover {
+    transform: none;
+  }
+}
