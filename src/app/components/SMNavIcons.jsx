@@ -1,122 +1,85 @@
-import React from "react";
-import "../components/SMNavIcons.css";
+import React, { useState, useRef, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { FaSearch, FaRegBookmark, FaRegUser } from 'react-icons/fa';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { MdLogout } from 'react-icons/md';
+import './SMNavIcons.css';
 
-const SMIcons = () => {
+function SMIcons() {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
-    <div>
-      <form>
-        <ul className="SM-icon-list">
-          {/* Home Icon-1 */}
-          <li>
-            <input
-              type="radio"
-              id="choose1"
-              name="iconSelection"
-              className="SM-radio-input"
-              defaultChecked
-            />
-            <label htmlFor="choose1">
-              <svg
-                viewBox="0 0 24 24"
-                className="SM-icon-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M4 12L12 4L20 12M6 10.5V19a1 1 0 001 1h3v-3a1 1 0 011-1h2a1 1 0 011 1v3h3a1 1 0 001-1v-8.5"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </label>
-          </li>
+    <div className="SMicons-wrapper">
+      <div className="SMicons-container">
+        <div className="SMicon-item">
+          <FaSearch className="SMicon" />
+        </div>
+        <div className="SMicon-item">
+          <FaRegBookmark className="SMicon" />
+        </div>
+        <div className="SMprofile-container" ref={dropdownRef}>
+          <div
+            className="SMicon-item"
+            onClick={() => setIsProfileOpen(!isProfileOpen)}
+          >
+            <FaRegUser className={`SMicon ${isProfileOpen ? 'active' : ''}`} />
+          </div>
 
-          {/* Search Icon- 2 */}
-          <li>
-            <input
-              type="radio"
-              id="choose2"
-              name="iconSelection"
-              className="SM-radio-input"
-            />
-            <label htmlFor="choose2">
-              <svg
-                viewBox="0 0 24 24"
-                className="SM-icon-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M21 21L17.5 17.5M17 10a7 7 0 11-14 0 7 7 0 0114 0Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </label>
-          </li>
+          {isProfileOpen && (
+            <div className="SMprofile-dropdown">
+              <div className="SMprofile-header">
+                <div className="SMprofile-info">
+                  <img
+                    src="/default-avatar.png"
+                    alt="Profile"
+                    className="SMprofile-avatar"
+                    onError={(e) => {
+                      e.target.src = 'https://via.placeholder.com/40';
+                    }}
+                  />
+                  <div className="SMprofile-details">
+                    <h4>User Name</h4>
+                    <p>user@example.com</p>
+                  </div>
+                </div>
+              </div>
 
-          {/* Bookmark Icon- 3 */}
-          <li>
-            <input
-              type="radio"
-              id="choose3"
-              name="iconSelection"
-              className="SM-radio-input"
-            />
-            <label htmlFor="choose3">
-              <svg
-                viewBox="0 0 24 24"
-                className="SM-icon-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M17 21L12 17L7 21V3.889a.92.92 0 01.244-.629.808.808 0 01.59-.26h8.333a.81.81 0 01.589.26.92.92 0 01.244.63V21Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </label>
-          </li>
-
-          {/* Account Icon- 4 */}
-          <li>
-            <input
-              type="radio"
-              id="choose4"
-              name="iconSelection"
-              className="SM-radio-input"
-            />
-            <label htmlFor="choose4">
-              <svg
-                viewBox="0 0 24 24"
-                className="SM-icon-svg"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 12c2.485 0 4.5-2.015 4.5-4.5S14.485 3 12 3 7.5 5.015 7.5 7.5 9.515 12 12 12Zm0 2c-3.15 0-9 1.585-9 4.5V21h18v-2.5c0-2.915-5.85-4.5-9-4.5Z"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </label>
-          </li>
-        </ul>
-      </form>
+              <div className="SMprofile-menu">
+                <Link to="/profile" className="SMdropdown-item">
+                  <FaRegUser className="SMdropdown-icon" />
+                  <span>Your Profile</span>
+                </Link>
+                <Link to="/settings" className="SMdropdown-item">
+                  <IoSettingsOutline className="SMdropdown-icon" />
+                  <span>Settings</span>
+                </Link>
+                <div className="SMdropdown-divider"></div>
+                <button
+                  className="SMdropdown-item SMlogout-btn"
+                  onClick={() => console.log('Logout clicked')}
+                >
+                  <MdLogout className="SMdropdown-icon" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
-};
+}
 
 export default SMIcons;

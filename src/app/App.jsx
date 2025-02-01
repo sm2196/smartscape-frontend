@@ -1,13 +1,13 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
-import SMNavbar from './components/Navbar.jsx';
+import SMNavbar from './components/SMNavbar';
+import Home from './components/pages/Home';
+import About from './components/pages/AboutUsPage';
+import Services from './components/pages/Services';
+import ContactMe from './components/pages/ContactMe';
+// import FAQ from './components/pages/FAQ';
 import './App.css';
-import Home from './components/pages/Home.jsx';
-import AboutUsPage from './components/pages/AboutUsPage.jsx';
-import Services from './components/pages/Services.jsx';
-// import Contact from './components/pages/Contact.jsx';
-import Main from './components/pages/MainPic.jsx';
 
 function App() {
   return (
@@ -15,11 +15,11 @@ function App() {
       <Router>
         <SMNavbar />
         <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/about" element={<AboutUsPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-          {/* <Route path="/contact" element={<Contact />} /> */}
+          <Route path="/contact" element={<ContactMe />} />
+          {/* <Route path="/faq" element={<FAQ />} /> */}
         </Routes>
       </Router>
     </ParallaxProvider>
