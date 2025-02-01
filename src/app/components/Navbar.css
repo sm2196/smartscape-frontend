@@ -105,6 +105,11 @@ a {
   transform: translateY(-2px);
 }
 
+.SMcontainer ul li a.SMactive {
+  background-color: #c4c4c4;
+  color: #000;
+}
+
 .SMnavbar-right {
   display: flex;
   align-items: center;
@@ -116,6 +121,7 @@ a {
   font-size: 1.5rem;
   cursor: pointer;
   color: #212a3c;
+  margin-left: 1rem;
 }
 
 @media (max-width: 1024px) {
@@ -125,6 +131,7 @@ a {
 
   .SMcontainer .SMnav-link {
     display: none;
+    padding-left: 0;
   }
 
   .SMcontainer .SMnav-link.active {
@@ -137,6 +144,16 @@ a {
     background: #fffafa;
     padding: 1rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  .SMcontainer .SMnav-link li {
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+
+  .SMcontainer ul li a {
+    width: 100%;
+    text-align: center;
   }
 }
 
@@ -153,5 +170,13 @@ a {
 @media (max-width: 480px) {
   .SMnavbar-logo-image {
     height: 50px;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }

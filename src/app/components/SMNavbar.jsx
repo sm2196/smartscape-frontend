@@ -40,27 +40,47 @@ function SMNavbar() {
 
           <ul className={SMclick ? "SMnav-link active" : "SMnav-link"}>
             <li>
-              <Link to="/" onClick={closeMobileMenu}>
+              <Link
+                to="/"
+                className={location.pathname === "/" ? "SMactive" : ""}
+                onClick={closeMobileMenu}
+              >
                 Home
               </Link>
             </li>
             <li>
-              <Link to="/about" onClick={closeMobileMenu}>
+              <Link
+                to="/about"
+                className={location.pathname === "/about" ? "SMactive" : ""}
+                onClick={closeMobileMenu}
+              >
                 About
               </Link>
             </li>
             <li>
-              <Link to="/services" onClick={closeMobileMenu}>
+              <Link
+                to="/services"
+                className={location.pathname === "/services" ? "SMactive" : ""}
+                onClick={closeMobileMenu}
+              >
                 Services
               </Link>
             </li>
             <li>
-              <Link to="/contact" onClick={closeMobileMenu}>
+              <Link
+                to="/contact"
+                className={location.pathname === "/contact" ? "SMactive" : ""}
+                onClick={closeMobileMenu}
+              >
                 Contact Me
               </Link>
             </li>
             <li>
-              <Link to="/faq" onClick={closeMobileMenu}>
+              <Link
+                to="/faq"
+                className={location.pathname === "/faq" ? "SMactive" : ""}
+                onClick={closeMobileMenu}
+              >
                 FAQ
               </Link>
             </li>
