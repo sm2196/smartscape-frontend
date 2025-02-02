@@ -2,7 +2,7 @@
 
 .SMcards {
   padding: 80px 0;
-  background: linear-gradient(to bottom, #f8f9fa, #ffffff);
+  background:#ffffff;
   position: relative;
   z-index: 1;
   will-change: transform;
