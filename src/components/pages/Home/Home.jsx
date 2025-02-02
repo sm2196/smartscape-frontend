@@ -363,41 +363,51 @@ const SMfooter = () => {
       <section className='social-media'>
         <div className='social-media-wrap'>
           <div className='social-icons'>
-            <Link
+            <a
               className='social-icon-link facebook'
-              to='/'
+              href='https://facebook.com'
+              target='_blank'
+              rel='noopener noreferrer'
               aria-label='Facebook'
             >
               <FaFacebookF />
-            </Link>
-            <Link
+            </a>
+            <a
               className='social-icon-link instagram'
-              to='/'
+              href='https://instagram.com'
+              target='_blank'
+              rel='noopener noreferrer'
               aria-label='Instagram'
             >
               <FaInstagram />
-            </Link>
-            <Link
+            </a>
+            <a
               className='social-icon-link youtube'
-              to='/'
+              href='https://youtube.com'
+              target='_blank'
+              rel='noopener noreferrer'
               aria-label='Youtube'
             >
               <FaYoutube />
-            </Link>
-            <Link
+            </a>
+            <a
               className='social-icon-link twitter'
-              to='/'
+              href='https://twitter.com'
+              target='_blank'
+              rel='noopener noreferrer'
               aria-label='Twitter'
             >
               <FaTwitter />
-            </Link>
-            <Link
+            </a>
+            <a
               className='social-icon-link linkedin'
-              to='/'
+              href='https://linkedin.com'
+              target='_blank'
+              rel='noopener noreferrer'
               aria-label='LinkedIn'
             >
               <FaLinkedinIn />
-            </Link>
+            </a>
           </div>
         </div>
       </section>
