@@ -1,12 +1,11 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
-import SMNavbar from './components/SMNavbar';
-import Home from './components/pages/Home';
-import About from './components/pages/AboutUsPage';
-import Services from './components/pages/Services';
-import ContactMe from './components/pages/ContactMe';
-// import FAQ from './components/pages/FAQ';
+import SMNavbar from '../components/layout/Navbar/SMNavbar';
+import Home from '../components/pages/Home/Home';
+import About from '../components/pages/AboutUsPage/AboutUsPage';
+import Services from '../components/pages/Services/Services';
+import ContactMe from '../components/pages/ContactMe/ContactMe';
 import './App.css';
 
 function App() {
@@ -19,7 +18,6 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<ContactMe />} />
-          {/* <Route path="/faq" element={<FAQ />} /> */}
         </Routes>
       </Router>
     </ParallaxProvider>

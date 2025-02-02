@@ -1,9 +1,11 @@
 /* Global parallax settings */
-.parallax-wrapper {
+.SM-parallax-wrapper {
   position: relative;
   will-change: transform;
   transform-style: preserve-3d;
   overflow: visible;
+  padding: 60px 0;
+  background-color: #f8f9fa;
 }
 
 /* Optimize performance for parallax elements */
@@ -25,9 +27,10 @@ body {
 }
 
 /* Global container */
-.page-container {
+.home-container {
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
 
 /* Common animations */
@@ -77,23 +80,77 @@ body {
   backface-visibility: hidden;
 }
 
+/* Parallax background */
+.SM-parallax-background {
+  position: relative;
+  padding: 40px 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* Flow timeline specific styles */
+.SM-flow-timeline {
+  position: relative;
+  padding: 40px 0;
+}
+
+.SM-flow-item {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.SM-flow-item.SM-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* Touch device optimizations */
 @media (hover: none) {
-  .parallax-wrapper {
+  .SM-parallax-wrapper {
     transform: none !important;
+  }
+
+  .SM-flow-item {
+    opacity: 1;
+    transform: none;
   }
 }
 
 /* Reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
   .fade-in,
-  .slide-up {
+  .slide-up,
+  .SM-flow-item {
     animation: none !important;
     opacity: 1;
     transform: none !important;
+    transition: none !important;
   }
 
   html {
     scroll-behavior: auto;
+  }
+
+  .SM-parallax-wrapper {
+    transform: none !important;
+  }
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+  .SM-parallax-wrapper {
+    padding: 40px 0;
+  }
+
+  .SM-parallax-background {
+    padding: 20px 15px;
+  }
+
+  .SM-flow-timeline {
+    padding: 20px 0;
   }
 }

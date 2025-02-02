@@ -14,7 +14,7 @@ import {
   FaHeadset,
   FaArrowRight
 } from "react-icons/fa";
-import '../SMFooter.css';
+import '../../layout/Footer/SMFooter.css';
 
 function AboutUsPage() {
   useEffect(() => {

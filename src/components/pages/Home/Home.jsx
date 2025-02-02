@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Parallax } from "react-scroll-parallax";
-import "../../App.css";
-import "../MainPic.css";
-import "../AboutUsHome.css";
-import "../HowItWorks.css";
-import "../Parallax.css";
+import "../../../app/App.css";
+import "./Home.css";
+import "../../sections/AboutUsHome.css";
+import "../../sections/HowItWorks.css";
+import "../../sections/Parallax.css";
 import { Link } from 'react-router-dom';
-import '../Cards.css';
+import '../../sections/Cards.css';
 import {
   FaUserPlus,
   FaFileAlt,
@@ -19,8 +19,8 @@ import {
   FaTwitter,
   FaLinkedinIn
 } from "react-icons/fa";
-import '../Ambassador.css';
-import '../SMFooter.css';
+import '../../sections/Ambassador.css';
+import '../../layout/Footer/SMFooter.css';
 
 const MainPicSection = () => {
   return (
@@ -390,17 +390,17 @@ function SMfooter() {
   );
 }
 
-const Main = () => {
+function Home() {
   return (
-    <>
+    <div className="home-container">
       <MainPicSection />
       <AboutUs />
       <HowItWorks />
       <Cards />
       <AmbassadorForm />
       <SMfooter />
-    </>
+    </div>
   );
-};
+}
 
-export default Main;
+export default Home;
