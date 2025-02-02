@@ -239,7 +239,7 @@
 
 /* Vision Section */
 .aboutus-vision-section {
-  padding: 120px 0;
+  padding: 120px 0 180px; /* Updated bottom padding */
   background: #f8f9fa;
   position: relative;
   overflow: hidden;
@@ -259,6 +259,7 @@
   border-radius: 20px;
   padding: 60px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px; /* Added margin bottom */
 }
 
 .vision-text {
@@ -522,6 +523,15 @@
 
   .aboutus-hero p {
     font-size: 1.2rem;
+  }
+
+  .aboutus-vision-section {
+    padding: 80px 0 140px; /* Adjusted padding for mobile */
+  }
+
+  .vision-content {
+    padding: 30px;
+    flex-direction: column;
   }
 
   .vision-stats {
