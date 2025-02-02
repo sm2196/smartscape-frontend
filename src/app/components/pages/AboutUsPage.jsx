@@ -63,7 +63,7 @@ function AboutUsPage() {
                    experts came together with a shared vision of transforming how people interact with their living spaces.</p>
               </div>
               <div className="mission-image">
-                <img src="/try2.jpg" alt="Smart Home Technology" />
+                <img src="/bluebg2.jpg" alt="Smart Home Technology" />
               </div>
             </div>
           </Parallax>
@@ -146,7 +146,7 @@ function AboutUsPage() {
               <div className="team-grid">
                 <div className="team-member reveal">
                   <div className="member-image">
-                    <img src="/try1.jpg" alt="Team Member" />
+                    <img src="/humanicon.jpg" alt="Team Member" />
                     <div className="member-overlay">
                       <div className="member-social">
                         <a href="#"><FaLinkedinIn /></a>
@@ -159,7 +159,7 @@ function AboutUsPage() {
                 </div>
                 <div className="team-member reveal">
                   <div className="member-image">
-                    <img src="/bg3.jpg" alt="Team Member" />
+                    <img src="/humanicon.jpg" alt="Team Member" />
                     <div className="member-overlay">
                       <div className="member-social">
                         <a href="#"><FaLinkedinIn /></a>
@@ -172,7 +172,7 @@ function AboutUsPage() {
                 </div>
                 <div className="team-member reveal">
                   <div className="member-image">
-                    <img src="/bg2.jpg" alt="Team Member" />
+                    <img src="/humanicon.jpg" alt="Team Member" />
                     <div className="member-overlay">
                       <div className="member-social">
                         <a href="#"><FaLinkedinIn /></a>

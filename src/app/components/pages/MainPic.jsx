@@ -38,7 +38,7 @@ const AboutUs = () => {
     <div className="SM-about-us-container">
       <Parallax translateY={[-15, 15]} className="SM-about-us-content">
         <div className="SM-about-us-image">
-          <img src="/bluebg2.jpg" alt="Smart Home" />
+          <img src="/bluebg1.jpg" alt="Smart Home" />
         </div>
         <div className="SM-about-us-text">
           <h2>About Us</h2>
