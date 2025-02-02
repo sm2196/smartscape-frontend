@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 .SM-parallax-wrapper {
   position: relative;
   background: #f8f9fa;
@@ -22,7 +24,7 @@
   color: #0A1630;
   position: relative;
   display: inline-block;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
   letter-spacing: 1px;
 }
 
@@ -43,7 +45,7 @@
   max-width: 700px;
   margin: 0 auto 80px;
   line-height: 1.6;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .SM-flow-timeline {
@@ -126,7 +128,7 @@
   font-size: 1.4rem;
   font-weight: 700;
   margin-bottom: 15px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 .SM-flow-description {
@@ -134,7 +136,7 @@
   line-height: 1.6;
   font-size: 1.1rem;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
 }
 
 @media screen and (max-width: 768px) {

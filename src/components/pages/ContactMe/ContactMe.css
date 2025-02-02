@@ -1,7 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
 .contact-page {
   padding-top: 80px;
   min-height: 100vh;
-  background-color: #fffafa;
+  background-color: #ffffff;
 }
 
 .contact-hero {
@@ -23,7 +25,7 @@
 .contact-hero-content h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
-  font-family: "Bree Serif", serif;
+  font-family: "Roboto", serif;
 }
 
 .contact-hero-content p {
@@ -105,7 +107,7 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 1rem;
-  font-family: "Bree Serif", serif;
+  font-family: "Roboto", serif;
   transition: border-color 0.3s ease;
 }
 
