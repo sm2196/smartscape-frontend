@@ -1,99 +1,163 @@
 import React from 'react';
 import { Parallax } from 'react-scroll-parallax';
 import './Services.css';
-import { FaUserShield, FaHome, FaChartLine, FaBell, FaCog, FaQuestionCircle } from 'react-icons/fa';
-import { MdSecurity, MdDeviceHub, MdTimer } from 'react-icons/md';
+import {
+  FaMobileAlt,
+  FaShieldAlt,
+  FaLeaf,
+  FaBolt,
+  FaUsers,
+  FaLock,
+  FaChartLine,
+  FaWater,
+  FaClock,
+  FaBrain,
+  FaTools,
+  FaRegLightbulb,
+  FaAmazon,
+  FaGoogle,
+  FaApple,
+  FaMicrosoft,
+  FaHome
+} from 'react-icons/fa';
+import { MdSecurity, MdDeviceHub } from 'react-icons/md';
 
 function Services() {
   const services = [
     {
-      icon: <FaUserShield />,
-      title: "Account Management",
-      description: "Secure account creation with email verification, two-factor authentication, and profile management.",
+      icon: <FaMobileAlt />,
+      title: "Universal Control",
+      description: "Control your entire smart home ecosystem from any device, anywhere.",
       features: [
-        "User registration and validation",
-        "Two-factor authentication",
-        "Profile customization",
-        "Privacy controls"
+        "Multi-device access",
+        "Real-time updates",
+        "Intuitive interface",
+        "Secure remote control"
+      ]
+    },
+    {
+      icon: <FaUsers />,
+      title: "Smart Access",
+      description: "Manage permissions and access levels for family members and guests.",
+      features: [
+        "User profiles",
+        "Custom permissions",
+        "Time-based access",
+        "Activity tracking"
       ]
     },
     {
       icon: <MdSecurity />,
-      title: "Security Features",
-      description: "Advanced security measures to protect your home and data.",
+      title: "24/7 Monitoring",
+      description: "Keep your home secure with constant surveillance and instant alerts.",
       features: [
-        "Emergency lockdown",
-        "Break-in detection",
-        "Security alerts",
-        "Session management"
+        "Live camera feeds",
+        "Motion detection",
+        "Smart sensors",
+        "Instant alerts"
       ]
     },
     {
-      icon: <MdDeviceHub />,
-      title: "Device Management",
-      description: "Seamless control and monitoring of all your smart home devices.",
+      icon: <FaShieldAlt />,
+      title: "Emergency System",
+      description: "Instant emergency responses and security measures when needed.",
       features: [
-        "Automatic device discovery",
-        "Real-time status monitoring",
-        "Custom automation rules",
-        "Room-specific controls"
+        "Quick shutdown",
+        "Intrusion detection",
+        "Authority alerts",
+        "Remote control"
       ]
     },
     {
-      icon: <FaChartLine />,
-      title: "Consumption Analysis",
-      description: "Detailed insights into your energy and water usage patterns.",
+      icon: <FaLeaf />,
+      title: "Eco-Friendly",
+      description: "Contribute to sustainability while reducing your utility costs.",
       features: [
-        "Real-time monitoring",
-        "Usage trends",
-        "Cost analysis",
-        "Environmental impact"
+        "Energy tracking",
+        "Water monitoring",
+        "Smart automation",
+        "Usage reports"
       ]
     },
     {
-      icon: <MdTimer />,
-      title: "Peak Time Management",
-      description: "Smart features to optimize energy usage during peak hours.",
+      icon: <FaBolt />,
+      title: "Peak Management",
+      description: "Optimize energy usage during DEWA peak hours to save costs.",
       features: [
-        "DEWA peak time integration",
-        "Automatic device shutdown",
-        "Custom override rules",
-        "Usage optimization"
+        "Auto-scheduling",
+        "Cost optimization",
+        "Usage control",
+        "Rate monitoring"
       ]
+    }
+  ];
+
+  const additionalFeatures = [
+    {
+      icon: <FaWater />,
+      title: "Water Conservation",
+      description: "Smart water management system to reduce waste and costs"
     },
     {
-      icon: <FaQuestionCircle />,
-      title: "Support System",
-      description: "Comprehensive support to help you make the most of your smart home.",
-      features: [
-        "24/7 chatbot assistance",
-        "Video tutorials",
-        "FAQ section",
-        "Direct support contact"
-      ]
+      icon: <FaClock />,
+      title: "Scheduling",
+      description: "Automated scheduling for all your home devices"
+    },
+    {
+      icon: <FaBrain />,
+      title: "AI Integration",
+      description: "Smart learning algorithms for better automation"
+    },
+    {
+      icon: <FaTools />,
+      title: "Easy Maintenance",
+      description: "Predictive maintenance alerts and quick support"
+    }
+  ];
+
+  const integrations = [
+    {
+      icon: <FaAmazon />,
+      title: "Amazon Alexa",
+      description: "Voice control your home with Alexa integration"
+    },
+    {
+      icon: <FaGoogle />,
+      title: "Google Home",
+      description: "Seamless integration with Google Home ecosystem"
+    },
+    {
+      icon: <FaApple />,
+      title: "Apple HomeKit",
+      description: "Control your home through Apple devices"
+    },
+    {
+      icon: <FaMicrosoft />,
+      title: "Microsoft Azure",
+      description: "Enterprise-grade cloud infrastructure"
     }
   ];
 
   return (
     <div className="services-page">
-      {/* Hero Section */}
-      <Parallax translateY={[-20, 20]} className="services-hero">
-        <div className="services-hero-content">
-          <h1>Our Services</h1>
-          <p>Comprehensive Smart Home Solutions for Modern Living</p>
+      <div className="services-hero">
+        <div className="hero-content">
+          <h1>Transform Your Home</h1>
+          <p>Experience the future of smart living with complete control at your fingertips</p>
         </div>
-      </Parallax>
+      </div>
 
-      {/* Services Grid */}
-      <div className="services-grid-container">
+      <div className="services-section">
+        <div className="section-header">
+          <h2>Our Core Services</h2>
+          <p>Discover how we're revolutionizing home automation</p>
+        </div>
         <div className="services-grid">
           {services.map((service, index) => (
-            <Parallax
-              key={index}
-              translateY={[10, -10]}
-              className="service-card"
-            >
-              <div className="service-icon">{service.icon}</div>
+            <div key={index} className="service-card">
+              <div className="service-icon">
+                {service.icon}
+              </div>
               <h3>{service.title}</h3>
               <p>{service.description}</p>
               <ul>
@@ -101,40 +165,74 @@ function Services() {
                   <li key={fIndex}>{feature}</li>
                 ))}
               </ul>
-            </Parallax>
+            </div>
           ))}
         </div>
       </div>
 
-      {/* Additional Features Section */}
-      <Parallax translateY={[-15, 15]} className="additional-features">
-        <div className="features-content">
+      <div className="additional-features">
+        <div className="section-header">
           <h2>Additional Features</h2>
-          <div className="features-grid">
-            <div className="feature">
-              <FaHome className="feature-icon" />
-              <h3>Room Management</h3>
-              <p>Create and customize rooms with specific automation rules</p>
+          <p>More ways to enhance your smart home experience</p>
+        </div>
+        <div className="features-grid">
+          {additionalFeatures.map((feature, index) => (
+            <div key={index} className="feature-card">
+              <div className="feature-icon">
+                {feature.icon}
+              </div>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
             </div>
-            <div className="feature">
-              <FaBell className="feature-icon" />
-              <h3>Smart Notifications</h3>
-              <p>Customizable alerts for all your home automation needs</p>
+          ))}
+        </div>
+      </div>
+
+      <div className="integrations-section">
+        <div className="section-header">
+          <h2>Future Integrations</h2>
+          <p>Connect with your favorite smart home platforms</p>
+        </div>
+        <div className="integrations-grid">
+          {integrations.map((integration, index) => (
+            <div key={index} className="integration-card">
+              <div className="integration-icon">
+                {integration.icon}
+              </div>
+              <h3>{integration.title}</h3>
+              <p>{integration.description}</p>
             </div>
-            <div className="feature">
-              <FaCog className="feature-icon" />
-              <h3>Admin Controls</h3>
-              <p>Advanced management tools for household administrators</p>
-            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="services-stats">
+        <div className="stat-item">
+          <h3>1000+</h3>
+          <p>Happy Customers</p>
+        </div>
+        <div className="stat-item">
+          <h3>24/7</h3>
+          <p>Support Available</p>
+        </div>
+        <div className="stat-item">
+          <h3>30%</h3>
+          <p>Energy Savings</p>
+        </div>
+        <div className="stat-item">
+          <h3>100%</h3>
+          <p>Satisfaction Rate</p>
+        </div>
+      </div>
+
+      <div className="register-section">
+        <div className="register-content">
+          <h2>Ready to Transform Your Home?</h2>
+          <p>Join thousands of satisfied homeowners in the smart living revolution</p>
+          <div className="services-register-button">
+            <button><span>Register Today</span></button>
           </div>
         </div>
-      </Parallax>
-
-      {/* Call to Action */}
-      <div className="services-cta">
-        <h2>Ready to Transform Your Home?</h2>
-        <p>Join SmartScape today and experience the future of smart living</p>
-        <button className="cta-button">Get Started</button>
       </div>
     </div>
   );
