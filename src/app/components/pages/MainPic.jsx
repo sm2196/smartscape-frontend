@@ -3,7 +3,6 @@ import { Parallax } from "react-scroll-parallax";
 import "../../App.css";
 import "../MainPic.css";
 import "../AboutUsHome.css";
-import "./JoinUs.css";
 import "../HowItWorks.css";
 import "../Parallax.css";
 import { Link } from 'react-router-dom';
@@ -22,13 +21,14 @@ import {
 } from "react-icons/fa";
 import '../Ambassador.css';
 import '../SMFooter.css';
-import JoinUs from './JoinUs';
 
 const MainPicSection = () => {
   return (
     <Parallax translateY={[-20, 20]} className="SMMainPic-container">
       <h1><span>YOUR HOME AT YOUR FINGERTIPS</span></h1>
-      <JoinUs />
+      <div className="SM-joinButton-us-wrapper">
+        <button><span>Register today</span></button>
+      </div>
     </Parallax>
   );
 };
