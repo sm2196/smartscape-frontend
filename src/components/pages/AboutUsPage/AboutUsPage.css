@@ -4,6 +4,7 @@
   min-height: 100vh;
   background-color: #fff;
   overflow-x: hidden;
+  font-family: 'Roboto', sans-serif;
 }
 
 /* Hero Section */
@@ -47,7 +48,7 @@
   letter-spacing: 4px;
   margin-bottom: 20px;
   color: #fff;
-  font-family: "Roboto", serif;
+  font-family: 'Roboto', sans-serif;
   position: relative;
   animation: slideInDown 1s ease-out;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
