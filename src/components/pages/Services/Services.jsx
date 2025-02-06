@@ -139,10 +139,23 @@ function Services() {
 
   return (
     <div className="services-page">
+      {/* Updated Hero Section */}
       <div className="services-hero">
-        <div className="hero-content">
-          <h1>Transform Your Home</h1>
-          <p>Experience the future of smart living with complete control at your fingertips</p>
+        <div className="hero-left">
+          <div className="hero-content">
+            <div className="hero-title">OUR</div>
+            <div className="hero-title">SERVICES</div>
+            <div className="hero-text">
+              <p>
+                Experience the future of smart living with complete control at your fingertips.
+                Our comprehensive suite of services transforms your home into an intelligent,
+                efficient, and secure living space.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div className="hero-right">
+          <div className="hero-gradient"></div>
         </div>
       </div>
 

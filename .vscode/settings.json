@@ -6,8 +6,8 @@
  "editor.wordWrap": "on",
  "files.trimTrailingWhitespace": true,
  "git.autofetch": true,
- "diffEditor.ignoreTrimWhitespace": false,
- "diffEditor.hideUnchangedRegions.enabled": true,
+ "diffEditor.ignoreTrimWhitespace": true,
+ "diffEditor.hideUnchangedRegions.enabled": false,
  "accessibility.signals.save": {
     "sound": "userGesture",
  },
