@@ -116,6 +116,22 @@
   /* Space between text and chevron icon */
 }
 
+/* Popup content styling */
+.popupContent {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+/* If you want to add custom close button styling */
+.popupContent button {
+  margin-top: 10px;
+}
+
 /* Responsive Styles for button group */
 @media (min-width: 768px) {
   .buttonGroup {

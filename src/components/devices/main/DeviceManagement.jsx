@@ -2,6 +2,7 @@ import React from 'react';
 import { ChevronRight } from 'lucide-react';
 import Button from '../additional/Button'; // Make sure this is the correct path
 import styles from './DeviceManagement.module.css'; // Import the CSS module
+import Popup from 'reactjs-popup'; // Import the Popup component
 
 const DeviceManagement = () => {
   return (
@@ -20,10 +21,25 @@ const DeviceManagement = () => {
             'Backyard',
             'Parking lot'
           ].map(room => (
-            <Button key={room} variant="ghost" className={styles.buttonItem}>
-              {room}
-              <ChevronRight className={styles.chevronIcon} />
-            </Button>
+            <Popup
+              key={room}
+              trigger={
+                <Button variant="ghost" className={styles.buttonItem}>
+                  {room}
+                  <ChevronRight className={styles.chevronIcon} />
+                </Button>
+              }
+              modal
+              closeOnDocumentClick
+            >
+              {(close) => (
+                <div className={styles.popupContent}>
+                  <h2>{room}</h2>
+                  <p>Here you can add more details about the {room}.</p>
+                  <Button onClick={close}>Close</Button>
+                </div>
+              )}
+            </Popup>
           ))}
         </div>
       </div>
@@ -46,10 +62,25 @@ const DeviceManagement = () => {
             'Exclude device from shutdown',
             'Manual override',
           ].map(item => (
-            <Button key={item} variant="ghost" className={styles.buttonItem}>
-              {item}
-              <ChevronRight className={styles.chevronIcon} />
-            </Button>
+            <Popup
+              key={item}
+              trigger={
+                <Button variant="ghost" className={styles.buttonItem}>
+                  {item}
+                  <ChevronRight className={styles.chevronIcon} />
+                </Button>
+              }
+              modal
+              closeOnDocumentClick
+            >
+              {(close) => (
+                <div className={styles.popupContent}>
+                  <h2>{item}</h2>
+                  <p>Details about {item} can be added here.</p>
+                  <Button onClick={close}>Close</Button>
+                </div>
+              )}
+            </Popup>
           ))}
         </div>
       </div>
