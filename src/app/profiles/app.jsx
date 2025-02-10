@@ -1,8 +1,8 @@
 import React from 'react';
 import './app.css'; // Import global styles
-import Navbar from '../../ap-components/devices/navbar/Navbar';
+import Navbar from '../../components/devices/navbar/Navbar';
 //import { Sidebar } from '../../components/devices/Sidebar';
-import DeviceManagement from '../../ap-components/devices/main/DeviceManagement';
+import DeviceManagement from '../../components/devices/main/DeviceManagement';
 
 export default function App() {
   return (

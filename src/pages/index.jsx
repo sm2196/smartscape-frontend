@@ -1,5 +1,5 @@
 import React from 'react';
-import App from '../ap-app/profiles/app';
+import App from '../app/profiles/app';
 
 export default function Home() {
   return (
