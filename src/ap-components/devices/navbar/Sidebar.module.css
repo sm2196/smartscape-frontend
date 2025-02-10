@@ -1,0 +1,54 @@
+.sidebar {
+    width: 256px;
+    background-color: var(--surface-dark);
+    padding: 24px;
+}
+
+.timeDisplay {
+    margin-bottom: 32px;
+}
+
+.currentTime {
+    font-size: 3rem;
+    font-weight: 300;
+}
+
+.currentDate {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-top: 8px;
+}
+
+.navMenu {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.navLink {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.navLink:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.navLink.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.statusInfo {
+    margin-top: 32px;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    display: flex;
+    flex-direction: column;
+    /*gap: 2px;*/
+}
