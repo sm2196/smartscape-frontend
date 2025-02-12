@@ -2,21 +2,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
 
 /* Base Styles */
-.aboutus-page-container {
+.SMaboutus-page-container {
   min-height: 100vh;
   font-family: 'Roboto', sans-serif;
   overflow-x: hidden;
 }
 
 /* Hero Split Section */
-.hero-split {
+.SMhero-split {
   display: flex;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
 }
 
-.hero-left {
+.SMhero-left {
   flex: 1;
   display: flex;
   align-items: center;
@@ -26,11 +26,11 @@
   z-index: 2;
 }
 
-.hero-content {
+.SMhero-content {
   max-width: 600px;
 }
 
-.hero-title {
+.SMhero-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 6rem;
   line-height: 1;
@@ -39,25 +39,25 @@
   margin-bottom: 0.5rem;
 }
 
-.hero-text {
+.SMhero-text {
   margin-top: 3rem;
 }
 
-.hero-text p {
+.SMhero-text p {
   font-size: 1.2rem;
   line-height: 1.6;
   color: #666;
   margin-bottom: 1.5rem;
 }
 
-.hero-right {
+.SMhero-right {
   flex: 1;
   background: #0A1630;
   position: relative;
   overflow: hidden;
 }
 
-.hero-gradient {
+.SMhero-gradient {
   position: absolute;
   top: 0;
   left: 0;
@@ -66,16 +66,16 @@
   background:
     radial-gradient(circle at 20% 20%, rgba(41, 98, 255, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(41, 98, 255, 0.1) 0%, transparent 50%);
-  animation: gradientMove 8s ease-in-out infinite alternate;
+  animation: SMgradientMove 8s ease-in-out infinite alternate;
 }
 
 /* Mission Section */
-.aboutus-mission-section {
+.SMaboutus-mission-section {
   padding: 120px 0;
   background: #ffffff;
 }
 
-.mission-content {
+.SMmission-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 40px;
@@ -84,62 +84,62 @@
   gap: 60px;
 }
 
-.mission-text {
+.SMmission-text {
   flex: 1;
 }
 
-.mission-text h2 {
+.SMmission-text h2 {
   font-size: 1.2rem;
   color: #666;
   letter-spacing: 3px;
   margin-bottom: 20px;
 }
 
-.mission-text h3 {
+.SMmission-text h3 {
   font-size: 2.8rem;
   color: #0A1630;
   margin-bottom: 30px;
   font-weight: 600;
 }
 
-.mission-text p {
+.SMmission-text p {
   font-size: 1.1rem;
   line-height: 1.8;
   color: #666;
 }
 
-.mission-image {
+.SMmission-image {
   flex: 1;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.mission-image img {
+.SMmission-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.mission-image:hover img {
+.SMmission-image:hover img {
   transform: scale(1.05);
 }
 
 /* Values Section */
-.aboutus-values-section {
+.SMaboutus-values-section {
   padding: 120px 0;
   background: #f8f9ff;
 }
 
-.values-title {
+.SMvalues-title {
   text-align: center;
   font-size: 2.5rem;
   color: #0A1630;
   margin-bottom: 60px;
 }
 
-.aboutus-grid {
+.SMaboutus-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 40px;
@@ -148,7 +148,7 @@
   padding: 0 20px;
 }
 
-.aboutus-grid-item {
+.SMaboutus-grid-item {
   background: white;
   padding: 40px;
   border-radius: 20px;
@@ -156,12 +156,12 @@
   transition: all 0.3s ease;
 }
 
-.aboutus-grid-item:hover {
+.SMaboutus-grid-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
-.grid-icon-wrapper {
+.SMgrid-icon-wrapper {
   width: 60px;
   height: 60px;
   background: #0A1630;
@@ -172,64 +172,64 @@
   margin-bottom: 20px;
 }
 
-.grid-icon {
+.SMgrid-icon {
   color: white;
   font-size: 24px;
 }
 
 /* Vision Section */
-.aboutus-vision-section {
+.SMaboutus-vision-section {
   padding: 120px 0;
   background: white;
 }
 
-.vision-wrapper {
+.SMvision-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-.vision-content {
+.SMvision-content {
   display: flex;
   gap: 60px;
   align-items: center;
 }
 
-.vision-text {
+.SMvision-text {
   flex: 1;
 }
 
-.vision-text h2 {
+.SMvision-text h2 {
   font-size: 1.2rem;
   color: #666;
   letter-spacing: 3px;
   margin-bottom: 20px;
 }
 
-.vision-text h3 {
+.SMvision-text h3 {
   font-size: 2.8rem;
   color: #0A1630;
   margin-bottom: 30px;
 }
 
-.vision-text p {
+.SMvision-text p {
   font-size: 1.1rem;
   line-height: 1.8;
   color: #666;
   margin-bottom: 40px;
 }
 
-.vision-stats {
+.SMvision-stats {
   display: flex;
   gap: 40px;
   margin-top: 40px;
 }
 
-.stat-item {
+.SMstat-item {
   text-align: center;
 }
 
-.stat-number {
+.SMstat-number {
   font-size: 2.5rem;
   color: #0A1630;
   font-weight: 700;
@@ -237,71 +237,71 @@
   margin-bottom: 10px;
 }
 
-.stat-label {
+.SMstat-label {
   color: #666;
   font-size: 1.1rem;
 }
 
-.vision-image {
+.SMvision-image {
   flex: 1;
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
-.vision-image img {
+.SMvision-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
 
-.vision-image:hover img {
+.SMvision-image:hover img {
   transform: scale(1.05);
 }
 
 /* Team Section */
-.aboutus-team-section {
+.SMaboutus-team-section {
   padding: 120px 0;
   background: #f8f9ff;
 }
 
-.team-wrapper {
+.SMteam-wrapper {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-.team-header {
+.SMteam-header {
   text-align: center;
   margin-bottom: 60px;
 }
 
-.team-header h2 {
+.SMteam-header h2 {
   font-size: 1.2rem;
   color: #666;
   letter-spacing: 3px;
   margin-bottom: 20px;
 }
 
-.team-header h3 {
+.SMteam-header h3 {
   font-size: 2.8rem;
   color: #0A1630;
   margin-bottom: 20px;
 }
 
-.team-grid {
+.SMteam-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 40px;
   margin-bottom: 60px;
 }
 
-.team-member {
+.SMteam-member {
   text-align: center;
 }
 
-.member-image {
+.SMmember-image {
   position: relative;
   border-radius: 20px;
   overflow: hidden;
@@ -309,13 +309,13 @@
   aspect-ratio: 1;
 }
 
-.member-image img {
+.SMmember-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.member-overlay {
+.SMmember-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -329,40 +329,45 @@
   transition: opacity 0.3s ease;
 }
 
-.member-overlay:hover {
+.SMmember-overlay:hover {
   opacity: 1;
 }
 
-.member-social {
+.SMmember-social {
   display: flex;
   gap: 20px;
 }
 
-.member-social a {
+.SMmember-social a {
   color: white;
   font-size: 20px;
   transition: transform 0.3s ease;
 }
 
-.member-social a:hover {
+.SMmember-social a:hover {
   transform: translateY(-3px);
 }
 
-.team-member h4 {
+.SMteam-member h4 {
   font-size: 1.3rem;
   color: #0A1630;
   margin-bottom: 10px;
 }
 
-.team-member p {
+.SMteam-member p {
   color: #666;
 }
 
 /* Footer Styles */
 .SMfooter-container {
-  background: #0A1630;
-  padding: 4rem 0 2rem;
-  color: white;
+  background: linear-gradient(180deg, #0A1630 0%, #1a2942 100%);
+  padding: 4rem 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-top: 0;
 }
 
 .SMfooter-subscription {
@@ -383,7 +388,7 @@
   opacity: 0.8;
 }
 
-.input-areas {
+.SMinput-areas {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -399,13 +404,10 @@
   font-size: 1rem;
 }
 
-
 .SM-FooterButton-wrapper button:hover {
   background: white;
   color: #0A1630;
 }
-
-
 
 .SM-FooterButton-wrapper button {
   outline: none;
@@ -424,7 +426,6 @@
   border: 1px solid #f0f3fb;
   min-width: 150px;
 }
-
 
 .SMfooter-links {
   max-width: 1200px;
@@ -462,40 +463,40 @@
   opacity: 1;
 }
 
-.social-media {
+.SMsocial-media {
   max-width: 1200px;
   margin: 60px auto 0;
   padding: 0 20px;
 }
 
-.social-media-wrap {
+.SMsocial-media-wrap {
   display: flex;
   justify-content: center;
 }
 
-.social-icons {
+.SMsocial-icons {
   display: flex;
   gap: 20px;
 }
 
-.social-icon-link {
+.SMsocial-icon-link {
   color: white;
   font-size: 24px;
   transition: transform 0.3s ease;
 }
 
-.social-icon-link:hover {
+.SMsocial-icon-link:hover {
   transform: translateY(-3px);
 }
 
-.website-rights {
+.SMwebsite-rights {
   text-align: center;
   margin-top: 40px;
   opacity: 0.8;
 }
 
 /* Animations */
-@keyframes gradientMove {
+@keyframes SMgradientMove {
   0% {
     opacity: 0.4;
     transform: scale(1);
@@ -507,31 +508,31 @@
 }
 
 /* Reveal Animation */
-.reveal {
+.SMreveal {
   opacity: 0;
   transform: translateY(30px);
   transition: all 0.8s ease-out;
 }
 
-.reveal.active {
+.SMreveal.active {
   opacity: 1;
   transform: translateY(0);
 }
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-  .hero-title {
+  .SMhero-title {
     font-size: 5rem;
   }
 }
 
 @media (max-width: 1024px) {
-  .mission-content,
-  .vision-content {
+  .SMmission-content,
+  .SMvision-content {
     flex-direction: column;
   }
 
-  .team-grid {
+  .SMteam-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
@@ -542,32 +543,32 @@
 }
 
 @media (max-width: 768px) {
-  .hero-split {
+  .SMhero-split {
     flex-direction: column;
   }
 
-  .hero-left {
+  .SMhero-left {
     padding: 3rem 2rem;
   }
 
-  .hero-right {
+  .SMhero-right {
     min-height: 50vh;
   }
 
-  .hero-title {
+  .SMhero-title {
     font-size: 4rem;
   }
 
-  .aboutus-grid {
+  .SMaboutus-grid {
     grid-template-columns: 1fr;
   }
 
-  .vision-stats {
+  .SMvision-stats {
     flex-direction: column;
     align-items: center;
   }
 
-  .team-grid {
+  .SMteam-grid {
     grid-template-columns: 1fr;
   }
 
@@ -578,13 +579,13 @@
 }
 
 @media (max-width: 480px) {
-  .hero-title {
+  .SMhero-title {
     font-size: 3rem;
   }
 
-  .mission-text h3,
-  .vision-text h3,
-  .team-header h3 {
+  .SMmission-text h3,
+  .SMvision-text h3,
+  .SMteam-header h3 {
     font-size: 2rem;
   }
 
