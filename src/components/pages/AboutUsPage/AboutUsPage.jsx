@@ -175,7 +175,7 @@ function AboutUsPage() {
               </div>
             </div>
             <div className="SMvision-image">
-              <img src="/try1.jpg" alt="Future Smart Home" />
+              <img src="/try2.jpg" alt="Future Smart Home" />
             </div>
           </div>
         </div>
