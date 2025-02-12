@@ -217,7 +217,9 @@ function AboutUsPage() {
                 placeholder='Your Email'
               />
               <div className="SM-FooterButton-wrapper">
-                <button type="submit">Subscribe</button>
+                <button type='submit'>
+                  <span>Subscribe</span>
+                </button>
               </div>
             </form>
           </div>

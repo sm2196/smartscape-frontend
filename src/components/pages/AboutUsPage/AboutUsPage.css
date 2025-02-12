@@ -399,21 +399,32 @@
   font-size: 1rem;
 }
 
-.SM-FooterButton-wrapper button {
-  background: transparent;
-  border: 2px solid white;
-  color: white;
-  padding: 12px 30px;
-  border-radius: 5px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
 
 .SM-FooterButton-wrapper button:hover {
   background: white;
   color: #0A1630;
 }
+
+
+
+.SM-FooterButton-wrapper button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #f0f3fb;
+  min-width: 150px;
+}
+
 
 .SMfooter-links {
   max-width: 1200px;
