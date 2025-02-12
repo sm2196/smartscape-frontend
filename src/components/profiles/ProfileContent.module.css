@@ -1,0 +1,231 @@
+/* Main layout */
+.mainContent {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #fff;
+  max-width: 100vw;
+}
+
+.header {
+  color: var(--oxford-blue);
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+/* Profile box styles */
+.profileBox {
+  background-color: var(--lavender);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.profileInfo {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  margin-right: 10px;
+}
+
+.textContainer p {
+  margin: 0;
+}
+
+.textContainer p:first-child {
+  margin-bottom: 5px;
+}
+
+/* Action icons */
+.actionIcons {
+  position: absolute;
+  top: 10px;
+  right: 26px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.iconButton {
+  all: unset;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  opacity: 0.8;
+}
+
+/* User icons and buttons */
+.userIcons {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+
+.iconWithText {
+  flex: 1;
+  min-width: 160px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.iconWithText:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.iconWithText:active {
+  transform: translateY(0);
+}
+
+.iconWithText span {
+  font-size: 14px;
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.signOutButton {
+  align-self: flex-start;
+  margin-top: 25px;
+  margin-left: auto;
+  padding: 8px 12px;
+  background-color: transparent;
+  color: var(--oxford-blue);
+  border: 2px solid var(--oxford-blue);
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.signOutButton:hover {
+  background-color: var(--oxford-blue);
+  color: #fff;
+}
+
+.signOutButton:active {
+  transform: translateY(2px);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Personal information styles */
+.personalInfo {
+  font-size: 24px;
+  color: var(--oxford-blue);
+}
+
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.infoItem {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.infoTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #000000;
+}
+
+.editButton {
+  all: unset;
+  font-size: 14px;
+  font-weight: bold;
+  color: #222222;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.editButton:hover {
+  opacity: 0.8;
+}
+
+.infoValue {
+  font-size: 14px;
+  color: #717171;
+  margin: 5px 0 0;
+}
+
+.infoUnderline {
+  margin-top: 15px;
+  border-bottom: 1px solid #ebebeb;
+  width: 100%;
+}
+
+/* Responsive styles */
+@media (max-width: 480px) {
+  .header {
+    font-size: 1.75rem;
+    margin-bottom: 15px;
+  }
+
+  .profileBox {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .profileInfo {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .logo {
+    margin-bottom: 10px;
+  }
+
+  .actionIcons {
+    right: 10px;
+  }
+
+  .textContainer {
+    text-align: center;
+  }
+
+  .signOutButton {
+    margin-left: 0;
+    margin-top: auto;
+    padding: 10px 15px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .userIcons {
+    margin: 12px -16px;
+    padding: 0 16px;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .iconWithText {
+    min-width: auto;
+    padding: 8px 12px;
+    flex: 0 0 auto;
+  }
+}
+

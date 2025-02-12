@@ -7,11 +7,5 @@
  "files.trimTrailingWhitespace": true,
  "git.autofetch": true,
  "diffEditor.ignoreTrimWhitespace": false,
- "diffEditor.hideUnchangedRegions.enabled": true,
- "accessibility.signals.save": {
-    "sound": "userGesture",
- },
- "accessibility.signals.format": {
-    "sound": "userGesture",
- }
+"diffEditor.hideUnchangedRegions.enabled": true
 }
