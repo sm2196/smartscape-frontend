@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-.contact-page {
+.SMcontact-page {
   padding-top: 80px;
   min-height: 100vh;
   background-color: #ffffff;
 }
 
 /* Hero Split Section */
-.contact-hero-split {
+.SMcontact-hero-split {
   display: flex;
   min-height: 100vh;
   position: relative;
   overflow: hidden;
 }
 
-.contact-hero-left {
+.SMcontact-hero-left {
   flex: 1;
   display: flex;
   align-items: center;
@@ -25,11 +25,11 @@
   z-index: 2;
 }
 
-.contact-hero-content {
+.SMcontact-hero-content {
   max-width: 600px;
 }
 
-.contact-hero-title {
+.SMcontact-hero-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 6rem;
   line-height: 1;
@@ -38,25 +38,25 @@
   margin-bottom: 0.5rem;
 }
 
-.contact-hero-text {
+.SMcontact-hero-text {
   margin-top: 3rem;
 }
 
-.contact-hero-text p {
+.SMcontact-hero-text p {
   font-size: 1.2rem;
   line-height: 1.6;
   color: #666;
   margin-bottom: 1.5rem;
 }
 
-.contact-hero-right {
+.SMcontact-hero-right {
   flex: 1;
   background: #0A1630;
   position: relative;
   overflow: hidden;
 }
 
-.contact-hero-gradient {
+.SMcontact-hero-gradient {
   position: absolute;
   top: 0;
   left: 0;
@@ -68,20 +68,20 @@
   animation: SMgradientMove 8s ease-in-out infinite alternate;
 }
 
-.contact-content {
+.SMcontact-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 4rem 2rem;
 }
 
-.contact-info-grid {
+.SMcontact-info-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2rem;
   margin-bottom: 4rem;
 }
 
-.contact-info-card {
+.SMcontact-info-card {
   background: #fff;
   padding: 2rem;
   text-align: center;
@@ -90,53 +90,53 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.contact-info-card:hover {
+.SMcontact-info-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-.contact-icon {
+.SMcontact-icon {
   font-size: 2rem;
   color: #212a3c;
   margin-bottom: 1rem;
 }
 
-.contact-info-card h3 {
+.SMcontact-info-card h3 {
   color: #212a3c;
   margin-bottom: 0.5rem;
   font-size: 1.2rem;
 }
 
-.contact-info-card p {
+.SMcontact-info-card p {
   color: #666;
   font-size: 1rem;
 }
 
-.contact-form-container {
+.SMcontact-form-container {
   background: #fff;
   padding: 3rem;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.contact-form-container h2 {
+.SMcontact-form-container h2 {
   text-align: center;
   color: #212a3c;
   margin-bottom: 2rem;
   font-size: 2rem;
 }
 
-.contact-form {
+.SMcontact-form {
   max-width: 800px;
   margin: 0 auto;
 }
 
-.form-group {
+.SMform-group {
   margin-bottom: 1.5rem;
 }
 
-.form-group input,
-.form-group textarea {
+.SMform-group input,
+.SMform-group textarea {
   width: 100%;
   padding: 1rem;
   border: 1px solid #ddd;
@@ -146,13 +146,13 @@
   transition: border-color 0.3s ease;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.SMform-group input:focus,
+.SMform-group textarea:focus {
   outline: none;
   border-color: #212a3c;
 }
 
-.submit-btn {
+.SMsubmit-btn {
   width: 100%;
   padding: 1rem;
   background: #212a3c;
@@ -164,63 +164,63 @@
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.submit-btn:hover {
+.SMsubmit-btn:hover {
   background: #1a2942;
   transform: translateY(-2px);
 }
 
-.submit-message {
+.SMsubmit-message {
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 5px;
   text-align: center;
 }
 
-.submit-message.success {
+.SMsubmit-message.success {
   background: #d4edda;
   color: #155724;
 }
 
-.submit-message.error {
+.SMsubmit-message.error {
   background: #f8d7da;
   color: #721c24;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .contact-info-grid {
+  .SMcontact-info-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
-  .contact-hero-title {
+  .SMcontact-hero-title {
     font-size: 4rem;
   }
 
-  .contact-content {
+  .SMcontact-content {
     padding: 2rem 1rem;
   }
 
-  .contact-form-container {
+  .SMcontact-form-container {
     padding: 2rem 1.5rem;
   }
 }
 
 @media (max-width: 480px) {
-  .contact-info-grid {
+  .SMcontact-info-grid {
     grid-template-columns: 1fr;
   }
 
-  .contact-hero-title {
+  .SMcontact-hero-title {
     font-size: 3rem;
   }
 
-  .contact-hero-text p {
+  .SMcontact-hero-text p {
     font-size: 1rem;
   }
 
-  .contact-form-container {
+  .SMcontact-form-container {
     padding: 1.5rem 1rem;
   }
 }
@@ -248,23 +248,23 @@
   }
 }
 
-.contact-info-card,
-.contact-form-container {
+.SMcontact-info-card,
+.SMcontact-form-container {
   animation: fadeIn 0.6s ease-out forwards;
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  .contact-info-card,
-  .contact-form-container {
+  .SMcontact-info-card,
+  .SMcontact-form-container {
     animation: none;
   }
 
-  .contact-info-card:hover {
+  .SMcontact-info-card:hover {
     transform: none;
   }
 
-  .submit-btn:hover {
+  .SMsubmit-btn:hover {
     transform: none;
   }
 }

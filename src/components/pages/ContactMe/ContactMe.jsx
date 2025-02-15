@@ -67,57 +67,57 @@ function Contact() {
   };
 
   return (
-    <div className="contact-page">
+    <div className="SMcontact-page">
       {/* Hero Split Section */}
-      <div className="contact-hero-split">
-        <div className="contact-hero-left">
-          <div className="contact-hero-content">
-            <div className="contact-hero-title">CONTACT</div>
-            <div className="contact-hero-title">US</div>
-            <div className="contact-hero-text">
+      <div className="SMcontact-hero-split">
+        <div className="SMcontact-hero-left">
+          <div className="SMcontact-hero-content">
+            <div className="SMcontact-hero-title">CONTACT</div>
+            <div className="SMcontact-hero-title">US</div>
+            <div className="SMcontact-hero-text">
               <p>
                 Get in touch with our team for any inquiries or support. We are here to help you with all your smart home needs.
               </p>
             </div>
           </div>
         </div>
-        <div className="contact-hero-right">
-          <div className="contact-hero-gradient"></div>
+        <div className="SMcontact-hero-right">
+          <div className="SMcontact-hero-gradient"></div>
         </div>
       </div>
 
-      <div className="contact-content">
-        <div className="contact-info-grid">
-          <div className="contact-info-card">
-            <FaPhone className="contact-icon" />
+      <div className="SMcontact-content">
+        <div className="SMcontact-info-grid">
+          <div className="SMcontact-info-card">
+            <FaPhone className="SMcontact-icon" />
             <h3>Phone</h3>
             <p>+971 50 123 4567</p>
             <p>+971 4 123 4567</p>
           </div>
-          <div className="contact-info-card">
-            <FaEnvelope className="contact-icon" />
+          <div className="SMcontact-info-card">
+            <FaEnvelope className="SMcontact-icon" />
             <h3>Email</h3>
             <p>info@smartscape.ae</p>
             <p>support@smartscape.ae</p>
           </div>
-          <div className="contact-info-card">
-            <FaMapMarkerAlt className="contact-icon" />
+          <div className="SMcontact-info-card">
+            <FaMapMarkerAlt className="SMcontact-icon" />
             <h3>Location</h3>
             <p>Dubai Silicon Oasis</p>
             <p>Dubai, UAE</p>
           </div>
-          <div className="contact-info-card">
-            <FaClock className="contact-icon" />
+          <div className="SMcontact-info-card">
+            <FaClock className="SMcontact-icon" />
             <h3>Working Hours</h3>
             <p>Mon - Fri: 9:00 AM - 6:00 PM</p>
             <p>Sat: 10:00 AM - 2:00 PM</p>
           </div>
         </div>
 
-        <div className="contact-form-container">
+        <div className="SMcontact-form-container">
           <h2>Send us a Message</h2>
-          <form onSubmit={handleSubmit} className="contact-form">
-            <div className="form-group">
+          <form onSubmit={handleSubmit} className="SMcontact-form">
+            <div className="SMform-group">
               <input
                 type="text"
                 name="name"
@@ -127,7 +127,7 @@ function Contact() {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="email"
                 name="email"
@@ -137,7 +137,7 @@ function Contact() {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="tel"
                 name="phone"
@@ -146,7 +146,7 @@ function Contact() {
                 placeholder="Your Phone"
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="text"
                 name="subject"
@@ -155,7 +155,7 @@ function Contact() {
                 placeholder="Subject"
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <textarea
                 name="message"
                 value={formData.message}
@@ -176,7 +176,7 @@ function Contact() {
           </form>
         </div>
 
-        <div className="contact-map">
+        <div className="SMcontact-map">
           <iframe
             title="SmartScape Location"
             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3610.178787593566!2d55.37246931501224!3d25.185305983896973!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3e5f61c8f8f3b6ef%3A0x6f7f0937b5b38967!2sDubai%20Silicon%20Oasis!5e0!3m2!1sen!2sae!4v1647887774745!5m2!1sen!2sae"
