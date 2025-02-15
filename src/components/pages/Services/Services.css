@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
-.services-page {
+.SMservices-page {
   min-height: 100vh;
   background-color: #fff;
   font-family: 'Roboto', sans-serif;
@@ -9,7 +9,7 @@
 }
 
 /* Updated Hero Section */
-.services-hero {
+.SMservices-hero {
   display: flex;
   min-height: 100vh;
   position: relative;
@@ -17,7 +17,7 @@
   margin-top: -80px;
 }
 
-.hero-left {
+.SMhero-left {
   flex: 1;
   display: flex;
   align-items: center;
@@ -27,14 +27,14 @@
   z-index: 2;
 }
 
-.hero-content {
+.SMhero-content {
   max-width: 600px;
   padding-top: 80px;
   text-align: left;
   margin-top: 0;
 }
 
-.hero-title {
+.SMhero-title {
   font-family: 'Space Grotesk', sans-serif;
   font-size: 6rem;
   line-height: 1;
@@ -43,25 +43,25 @@
   margin-bottom: 0.5rem;
 }
 
-.hero-text {
+.SMhero-text {
   margin-top: 3rem;
 }
 
-.hero-text p {
+.SMhero-text p {
   font-size: 1.2rem;
   line-height: 1.6;
   color: #666;
   margin-bottom: 1.5rem;
 }
 
-.hero-right {
+.SMhero-right {
   flex: 1;
   background: #0A1630;
   position: relative;
   overflow: hidden;
 }
 
-.hero-gradient {
+.SMhero-gradient {
   position: absolute;
   top: 0;
   left: 0;
@@ -74,31 +74,31 @@
 }
 
 /* Common Section Styles */
-.services-section,
-.additional-features,
-.integrations-section {
+.SMservices-section,
+.SMadditional-features,
+.SMintegrations-section {
   padding: 80px 20px;
 }
 
-.services-section {
+.SMservices-section {
   background: #f8fafc;
 }
 
-.additional-features {
+.SMadditional-features {
   background: white;
 }
 
-.integrations-section {
+.SMintegrations-section {
   background: #f8fafc;
 }
 
-.section-header {
+.SMsection-header {
   text-align: center;
   max-width: 700px;
   margin: 0 auto 60px;
 }
 
-.section-header h2 {
+.SMsection-header h2 {
   font-size: 3rem;
   color: #0A1630;
   margin-bottom: 15px;
@@ -106,14 +106,14 @@
   letter-spacing: -0.5px;
 }
 
-.section-header p {
+.SMsection-header p {
   font-size: 1.2rem;
   color: #64748b;
   line-height: 1.6;
 }
 
 /* Services Grid */
-.services-grid {
+.SMservices-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
@@ -121,7 +121,7 @@
   margin: 0 auto;
 }
 
-.service-card {
+.SMservice-card {
   background: white;
   padding: 40px;
   border-radius: 20px;
@@ -131,7 +131,7 @@
   overflow: hidden;
 }
 
-.service-card::before {
+.SMservice-card::before {
   content: '';
   position: absolute;
   top: 0;
@@ -144,19 +144,19 @@
   transition: transform 0.3s ease;
 }
 
-.service-card:hover {
+.SMservice-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
 }
 
-.service-card:hover::before {
+.SMservice-card:hover::before {
   transform: scaleX(1);
 }
 
 /* Icon Styles */
-.service-icon,
-.feature-icon,
-.integration-icon {
+.SMservice-icon,
+.SMfeature-icon,
+.SMintegration-icon {
   width: 60px;
   height: 60px;
   background: #0A1630;
@@ -168,22 +168,22 @@
   transition: transform 0.3s ease;
 }
 
-.service-card:hover .service-icon,
-.feature-card:hover .feature-icon,
-.integration-card:hover .integration-icon {
+.SMservice-card:hover .SMservice-icon,
+.SMfeature-card:hover .SMfeature-icon,
+.SMintegration-card:hover .SMintegration-icon {
   transform: rotate(10deg);
 }
 
-.service-icon svg,
-.feature-icon svg,
-.integration-icon svg {
+.SMservice-icon svg,
+.SMfeature-icon svg,
+.SMintegration-icon svg {
   font-size: 26px;
   color: white;
 }
 
-.service-card h3,
-.feature-card h3,
-.integration-card h3 {
+.SMservice-card h3,
+.SMfeature-card h3,
+.SMintegration-card h3 {
   font-size: 1.5rem;
   color: #0A1630;
   margin-bottom: 15px;
@@ -191,21 +191,21 @@
   letter-spacing: -0.5px;
 }
 
-.service-card p,
-.feature-card p,
-.integration-card p {
+.SMservice-card p,
+.SMfeature-card p,
+.SMintegration-card p {
   color: #64748b;
   margin-bottom: 25px;
   line-height: 1.6;
 }
 
-.service-card ul {
+.SMservice-card ul {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.service-card ul li {
+.SMservice-card ul li {
   color: #475569;
   margin-bottom: 12px;
   padding-left: 24px;
@@ -214,20 +214,20 @@
   transition: transform 0.3s ease;
 }
 
-.service-card ul li::before {
+.SMservice-card ul li::before {
   content: "→";
   position: absolute;
   left: 0;
   color: #0A1630;
 }
 
-.service-card:hover ul li {
+.SMservice-card:hover ul li {
   transform: translateX(5px);
 }
 
 /* Features & Integrations Grid */
-.features-grid,
-.integrations-grid {
+.SMfeatures-grid,
+.SMintegrations-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
@@ -235,8 +235,8 @@
   margin: 0 auto;
 }
 
-.feature-card,
-.integration-card {
+.SMfeature-card,
+.SMintegration-card {
   background: white;
   padding: 30px;
   border-radius: 20px;
@@ -245,14 +245,14 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-.feature-card:hover,
-.integration-card:hover {
+.SMfeature-card:hover,
+.SMintegration-card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
 }
 
 /* Stats Section */
-.services-stats {
+.SMservices-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 30px;
@@ -262,7 +262,7 @@
   background: white;
 }
 
-.stat-item {
+.SMstat-item {
   text-align: center;
   padding: 30px;
   background: #f8fafc;
@@ -270,50 +270,50 @@
   transition: transform 0.3s ease;
 }
 
-.stat-item:hover {
+.SMstat-item:hover {
   transform: translateY(-5px);
 }
 
-.stat-item h3 {
+.SMstat-item h3 {
   font-size: 2.5rem;
   color: #0A1630;
   margin-bottom: 10px;
   font-weight: 700;
 }
 
-.stat-item p {
+.SMstat-item p {
   color: #64748b;
   font-size: 1.1rem;
   font-weight: 500;
 }
 
 /* Register Section */
-.register-section {
+.SMregister-section {
   background: linear-gradient(135deg, #0A1630 0%, #1a2942 100%);
   padding: 100px 20px;
   text-align: center;
   color: white;
 }
 
-.register-content {
+.SMregister-content {
   max-width: 700px;
   margin: 0 auto;
 }
 
-.register-content h2 {
+.SMregister-content h2 {
   font-size: 3rem;
   margin-bottom: 20px;
   font-weight: 700;
 }
 
-.register-content p {
+.SMregister-content p {
   font-size: 1.2rem;
   margin-bottom: 40px;
   opacity: 0.9;
 }
 
 /* Services Register Button */
-.services-register-button button {
+.SMservices-register-button button {
   outline: none;
   cursor: pointer;
   border: none;
@@ -331,17 +331,17 @@
   color: #000000;
 }
 
-.services-register-button button span {
+.SMservices-register-button button span {
   position: relative;
   z-index: 10;
   transition: color 0.4s;
 }
 
-.services-register-button button:hover span {
+.SMservices-register-button button:hover span {
   color: #fffafa;
 }
 
-.services-register-button button::before {
+.SMservices-register-button button::before {
   content: "";
   position: absolute;
   background: #fffafa;
@@ -353,7 +353,7 @@
   transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
 }
 
-.services-register-button button:hover::before {
+.SMservices-register-button button:hover::before {
   transform: translate3d(100%, 0, 0);
 }
 
@@ -371,72 +371,72 @@
 
 /* Responsive Design */
 @media screen and (max-width: 1200px) {
-  .hero-title {
+  .SMhero-title {
     font-size: 5rem;
   }
 
-  .services-grid,
-  .features-grid,
-  .integrations-grid,
-  .services-stats {
+  .SMservices-grid,
+  .SMfeatures-grid,
+  .SMintegrations-grid,
+  .SMservices-stats {
     grid-template-columns: repeat(2, 1fr);
     padding: 0 20px;
   }
 }
 
 @media screen and (max-width: 768px) {
-  .services-hero {
+  .SMservices-hero {
     flex-direction: column;
   }
 
-  .hero-left {
+  .SMhero-left {
     padding: 3rem 2rem;
   }
 
-  .hero-right {
+  .SMhero-right {
     min-height: 50vh;
   }
 
-  .hero-title {
+  .SMhero-title {
     font-size: 4rem;
   }
 
-  .services-grid,
-  .features-grid,
-  .integrations-grid,
-  .services-stats {
+  .SMservices-grid,
+  .SMfeatures-grid,
+  .SMintegrations-grid,
+  .SMservices-stats {
     grid-template-columns: 1fr;
   }
 
-  .section-header h2,
-  .register-content h2 {
+  .SMsection-header h2,
+  .SMregister-content h2 {
     font-size: 2.5rem;
   }
 
-  .service-card,
-  .feature-card,
-  .integration-card {
+  .SMservice-card,
+  .SMfeature-card,
+  .SMintegration-card {
     padding: 30px;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .hero-title {
+  .SMhero-title {
     font-size: 3rem;
   }
 
-  .hero-text p {
+  .SMhero-text p {
     font-size: 1.1rem;
   }
 
-  .section-header h2,
-  .register-content h2 {
+  .SMsection-header h2,
+  .SMregister-content h2 {
     font-size: 2rem;
   }
 
-  .service-card h3,
-  .feature-card h3,
-  .integration-card h3 {
+  .SMservice-card h3,
+  .SMfeature-card h3,
+  .SMintegration-card h3 {
     font-size: 1.3rem;
   }
 }

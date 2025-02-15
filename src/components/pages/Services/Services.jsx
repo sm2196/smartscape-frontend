@@ -138,14 +138,14 @@ function Services() {
   ];
 
   return (
-    <div className="services-page">
+    <div className="SMservices-page">
       {/* Updated Hero Section */}
-      <div className="services-hero">
-        <div className="hero-left">
-          <div className="hero-content">
-            <div className="hero-title">OUR</div>
-            <div className="hero-title">SERVICES</div>
-            <div className="hero-text">
+      <div className="SMservices-hero">
+        <div className="SMhero-left">
+          <div className="SMhero-content">
+            <div className="SMhero-title">OUR</div>
+            <div className="SMhero-title">SERVICES</div>
+            <div className="SMhero-text">
               <p>
                 Experience the future of smart living with complete control at your fingertips.
                 Our comprehensive suite of services transforms your home into an intelligent,
@@ -154,20 +154,20 @@ function Services() {
             </div>
           </div>
         </div>
-        <div className="hero-right">
-          <div className="hero-gradient"></div>
+        <div className="SMhero-right">
+          <div className="SMhero-gradient"></div>
         </div>
       </div>
 
-      <div className="services-section">
-        <div className="section-header">
+      <div className="SMservices-section">
+        <div className="SMsection-header">
           <h2>Our Core Services</h2>
           <p>Discover how we're revolutionizing home automation</p>
         </div>
-        <div className="services-grid">
+        <div className="SMservices-grid">
           {services.map((service, index) => (
-            <div key={index} className="service-card">
-              <div className="service-icon">
+            <div key={index} className="SMservice-card">
+              <div className="SMservice-icon">
                 {service.icon}
               </div>
               <h3>{service.title}</h3>
@@ -182,15 +182,15 @@ function Services() {
         </div>
       </div>
 
-      <div className="additional-features">
-        <div className="section-header">
+      <div className="SMadditional-features">
+        <div className="SMsection-header">
           <h2>Additional Features</h2>
           <p>More ways to enhance your smart home experience</p>
         </div>
-        <div className="features-grid">
+        <div className="SMfeatures-grid">
           {additionalFeatures.map((feature, index) => (
-            <div key={index} className="feature-card">
-              <div className="feature-icon">
+            <div key={index} className="SMfeature-card">
+              <div className="SMfeature-icon">
                 {feature.icon}
               </div>
               <h3>{feature.title}</h3>
@@ -200,15 +200,15 @@ function Services() {
         </div>
       </div>
 
-      <div className="integrations-section">
-        <div className="section-header">
+      <div className="SMintegrations-section">
+        <div className="SMsection-header">
           <h2>Future Integrations</h2>
           <p>Connect with your favorite smart home platforms</p>
         </div>
-        <div className="integrations-grid">
+        <div className="SMintegrations-grid">
           {integrations.map((integration, index) => (
-            <div key={index} className="integration-card">
-              <div className="integration-icon">
+            <div key={index} className="SMintegration-card">
+              <div className="SMintegration-icon">
                 {integration.icon}
               </div>
               <h3>{integration.title}</h3>
@@ -218,30 +218,30 @@ function Services() {
         </div>
       </div>
 
-      <div className="services-stats">
-        <div className="stat-item">
+      <div className="SMservices-stats">
+        <div className="SMstat-item">
           <h3>1000+</h3>
           <p>Happy Customers</p>
         </div>
-        <div className="stat-item">
+        <div className="SMstat-item">
           <h3>24/7</h3>
           <p>Support Available</p>
         </div>
-        <div className="stat-item">
+        <div className="SMstat-item">
           <h3>30%</h3>
           <p>Energy Savings</p>
         </div>
-        <div className="stat-item">
+        <div className="SMstat-item">
           <h3>100%</h3>
           <p>Satisfaction Rate</p>
         </div>
       </div>
 
-      <div className="register-section">
-        <div className="register-content">
+      <div className="SMregister-section">
+        <div className="SMregister-content">
           <h2>Ready to Transform Your Home?</h2>
           <p>Join thousands of satisfied homeowners in the smart living revolution</p>
-          <div className="services-register-button">
+          <div className="SMservices-register-button">
             <button><span>Register Today</span></button>
           </div>
         </div>
