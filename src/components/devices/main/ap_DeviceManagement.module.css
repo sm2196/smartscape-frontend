@@ -1,7 +1,7 @@
 /* DeviceManagement.module.css */
 
 /* General container styles */
-.deviceManagementContainer {
+.ap_deviceManagementContainer {
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -9,7 +9,7 @@
 }
 
 /* Section styles */
-.section {
+.ap_section {
   background-color: #f1f1f1;
   border-radius: 8px;
   padding: 16px;
@@ -17,7 +17,7 @@
 }
 
 /* Section Header styles */
-.sectionHeader {
+.ap_sectionHeader {
   display: flex;
   justify-content: space-between;
   /* Ensures the title and buttons are on the same line */
@@ -29,14 +29,14 @@
 }
 
 /* Button Group for Add/Remove device buttons */
-.buttonGroup {
+.ap_buttonGroup {
   display: flex;
   gap: 16px;
   /* Increased gap for better separation between buttons */
 }
 
 /* Enhanced individual button styles */
-.buttonGroup .buttonItem {
+.ap_buttonGroup .ap_buttonItem {
   background-color: #152447;
   /* Green background */
   color: white;
@@ -56,7 +56,7 @@
 }
 
 /* Hover effects */
-.buttonGroup .buttonItem:hover {
+.ap_buttonGroup .ap_buttonItem:hover {
   background-color: #D2DCF5;
   color: #152447;
   /* Darker green on hover */
@@ -65,14 +65,14 @@
 }
 
 /* Focus effect for accessibility */
-.buttonGroup .buttonItem:focus {
+.ap_buttonGroup .ap_buttonItem:focus {
   outline: none;
   box-shadow: 0 0 0 4px rgba(77, 72, 146, 0.3);
   /* Light green outline on focus */
 }
 
 /* Grid Layout for Button List (3 tiles per row) */
-.buttonList {
+.ap_buttonList {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   /* Fixed 3 tiles per row */
@@ -81,7 +81,7 @@
 }
 
 /* Individual Button Item styles */
-.buttonItem {
+.ap_buttonItem {
   background-color: #D2DCF5;
   padding: 16px;
   /* Increased padding for better button size */
@@ -101,14 +101,14 @@
   /* Darker text color for contrast */
 }
 
-.buttonItem:hover {
+.ap_buttonItem:hover {
   background-color: #e0e0e0;
   transform: scale(1.05);
   /* Slightly enlarge on hover */
 }
 
 /* Chevron icon style */
-.chevronIcon {
+.ap_chevronIcon {
   width: 14px;
   height: 14px;
   /* Smaller chevron icon */
@@ -117,7 +117,7 @@
 }
 
 /* Popup content styling */
-.popupContent {
+.ap_popupContent {
   background-color: white;
   padding: 20px;
   border-radius: 8px;
@@ -128,13 +128,13 @@
 }
 
 /* If you want to add custom close button styling */
-.popupContent button {
+.ap_popupContent button {
   margin-top: 10px;
 }
 
 /* Responsive Styles for button group */
 @media (min-width: 768px) {
-  .buttonGroup {
+  .ap_buttonGroup {
     gap: 16px;
   }
 }

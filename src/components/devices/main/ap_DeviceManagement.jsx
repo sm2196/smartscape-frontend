@@ -6,12 +6,12 @@ import Popup from 'reactjs-popup'; // Import the Popup component
 
 const DeviceManagement = () => {
   return (
-    <div className={styles.deviceManagementContainer}>
+    <div className={styles.ap_deviceManagementContainer}>
 
       {/* Rooms Section */}
-      <div className={styles.section}>
-        <h2 className={styles.sectionHeader}>Rooms</h2>
-        <div className={styles.buttonList}>
+      <div className={styles.ap_section}>
+        <h2 className={styles.ap_sectionHeader}>Rooms</h2>
+        <div className={styles.ap_buttonList}>
           {[
             'Hall',
             'Dining room',
@@ -24,16 +24,16 @@ const DeviceManagement = () => {
             <Popup
               key={room}
               trigger={
-                <Button variant="ghost" className={styles.buttonItem}>
+                <Button variant="ghost" className={styles.ap_buttonItem}>
                   {room}
-                  <ChevronRight className={styles.chevronIcon} />
+                  <ChevronRight className={styles.ap_chevronIcon} />
                 </Button>
               }
               modal
               closeOnDocumentClick
             >
               {(close) => (
-                <div className={styles.popupContent}>
+                <div className={styles.ap_popupContent}>
                   <h2>{room}</h2>
                   <p>Here you can add more details about the {room}.</p>
                   <Button onClick={close}>Close</Button>
@@ -46,14 +46,14 @@ const DeviceManagement = () => {
 
       {/* Devices Section */}
       <div className={styles.section}>
-        <div className={styles.sectionHeader}>
+        <div className={styles.ap_sectionHeader}>
           <h2>Devices</h2>
-          <div className={styles.buttonGroup}>
-            <Button className={styles.buttonItem}>Add device</Button>
-            <Button className={styles.buttonItem}>Remove device</Button>
+          <div className={styles.ap_buttonGroup}>
+            <Button className={styles.ap_buttonItem}>Add device</Button>
+            <Button className={styles.ap_buttonItem}>Remove device</Button>
           </div>
         </div>
-        <div className={styles.buttonList}>
+        <div className={styles.ap_buttonList}>
           {[
             'Bluetooth configuration',
             'Choose a room',
@@ -65,16 +65,16 @@ const DeviceManagement = () => {
             <Popup
               key={item}
               trigger={
-                <Button variant="ghost" className={styles.buttonItem}>
+                <Button variant="ghost" className={styles.ap_buttonItem}>
                   {item}
-                  <ChevronRight className={styles.chevronIcon} />
+                  <ChevronRight className={styles.ap_chevronIcon} />
                 </Button>
               }
               modal
               closeOnDocumentClick
             >
               {(close) => (
-                <div className={styles.popupContent}>
+                <div className={styles.ap_popupContent}>
                   <h2>{item}</h2>
                   <p>Details about {item} can be added here.</p>
                   <Button onClick={close}>Close</Button>
