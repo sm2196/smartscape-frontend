@@ -116,6 +116,7 @@
   cursor: pointer;
   color: #212a3c;
   margin-left: 1rem;
+  margin-right: 1rem; /* Adjusted margin to center the icon */
 }
 
 @media (max-width: 1024px) {
