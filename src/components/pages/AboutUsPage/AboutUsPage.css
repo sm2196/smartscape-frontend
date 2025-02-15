@@ -596,7 +596,13 @@
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .SMhero-gradient,
+  .SMmission-image img,
+  .SMvision-image img,
+  .SMmember-overlay,
+  .SMmember-social a,
+  .SMaboutus-grid-item,
+  .SMreveal {
     animation: none !important;
     transition: none !important;
   }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import "./Navbar.css";
+import "./SMNavbar.css";
 import { FaBars, FaTimes } from "react-icons/fa";
 import SMIcons from "./SMNavIcons";
 
