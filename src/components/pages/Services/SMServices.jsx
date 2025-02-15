@@ -1,5 +1,5 @@
 import { Parallax } from 'react-scroll-parallax';
-import './Services.css';
+import './SMServices.css';
 import {
   FaMobileAlt,
   FaShieldAlt,

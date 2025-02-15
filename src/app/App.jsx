@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
 import SMNavbar from '../components/layout/Navbar/SMNavbar';
-import Home from '../components/pages/Home/Home';
+import Home from '../components/pages/Home/SMHomePage';
 import About from '../components/pages/AboutUsPage/SMAboutUsPage';
-import Services from '../components/pages/Services/Services';
+import Services from '../components/pages/Services/SMServices';
 import ContactMe from '../components/pages/ContactMe/ContactMe';
 import './App.css';
 
