@@ -1,18 +1,12 @@
 @import url("https://fonts.googleapis.com/css2?family=Bree+Serif&family=Fuggles&family=Roboto+Condensed:wght@700&family=Satisfy&display=swap");
 
-* {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-  font-family: "Bree Serif", serif;
+.SMbody {
+  overflow-x: hidden;
+  font-family: "Roboto", sans-serif;
   font-style: normal;
 }
 
-body {
-  overflow-x: hidden;
-}
-
-a {
+.SMa {
   text-decoration: none;
 }
 
@@ -87,7 +81,7 @@ a {
   position: relative;
 }
 
-.SMcontainer ul li a {
+.SMcontainer ul li .SMa {
   color: #212a3c;
   font-size: 1rem;
   padding: 0.7rem 1rem;
@@ -99,13 +93,13 @@ a {
   overflow: hidden;
 }
 
-.SMcontainer ul li a:hover {
+.SMcontainer ul li .SMa:hover {
   background-color: #d2dcf5;
   color: #000;
   transform: translateY(-2px);
 }
 
-.SMcontainer ul li a.SMactive {
+.SMcontainer ul li .SMactive {
   background-color: #c4c4c4;
   color: #000;
 }
@@ -151,7 +145,7 @@ a {
     margin: 0.5rem 0;
   }
 
-  .SMcontainer ul li a {
+  .SMcontainer ul li .SMa {
     width: 100%;
     text-align: center;
   }
@@ -175,7 +169,7 @@ a {
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
-  * {
+  .SMbody, .SMheader, .SMnavbar-logo, .SMnavbar-logo-image, .SMcontainer ul li a {
     animation: none !important;
     transition: none !important;
   }

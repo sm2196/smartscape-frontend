@@ -42,7 +42,7 @@ function SMNavbar() {
             <li>
               <Link
                 to="/"
-                className={location.pathname === "/" ? "SMactive" : ""}
+                className={`SMa ${location.pathname === "/" ? "SMactive" : ""}`}
                 onClick={closeMobileMenu}
               >
                 Home
@@ -51,7 +51,7 @@ function SMNavbar() {
             <li>
               <Link
                 to="/about"
-                className={location.pathname === "/about" ? "SMactive" : ""}
+                className={`SMa ${location.pathname === "/about" ? "SMactive" : ""}`}
                 onClick={closeMobileMenu}
               >
                 About
@@ -60,7 +60,7 @@ function SMNavbar() {
             <li>
               <Link
                 to="/services"
-                className={location.pathname === "/services" ? "SMactive" : ""}
+                className={`SMa ${location.pathname === "/services" ? "SMactive" : ""}`}
                 onClick={closeMobileMenu}
               >
                 Services
@@ -69,7 +69,7 @@ function SMNavbar() {
             <li>
               <Link
                 to="/contact"
-                className={location.pathname === "/contact" ? "SMactive" : ""}
+                className={`SMa ${location.pathname === "/contact" ? "SMactive" : ""}`}
                 onClick={closeMobileMenu}
               >
                 Contact Me
@@ -78,7 +78,7 @@ function SMNavbar() {
             <li>
               <Link
                 to="/faq"
-                className={location.pathname === "/faq" ? "SMactive" : ""}
+                className={`SMa ${location.pathname === "/faq" ? "SMactive" : ""}`}
                 onClick={closeMobileMenu}
               >
                 FAQ
