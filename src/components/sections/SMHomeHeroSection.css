@@ -61,15 +61,47 @@
   display: block;
 }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translate3d(-50%, -30%, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(-50%, -50%, 0);
-  }
+.SM-joinButton-us-wrapper {
+  margin-top: 2rem;
+  animation: fadeInUp 1.5s ease-out forwards;
+}
+
+.SM-joinButton-us-wrapper button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  color: #fff;
+  background: #0A1630;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.SM-joinButton-us-wrapper button:hover {
+  background: #1a2942;
+  transform: translateY(-2px);
+}
+
+.SM-joinButton-us-wrapper button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SM-joinButton-us-wrapper button::before {
+  content: "";
+  position: absolute;
+  background: #fffafa;
+  width: 120%;
+  height: 100%;
+  top: 0;
+  left: -10%;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.SM-joinButton-us-wrapper button:hover::before {
+  transform: translate3d(100%, 0, 0);
 }
 
 /* Responsive Design */
@@ -89,11 +121,29 @@
   .SMMainPic-container > h1 {
     font-size: 2.5rem;
   }
+
+  .SM-joinButton-us-wrapper {
+    margin-top: 1.5rem;
+  }
+
+  .SM-joinButton-us-wrapper button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+  }
 }
 
 @media screen and (max-width: 480px) {
   .SMMainPic-container > h1 {
     font-size: 2rem;
+  }
+
+  .SM-joinButton-us-wrapper {
+    margin-top: 1rem;
+  }
+
+  .SM-joinButton-us-wrapper button {
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -102,5 +152,20 @@
   .SMMainPic-container > h1 {
     animation: none;
     opacity: 1;
+  }
+
+  .SM-joinButton-us-wrapper {
+    animation: none;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translate3d(-50%, -30%, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0);
   }
 }
