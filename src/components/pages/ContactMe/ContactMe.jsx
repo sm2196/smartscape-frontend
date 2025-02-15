@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Parallax } from 'react-scroll-parallax';
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
 import './ContactMe.css';
 
@@ -69,12 +68,23 @@ function Contact() {
 
   return (
     <div className="contact-page">
-      <Parallax translateY={[-20, 20]} className="contact-hero">
-        <div className="contact-hero-content">
-          <h1>Contact Us</h1>
-          <p>Get in touch with our team for any inquiries or support</p>
+      {/* Hero Split Section */}
+      <div className="contact-hero-split">
+        <div className="contact-hero-left">
+          <div className="contact-hero-content">
+            <div className="contact-hero-title">CONTACT</div>
+            <div className="contact-hero-title">US</div>
+            <div className="contact-hero-text">
+              <p>
+                Get in touch with our team for any inquiries or support. We are here to help you with all your smart home needs.
+              </p>
+            </div>
+          </div>
         </div>
-      </Parallax>
+        <div className="contact-hero-right">
+          <div className="contact-hero-gradient"></div>
+        </div>
+      </div>
 
       <div className="contact-content">
         <div className="contact-info-grid">
