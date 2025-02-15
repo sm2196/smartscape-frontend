@@ -230,18 +230,18 @@ const AmbassadorForm = () => {
   };
 
   return (
-    <div className="ambassador-section">
-      <Parallax translateY={[-20, 20]} className="ambassador-form-wrapper">
-        <div className="ambassador-form-container">
-          <form className="ambassador-form" onSubmit={handleSubmit}>
-            <h2 className="ambassador-heading">
+    <div className="SMambassador-section">
+      <Parallax translateY={[-20, 20]} className="SMambassador-form-wrapper">
+        <div className="SMambassador-form-container">
+          <form className="SMambassador-form" onSubmit={handleSubmit}>
+            <h2 className="SMambassador-heading">
               Become a SmartScape Ambassador
-              <div className="ambassador-heading-underline"></div>
+              <div className="SMambassador-heading-underline"></div>
             </h2>
-            <p className="ambassador-subtitle">
+            <p className="SMambassador-subtitle">
               Join our community of smart home enthusiasts and help others transform their living spaces
             </p>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="text"
                 name="fullName"
@@ -251,7 +251,7 @@ const AmbassadorForm = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="email"
                 name="email"
@@ -261,7 +261,7 @@ const AmbassadorForm = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="tel"
                 name="phone"
@@ -271,7 +271,7 @@ const AmbassadorForm = () => {
                 required
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <input
                 type="text"
                 name="socialMedia"
@@ -280,7 +280,7 @@ const AmbassadorForm = () => {
                 placeholder="Social Media Handles"
               />
             </div>
-            <div className="form-group">
+            <div className="SMform-group">
               <textarea
                 name="about"
                 value={formData.about}
