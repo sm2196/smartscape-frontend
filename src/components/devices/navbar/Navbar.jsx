@@ -25,7 +25,7 @@ const navigation = [
   { name: "Dashboard", href: "#", icon: MdArrowBackIosNew },
 ]
 
-export default function Navbar() {
+export default function SettingsNavbar() {
   const pathname = usePathname()
   const [time, setTime] = useState(new Date())
   const [isMenuOpen, setIsMenuOpen] = useState(false)
