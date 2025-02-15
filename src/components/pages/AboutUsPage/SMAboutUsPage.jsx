@@ -204,7 +204,7 @@ function AboutUsPage() {
                   </div>
                 </div>
               </div>
-              <h4>John Doe</h4>
+              <h4>Swapna Manikandan</h4>
               <p>Lead Developer</p>
             </div>
             <div className="SMteam-member reveal">
@@ -221,7 +221,109 @@ function AboutUsPage() {
                   </div>
                 </div>
               </div>
-              <h4>Jane Smith</h4>
+              <h4>Rushaan Sahrush</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Abhijith Pattali</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Hamza Khan</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Karan Chawla</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Sneha Vijayan</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Hari Govind</h4>
+              <p>Lead Developer</p>
+            </div>
+            <div className="SMteam-member reveal">
+              <div className="SMmember-image">
+                <img src="/humanicon.jpg" alt="Team Member" />
+                <div className="SMmember-overlay">
+                  <div className="SMmember-social">
+                    <a href="#">
+                      <FaLinkedinIn />
+                    </a>
+                    <a href="#">
+                      <FaTwitter />
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <h4>Salim</h4>
               <p>UX Designer</p>
             </div>
             <div className="SMteam-member reveal">
@@ -238,7 +340,7 @@ function AboutUsPage() {
                   </div>
                 </div>
               </div>
-              <h4>Mike Johnson</h4>
+              <h4>Hamza Food</h4>
               <p>IoT Specialist</p>
             </div>
           </div>
