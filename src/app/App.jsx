@@ -6,12 +6,14 @@ import Home from '../components/pages/Home/SMHomePage';
 import About from '../components/pages/AboutUsPage/SMAboutUsPage';
 import Services from '../components/pages/Services/SMServices';
 import ContactMe from '../components/pages/ContactMe/SMContactMe';
+import ScrollToTop from '../components/ScrollToTop';
 import './App.css';
 
 function App() {
   return (
     <ParallaxProvider>
       <Router>
+        <ScrollToTop />
         <SMNavbar />
         <Routes>
           <Route path="/" element={<Home />} />
