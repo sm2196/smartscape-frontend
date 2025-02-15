@@ -13,8 +13,8 @@ import {
 } from "react-icons/md"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { WeatherWidget } from "./Weather"
-import styles from "./Navbar.module.css"
+import { WeatherWidget } from "./ap_Weather"
+import styles from "./ap_Navbar.module.css"
 
 const navigation = [
   { name: "Profiles", href: "#", icon: MdPerson },

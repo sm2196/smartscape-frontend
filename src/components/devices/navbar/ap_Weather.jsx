@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { MdWbSunny, MdCloud, MdGrain, MdAcUnit, MdThunderstorm, MdFilterDrama, MdLocationOn } from "react-icons/md";
-import styles from "./Weather.module.css"
+import styles from "./ap_Weather.module.css"
 
 const mockWeather = {
   temp: 19,

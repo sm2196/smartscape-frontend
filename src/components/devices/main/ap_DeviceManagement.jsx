@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronRight } from 'lucide-react';
-import Button from '../additional/Button'; // Make sure this is the correct path
-import styles from './DeviceManagement.module.css'; // Import the CSS module
+import Button from '../additional/ap_button'; // Make sure this is the correct path
+import styles from './ap_DeviceManagement.module.css'; // Import the CSS module
 import Popup from 'reactjs-popup'; // Import the Popup component
 
 const DeviceManagement = () => {
