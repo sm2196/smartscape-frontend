@@ -5,7 +5,7 @@ import SMNavbar from '../components/layout/Navbar/SMNavbar';
 import Home from '../components/pages/Home/SMHomePage';
 import About from '../components/pages/AboutUsPage/SMAboutUsPage';
 import Services from '../components/pages/Services/SMServices';
-import ContactMe from '../components/pages/ContactMe/ContactMe';
+import ContactMe from '../components/pages/ContactMe/SMContactMe';
 import './App.css';
 
 function App() {
