@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Parallax } from "react-scroll-parallax";
+import { ParallaxProvider, Parallax } from "react-scroll-parallax";
+import { useNavigate } from 'react-router-dom';
 import "../../../app/App.css";
 import "../../sections/SMHomeHeroSection.css";
 import "../../sections/SMAboutUsHome.css";
@@ -34,9 +35,15 @@ const MainPicSection = () => {
 };
 
 const AboutUs = () => {
+  const navigate = useNavigate();
+
+  const handleReadMoreClick = () => {
+    navigate('/about');
+  };
+
   return (
     <div className="SM-about-us-container">
-      <Parallax translateY={[-15, 15]} className="SM-about-us-content">
+      <Parallax translateY={[-30, 30]} className="SM-about-us-content">
         <div className="SM-about-us-image">
           <img src="/bluebg1.jpg" alt="Smart Home" />
         </div>
@@ -47,7 +54,7 @@ const AboutUs = () => {
             At SmartScape, we're revolutionizing the way you live by transforming your home into a smarter, more sustainable space. From monitoring your energy and water usage to enhancing security and reducing environmental impact, we empower you to take control of your home effortlessly.
           </p>
           <div className="SM-AboutButton-us-wrapper">
-            <button><span>Read More</span></button>
+            <button onClick={handleReadMoreClick}><span>Read More</span></button>
           </div>
         </div>
       </Parallax>
@@ -420,14 +427,16 @@ const SMfooter = () => {
 
 function Home() {
   return (
-    <div className="home-container">
-      <MainPicSection />
-      <AboutUs />
-      <HowItWorks />
-      <Cards />
-      <AmbassadorForm />
-      <SMfooter />
-    </div>
+    <ParallaxProvider>
+      <div className="home-container">
+        <MainPicSection />
+        <AboutUs />
+        <HowItWorks />
+        <Cards />
+        <AmbassadorForm />
+        <SMfooter />
+      </div>
+    </ParallaxProvider>
   );
 }
 
