@@ -260,7 +260,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/KaranPic.jpg" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -311,7 +311,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/Salimpic.jpg" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
