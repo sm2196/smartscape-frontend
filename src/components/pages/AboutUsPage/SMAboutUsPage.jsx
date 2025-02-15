@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Parallax } from "react-scroll-parallax";
-import "./AboutUsPage.css";
+import "./SMAboutUsPage.css";
 import "../../layout/Footer/SMFooter.css";
 import { Link } from "react-router-dom";
 import {

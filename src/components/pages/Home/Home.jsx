@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Parallax } from "react-scroll-parallax";
 import "../../../app/App.css";
 import "./Home.css";
-import "../../sections/AboutUsHome.css";
+import "../../sections/SMAboutUsHome.css";
 import "../../sections/HowItWorks.css";
 import "../../sections/Parallax.css";
 import { Link } from 'react-router-dom';
