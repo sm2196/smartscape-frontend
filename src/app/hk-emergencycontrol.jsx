@@ -17,7 +17,7 @@ export default function EmergencyControl() {
   }, [])
 
   return (
-    <>
+    <div className={styles.container}>
       <Sidebar />
       <div className={styles.mainContent}>
         <h1 className={styles.emergencyTitle}>Emergency Control Center</h1>
@@ -58,9 +58,11 @@ export default function EmergencyControl() {
 
         <EmergencyButtons />
       </div>
-    </>
+    </div>
   )
 }
+
+
 
 
 
