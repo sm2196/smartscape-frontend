@@ -1,0 +1,61 @@
+.hkbutton {
+  padding: 0.75rem 1.5rem; /* Reduced padding */
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 12rem; /* Reduced from 16rem */
+  color: #fffafa;
+  background-color: #0a1630;
+  border: 1px solid #d2dcf5;
+  box-shadow: 0 2px 4px rgba(10, 22, 48, 0.1);
+  font-size: 0.875rem; /* Reduced from 1rem */
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.hkbutton:hover {
+  background-color: #152447;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(10, 22, 48, 0.2);
+}
+
+.hkemergencyButton {
+  background-color: #0a1630;
+}
+
+.hkemergencyButton:hover {
+  background-color: #152447;
+}
+
+.hkemergencyButtonActive {
+  background-color: #c4c4c4;
+  color: #0a1630;
+}
+
+.hkemergencyButtonActive:hover {
+  background-color: #a3a3a3;
+}
+
+.hkcontactButton {
+  background-color: #152447;
+}
+
+.hkcontactButton:hover {
+  background-color: #1a2e5c;
+}
+
+.hkbuttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  max-width: 1000px; /* Match cctvGrid max-width */
+}
+
+
+
+
+
+
+
