@@ -2,17 +2,20 @@
 
 /* General container styles */
 .ap_deviceManagementContainer {
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   gap: 16px;
   /* Gap between sections */
 }
 
+
+
 /* Section styles */
 .ap_section {
-  background-color: #f1f1f1;
   border-radius: 8px;
-  padding: 16px;
+  padding: 8px;
   flex: 1;
 }
 
@@ -22,8 +25,8 @@
   justify-content: space-between;
   /* Ensures the title and buttons are on the same line */
   align-items: center;
-  margin-bottom: 12px;
-  font-size: 1.25rem;
+  margin-bottom: 5px;
+  /* font-size: 1.25rem; */
   font-weight: 600;
   color: #333;
 }
@@ -31,8 +34,8 @@
 /* Button Group for Add/Remove device buttons */
 .ap_buttonGroup {
   display: flex;
-  gap: 16px;
-  /* Increased gap for better separation between buttons */
+  justify-content: center;
+  /* centers the buttons horizontally */
 }
 
 /* Enhanced individual button styles */
@@ -41,6 +44,8 @@
   /* Green background */
   color: white;
   /* White text */
+  width: 200px;
+  /* Adjusted width */
   padding: 12px 24px;
   /* Larger padding for better button size */
   border-radius: 30px;
@@ -50,9 +55,16 @@
   font-weight: 600;
   /* Bold text for better emphasis */
   text-align: center;
+  /* Center text */
   transition: all 0.3s ease;
   /* Smooth transition for background color and scaling */
   cursor: pointer;
+  /* Change cursor to pointer on hover */
+  margin: 0 30px;
+  /* Added margin for better spacing */
+  margin-top: 30px;
+  /* Added margin-top for better spacing */
+
 }
 
 /* Hover effects */
@@ -133,8 +145,18 @@
 }
 
 /* Responsive Styles for button group */
-@media (min-width: 768px) {
-  .ap_buttonGroup {
-    gap: 16px;
+@media (max-width: 480px) {
+  .ap_buttonGroup .ap_buttonItem {
+    font-size: 0.85rem;
+    width: 100%;
+    margin: 0 5px;
+    margin-top: 10px;
   }
+  .ap_buttonItem {
+    max-width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 0.75rem
+  }
+
 }
