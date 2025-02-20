@@ -231,12 +231,12 @@
   font-size: 1rem;
 }
 
-.SM-FooterButton-wrapper button:hover {
+.SMfooter-button-wrapper button:hover {
   background: white;
   color: #0A1630;
 }
 
-.SM-FooterButton-wrapper button {
+.SMfooter-button-wrapper button {
   outline: none;
   cursor: pointer;
   border: none;
@@ -252,6 +252,7 @@
   background: #ffffff;
   border: 1px solid #f0f3fb;
   min-width: 150px;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .SMfooter-links {
