@@ -137,40 +137,15 @@ function SMIcons() {
 
           {isProfileOpen && (
             <div className="SMprofile-dropdown">
-              <div className="SMprofile-header">
-                <div className="SMprofile-info">
-                  <img
-                    src="/default-avatar.png"
-                    alt="Profile"
-                    className="SMprofile-avatar"
-                    onError={(e) => {
-                      e.target.src = '/cat.jpg';
-                    }}
-                  />
-                  <div className="SMprofile-details">
-                    <h4>User Name</h4>
-                    <p>user@example.com</p>
-                  </div>
-                </div>
-              </div>
-
               <div className="SMprofile-menu">
-                <Link to="/profile" className="SMdropdown-item">
+                <Link to="/login" className="SMdropdown-item">
                   <FaRegUser className="SMdropdown-icon" />
-                  <span>Your Profile</span>
+                  <span>Login</span>
                 </Link>
-                <Link to="/settings" className="SMdropdown-item">
+                <Link to="/signup" className="SMdropdown-item">
                   <IoSettingsOutline className="SMdropdown-icon" />
-                  <span>Settings</span>
+                  <span>Sign Up</span>
                 </Link>
-                <div className="SMdropdown-divider"></div>
-                <button
-                  className="SMdropdown-item SMlogout-btn"
-                  onClick={() => console.log('Logout clicked')}
-                >
-                  <MdLogout className="SMdropdown-icon" />
-                  <span>Log Out</span>
-                </button>
               </div>
             </div>
           )}
