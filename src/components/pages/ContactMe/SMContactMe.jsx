@@ -1,27 +1,29 @@
-import React, { useState } from 'react';
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
-import './SMContactMe.css';
+import React, { useState } from "react";
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaFacebookF, FaInstagram, FaYoutube, FaTwitter, FaLinkedinIn } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import "./SMContactMe.css";
+import "../../layout/Footer/SMFooter.css";
 
 function Contact() {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
   });
 
   const [submitStatus, setSubmitStatus] = useState({
     submitted: false,
     success: false,
-    message: ''
+    message: "",
   });
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -33,7 +35,7 @@ function Contact() {
       setSubmitStatus({
         submitted: true,
         success: false,
-        message: 'Please fill in all required fields.'
+        message: "Please fill in all required fields.",
       });
       return;
     }
@@ -41,27 +43,27 @@ function Contact() {
     // Here you would typically send the form data to your backend
     try {
       // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       setSubmitStatus({
         submitted: true,
         success: true,
-        message: 'Thank you for your message. We will get back to you soon!'
+        message: "Thank you for your message. We will get back to you soon!",
       });
 
       // Clear form
       setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: ''
+        name: "",
+        email: "",
+        phone: "",
+        subject: "",
+        message: "",
       });
     } catch (error) {
       setSubmitStatus({
         submitted: true,
         success: false,
-        message: 'Something went wrong. Please try again later.'
+        message: "Something went wrong. Please try again later.",
       });
     }
   };
@@ -76,7 +78,8 @@ function Contact() {
             <div className="SMcontact-hero-title">US</div>
             <div className="SMcontact-hero-text">
               <p>
-                Get in touch with our team for any inquiries or support. We are here to help you with all your smart home needs.
+                Get in touch with our team for any inquiries or support. We are
+                here to help you with all your smart home needs.
               </p>
             </div>
           </div>
@@ -169,7 +172,11 @@ function Contact() {
               Send Message
             </button>
             {submitStatus.submitted && (
-              <div className={`submit-message ${submitStatus.success ? 'success' : 'error'}`}>
+              <div
+                className={`submit-message ${
+                  submitStatus.success ? "success" : "error"
+                }`}
+              >
                 {submitStatus.message}
               </div>
             )}
@@ -186,6 +193,123 @@ function Contact() {
             allowFullScreen=""
             loading="lazy"
           ></iframe>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="SMfooter-container">
+        <div className="SMfooter-subscription">
+          <h1 className="SMfooter-subscription-heading">
+            Join our newsletter to know us better
+          </h1>
+          <p className="SMfooter-subscription-text">
+            Stay updated with our latest smart home solutions
+          </p>
+          <div className="input-areas">
+            <form>
+              <input
+                className="SMfooter-input"
+                name="email"
+                type="email"
+                placeholder="Your Email"
+              />
+              <div className="SMfooter-button-wrapper">
+                <button type="submit">
+                  <span>Subscribe</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div className="SMfooter-links">
+          <div className="SMfooter-link-wrapper">
+            <div className="SMfooter-link-items">
+              <h2>About Us</h2>
+              <Link to="/">How it works</Link>
+              <Link to="/">Why choose us</Link>
+              <Link to="/">Testimonials</Link>
+              <Link to="/">Careers</Link>
+            </div>
+            <div className="SMfooter-link-items">
+              <h2>Contact Us</h2>
+              <Link to="/">Contact</Link>
+              <Link to="/">Support</Link>
+              <Link to="/">Customer Care</Link>
+              <Link to="/">Technical Help</Link>
+            </div>
+          </div>
+          <div className="SMfooter-link-wrapper">
+            <div className="SMfooter-link-items">
+              <h2>Resources</h2>
+              <Link to="/">Submit Video</Link>
+              <Link to="/">Ambassadors</Link>
+              <Link to="/">FAQ</Link>
+              <Link to="/">Blog</Link>
+            </div>
+            <div className="SMfooter-link-items">
+              <h2>Connect</h2>
+              <Link to="/">Instagram</Link>
+              <Link to="/">Facebook</Link>
+              <Link to="/">Youtube</Link>
+              <Link to="/">Twitter</Link>
+            </div>
+          </div>
+        </div>
+
+        <section className="social-media">
+          <div className="social-media-wrap">
+            <div className="social-icons">
+              <a
+                className="social-icon-link facebook"
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                className="social-icon-link instagram"
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                className="social-icon-link youtube"
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Youtube"
+              >
+                <FaYoutube />
+              </a>
+              <a
+                className="social-icon-link twitter"
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Twitter"
+              >
+                <FaTwitter />
+              </a>
+              <a
+                className="social-icon-link linkedin"
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedinIn />
+              </a>
+            </div>
+          </div>
+        </section>
+        <div className="website-rights">
+          <p>SmartScape © {new Date().getFullYear()} | All Rights Reserved</p>
         </div>
       </div>
     </div>
