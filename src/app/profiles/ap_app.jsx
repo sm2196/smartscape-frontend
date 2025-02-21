@@ -6,7 +6,7 @@ import DeviceManagement from "../../components/devices/main/ap_DeviceManagement"
 
 export default function App() {
   return (
-    <div className="layout">
+    <div className="ap_layout">
       {/* Navbar */}
       {/* <div className="sidebar">
         <Sidebar />
@@ -16,7 +16,7 @@ export default function App() {
       </div>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className="ap_main-content">
         <DeviceManagement />
       </div>
     </div>

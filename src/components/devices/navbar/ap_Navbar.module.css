@@ -1,4 +1,4 @@
-.navbar {
+.ap_navbar {
   width: 280px;
   background: linear-gradient(180deg, #0A1630 9%, #152447 100%);
   color: #FFFAFA;
@@ -9,13 +9,13 @@
   height: 100vh;
 }
 
-.timeDisplay {
+.ap_timeDisplay {
   margin-bottom: 2.5rem;
   display: flex;
   flex-direction: column;
 }
 
-.currentTime {
+.ap_currentTime {
   font-size: clamp(2.5rem, 6vw, 3.5rem);
   font-weight: 300;
   color: var(--text-primary);
@@ -23,19 +23,19 @@
   margin-bottom: 0.5rem;
 }
 
-.currentDate {
+.ap_currentDate {
   font-size: clamp(1rem, 2vw, 1.125rem);
   color: var(--text-secondary);
 }
 
-.navMenu {
+.ap_navMenu {
   display: flex;
   flex-direction: column;
   gap: 8px;
   margin-bottom: 40px;
 }
 
-.navLink {
+.ap_navLink {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -48,30 +48,30 @@
 }
 
 /* Icon and text styles for nav items */
-.icon {
+.ap_icon {
   display: inline-block;
   font-size: 24px;
 }
 
-.navText {
+.ap_navText {
   display: inline-block;
   flex: 1;
 }
 
-.navLink:hover {
+.ap_navLink:hover {
   background-color: rgba(210, 220, 245, 0.05);
 }
 
-.navLink.active {
+.ap_navLink.ap_active {
   background-color: rgba(210, 220, 245, 0.1);
 }
 
 /* Hide menu toggle by default */
-.menuToggle {
+.ap_menuToggle {
   display: none;
 }
 
-.weatherContainer {
+.ap_weatherContainer {
   margin-top: auto;
   margin-bottom: 32px;
   /* Add bottom margin */
@@ -79,7 +79,7 @@
 
 /* Mobile styles */
 @media (max-width: 480px) {
-  .navbar {
+  .ap_navbar {
     width: 100%;
     padding: 8px 16px;
     position: fixed;
@@ -91,18 +91,18 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .navbar.menuOpen {
+  .ap_navbar.menuOpen {
     height: 100vh;
   }
 
-  .mobileHeader {
+  .ap_mobileHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 40px;
   }
 
-  .menuToggle {
+  .ap_menuToggle {
     display: block;
     background: none;
     border: none;
@@ -111,21 +111,21 @@
     padding: 4px;
   }
 
-  .timeDisplay {
+  .ap_timeDisplay {
     display: none;
   }
 
-  .navMenu {
+  .ap_navMenu {
     display: none;
     margin-top: 12px;
     padding-bottom: 12px;
   }
 
-  .navMenu.show {
+  .ap_navMenu.ap_show {
     display: flex;
   }
 
-  .navLink {
+  .ap_navLink {
     font-size: 18px;
     /* Increased font size */
     padding: 16px;
@@ -134,21 +134,21 @@
     /* Minimum touch target size */
   }
 
-  .icon {
+  .ap_icon {
     font-size: 24px;
     /* Increased icon size */
     min-width: 24px;
     /* Ensure consistent width */
   }
 
-  .navText {
+  .ap_navText {
     font-size: 16px;
     /* Explicit font size for nav text */
     margin-left: 16px;
     /* Add space after icon */
   }
 
-  .weatherContainer {
+  .ap_weatherContainer {
     display: none;
   }
 }
