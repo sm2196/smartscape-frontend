@@ -1,6 +1,6 @@
 .navbar {
   width: 280px;
-  background: linear-gradient(180deg, #0A1630 9%, #152447 100%);
+  background: linear-gradient(180deg, var(--oxford-blue) 9%, var(--space-cadet) 100%);
   padding: 32px;
   border-right: 1px solid rgba(210, 220, 245, 0.1);
   display: flex;
