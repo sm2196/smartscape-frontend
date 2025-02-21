@@ -1,0 +1,452 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+.SMservices-page {
+  min-height: 100vh;
+  background-color: #fff;
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Updated Hero Section */
+.SMservices-hero {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.SMhero-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 5rem;
+  background: #ffffff;
+  position: relative;
+  z-index: 2;
+}
+
+.SMhero-content {
+  max-width: 600px;
+  text-align: left;
+}
+
+.SMhero-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 6rem;
+  line-height: 1;
+  font-weight: 700;
+  color: #0A1630;
+  margin-bottom: 0.5rem;
+  animation: fadeIn 1s ease-out;
+}
+
+.SMhero-text {
+  margin-top: 3rem;
+  animation: fadeIn 1.5s ease-out;
+}
+
+.SMhero-text p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 1.5rem;
+}
+
+.SMhero-right {
+  flex: 1;
+  background: #0A1630;
+  position: relative;
+  overflow: hidden;
+}
+
+.SMhero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(41, 98, 255, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(41, 98, 255, 0.1) 0%, transparent 50%);
+  animation: gradientMove 8s ease-in-out infinite alternate;
+}
+
+/* Common Section Styles */
+.SMservices-section,
+.SMadditional-features,
+.SMintegrations-section {
+  padding: 80px 20px;
+}
+
+.SMservices-section {
+  background: #f8fafc;
+}
+
+.SMadditional-features {
+  background: white;
+}
+
+.SMintegrations-section {
+  background: #f8fafc;
+}
+
+.SMsection-header {
+  text-align: center;
+  max-width: 700px;
+  margin: 0 auto 60px;
+}
+
+.SMsection-header h2 {
+  font-size: 3rem;
+  color: #0A1630;
+  margin-bottom: 15px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.SMsection-header p {
+  font-size: 1.2rem;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* Services Grid */
+.SMservices-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.SMservice-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.SMservice-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #0A1630, #1a2942);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.SMservice-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.1);
+}
+
+.SMservice-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Icon Styles */
+.SMservice-icon,
+.SMfeature-icon,
+.SMintegration-icon {
+  width: 60px;
+  height: 60px;
+  background: #0A1630;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 25px;
+  transition: transform 0.3s ease;
+}
+
+.SMservice-card:hover .SMservice-icon,
+.SMfeature-card:hover .SMfeature-icon,
+.SMintegration-card:hover .SMintegration-icon {
+  transform: rotate(10deg);
+}
+
+.SMservice-icon svg,
+.SMfeature-icon svg,
+.SMintegration-icon svg {
+  font-size: 26px;
+  color: white;
+}
+
+.SMservice-card h3,
+.SMfeature-card h3,
+.SMintegration-card h3 {
+  font-size: 1.5rem;
+  color: #0A1630;
+  margin-bottom: 15px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.SMservice-card p,
+.SMfeature-card p,
+.SMintegration-card p {
+  color: #64748b;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+.SMservice-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.SMservice-card ul li {
+  color: #475569;
+  margin-bottom: 12px;
+  padding-left: 24px;
+  position: relative;
+  font-size: 0.95rem;
+  transition: transform 0.3s ease;
+}
+
+.SMservice-card ul li::before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: #0A1630;
+}
+
+.SMservice-card:hover ul li {
+  transform: translateX(5px);
+}
+
+/* Features & Integrations Grid */
+.SMfeatures-grid,
+.SMintegrations-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.SMfeature-card,
+.SMintegration-card {
+  background: white;
+  padding: 30px;
+  border-radius: 20px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.SMfeature-card:hover,
+.SMintegration-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Stats Section */
+.SMservices-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px;
+  background: white;
+}
+
+.SMstat-item {
+  text-align: center;
+  padding: 30px;
+  background: #f8fafc;
+  border-radius: 20px;
+  transition: transform 0.3s ease;
+}
+
+.SMstat-item:hover {
+  transform: translateY(-5px);
+}
+
+.SMstat-item h3 {
+  font-size: 2.5rem;
+  color: #0A1630;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.SMstat-item p {
+  color: #64748b;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+/* Register Section */
+.SMregister-section {
+  background: linear-gradient(135deg, #0A1630 0%, #1a2942 100%);
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+}
+
+.SMregister-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.SMregister-content h2 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+.SMregister-content p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+/* Services Register Button */
+.SMservices-register-button button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem;
+  margin: 0 auto;
+  font-family: "Roboto", sans-serif;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
+  overflow: hidden;
+  background: #0A1630;
+  color: #000000;
+}
+
+.SMservices-register-button button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SMservices-register-button button:hover span {
+  color: #fffafa;
+}
+
+.SMservices-register-button button::before {
+  content: "";
+  position: absolute;
+  background: #fffafa;
+  width: 120%;
+  height: 100%;
+  top: 0;
+  left: -10%;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.SMservices-register-button button:hover::before {
+  transform: translate3d(100%, 0, 0);
+}
+
+/* Animations */
+@keyframes gradientMove {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .SMhero-title {
+    font-size: 5rem;
+  }
+
+  .SMservices-grid,
+  .SMfeatures-grid,
+  .SMintegrations-grid,
+  .SMservices-stats {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 0 20px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .SMservices-hero {
+    flex-direction: column;
+  }
+
+  .SMhero-left {
+    padding: 3rem 2rem;
+  }
+
+  .SMhero-right {
+    min-height: 50vh;
+  }
+
+  .SMhero-title {
+    font-size: 4rem;
+  }
+
+  .SMservices-grid,
+  .SMfeatures-grid,
+  .SMintegrations-grid,
+  .SMservices-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .SMsection-header h2,
+  .SMregister-content h2 {
+    font-size: 2.5rem;
+  }
+
+  .SMservice-card,
+  .SMfeature-card,
+  .SMintegration-card {
+    padding: 30px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .SMhero-title {
+    font-size: 3rem;
+  }
+
+  .SMhero-text p {
+    font-size: 1.1rem;
+  }
+
+  .SMsection-header h2,
+  .SMregister-content h2 {
+    font-size: 2rem;
+  }
+
+  .SMservice-card h3,
+  .SMfeature-card h3,
+  .SMintegration-card h3 {
+    font-size: 1.3rem;
+  }
+}

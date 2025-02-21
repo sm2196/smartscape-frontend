@@ -1,0 +1,266 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+
+.SMambassador-section {
+  position: relative;
+  background-color: #ffffff;
+  min-height: 100vh;
+  overflow: hidden;
+  will-change: transform;
+  transform-style: preserve-3d;
+  padding-top: 100px;
+  margin-top: 40px;
+  padding-bottom: 40px;
+  margin-bottom: 10px;
+}
+
+.SMambassador-form-wrapper {
+  background-color: #ffffff;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: calc(100vh - 100px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.SMambassador-form-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  animation: formFadeIn 0.8s ease-out forwards;
+}
+
+.SMambassador-form {
+  background: rgba(255, 255, 255, 0.97);
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transform: translateY(0);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: 20px;
+}
+
+.SMambassador-form:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+}
+
+.SMambassador-heading {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #0A1630;
+  margin-bottom: 25px;
+  position: relative;
+  text-align: center;
+}
+
+.SMambassador-heading-underline {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #0A1630;
+  transition: width 0.3s ease;
+}
+
+.SMambassador-heading:hover .SMambassador-heading-underline {
+  width: 80px;
+}
+
+.SMambassador-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  text-align: center;
+}
+
+.SMform-group {
+  margin-bottom: 20px;
+}
+
+.SMform-group input,
+.SMform-group textarea {
+  width: 100%;
+  padding: 14px 18px;
+  border: 2px solid #e1e1e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+}
+
+.SMform-group input:focus,
+.SMform-group textarea:focus {
+  border-color: #0A1630;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(10, 22, 48, 0.1);
+  transform: translateY(-1px);
+}
+
+.SMform-group textarea {
+  min-height: 120px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.SM-AmbassadorButton-wrapper {
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.9s forwards;
+  width: 100%;
+}
+
+.SM-AmbassadorButton-wrapper button {
+  width: 100%;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
+  overflow: hidden;
+  background: #C4C4C4;
+  color: #ffffff;
+  border: 1px solid #f0f3fb;
+}
+
+.SM-AmbassadorButton-wrapper button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SM-AmbassadorButton-wrapper button:hover span {
+  color: #0A1630;
+}
+
+.SM-AmbassadorButton-wrapper button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 100%;
+  background: #0A1630;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+  z-index: 0;
+}
+
+.SM-AmbassadorButton-wrapper button:hover::before {
+  transform: translate3d(100%, 0, 0);
+}
+
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .SMambassador-section {
+    padding-top: 80px;
+    margin-top: 20px;
+    padding-bottom: 100px;
+    margin-bottom: 40px;
+  }
+
+  .SMambassador-form-wrapper {
+    min-height: calc(100vh - 80px);
+    padding: 40px 20px;
+    background-attachment: scroll;
+  }
+
+  .SMambassador-form {
+    padding: 30px 20px;
+    margin-bottom: 30px;
+  }
+
+  .SMambassador-heading {
+    font-size: 1.8rem;
+  }
+
+  .SMambassador-subtitle {
+    font-size: 1rem;
+  }
+
+  .SM-AmbassadorButton-wrapper button {
+    width: 100%;
+    padding: 0.8rem 1.8rem;
+    font-size: 16px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+  .SMambassador-form:hover {
+    transform: none;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  }
+
+  .SMambassador-form-wrapper {
+    background-attachment: scroll;
+  }
+
+  .SM-AmbassadorButton-wrapper button:hover {
+    transform: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .SMambassador-form-container {
+    animation: none;
+    opacity: 1;
+  }
+
+  .SMambassador-form:hover,
+  .SMform-group input:focus,
+  .SMform-group textarea:focus {
+    transform: none;
+  }
+
+  .SM-AmbassadorButton-wrapper {
+    animation: none;
+    opacity: 1;
+  }
+
+  .SM-AmbassadorButton-wrapper button {
+    transition: none;
+  }
+}
