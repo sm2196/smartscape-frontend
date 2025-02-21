@@ -108,9 +108,9 @@ const DeviceManagement = () => {
 
                 {/* WiFi Network Selection */}
                 <select className={styles.ap_dropdown}>
-                  <option>Edurome</option>
-                  <option>HWUTemp</option>
-                  <option>HWUGuest</option>
+                  <option>Eduroam</option>
+                  <option>HWUD_Temp</option>
+                  <option>HWUD_Guest</option>
                 </select>
 
                 {/* Bluetooth Toggle */}

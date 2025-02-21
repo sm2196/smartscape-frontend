@@ -79,6 +79,7 @@
 /* Individual Button Item styles */
 .ap_buttonItem {
   background-color: #D2DCF5;
+  border: 1px solid #333;
   padding: 16px;
   border-radius: 8px;
   transition: background-color 0.3s ease, transform 0.3s ease;
@@ -273,10 +274,12 @@
 
 /* Select dropdown */
 .ap_dropdown {
+  background-color: #D2DCF5;
+  color: #333;
   width: 100%;
   padding: 10px;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  border: 1px solid #333;
   font-size: 1rem;
   margin-bottom: 10px;
 }
@@ -338,5 +341,10 @@
   .ap_popupList:has(.ap_popupButton:nth-child(6)) {
   display: flex;
 }
+
+  .ap_dropdown{
+    padding: 10px;
+    height: 45px;
+  }
 
 }
