@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { MdShield, MdLock, MdRemoveRedEye } from "react-icons/md"
-import styles from "./InfoPanel.module.css"
+import styles from "./InfoPanel-as.module.css"
 
 export default function InfoPanel() {
   const [isMobile, setIsMobile] = useState(false)
