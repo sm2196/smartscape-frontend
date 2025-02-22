@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { MdChevronRight } from 'react-icons/md';
-import Button from "../../../../components/DeviceButton";
+import Button from "./DeviceButton";
 import styles from "./DeviceManagement.module.css";
 
 const DeviceManagement = () => {
