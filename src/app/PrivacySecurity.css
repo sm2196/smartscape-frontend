@@ -275,6 +275,7 @@ html {
 
 .app-list {
     max-height: 240px;
+    margin-bottom: 20px;
     overflow-y: auto;
     padding-right: 10px;
 }
@@ -312,7 +313,7 @@ html {
 
 .manage-btn {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 0px;
     background-color: #27417f;
     padding: 8px;
     color: white;
