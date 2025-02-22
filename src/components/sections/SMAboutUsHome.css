@@ -1,0 +1,268 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+.SM-about-us-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  min-height: 100vh;
+  padding: 60px 20px;
+  position: relative;
+  will-change: transform;
+  transform-style: preserve-3d;
+  margin-top: 50px;
+}
+
+.SM-about-us-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  animation: fadeIn 1s ease-out forwards;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.SM-about-us-image {
+  flex: 0 0 45%;
+  padding: 20px;
+  transform: translateZ(0);
+}
+
+.SM-about-us-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.6s ease;
+  will-change: transform;
+}
+
+.SM-about-us-text {
+  flex: 0 0 55%;
+  padding: 0 30px;
+}
+
+.SM-about-us-text h2 {
+  font-size: 2.5rem;
+  color: #0A1630;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.3s forwards;
+}
+
+.SM-about-us-text h3 {
+  font-size: 1.25rem;
+  color: #444;
+  margin-bottom: 20px;
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.5s forwards;
+}
+
+.SM-about-us-text p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.7s forwards;
+}
+
+/* About Button Styles */
+.SM-AboutButton-us-wrapper {
+  opacity: 0;
+  animation: slideIn 0.8s ease-out 0.9s forwards;
+  margin-top: 2rem;
+}
+
+.SM-AboutButton-us-wrapper button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
+  overflow: hidden;
+  background: #0A1630;
+  color: #000000;
+  border: 1px solid #0A1630;
+}
+
+.SM-AboutButton-us-wrapper button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SM-AboutButton-us-wrapper button:hover span {
+  color: #ededed;
+}
+
+.SM-AboutButton-us-wrapper button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -10%;
+  width: 120%;
+  height: 100%;
+  background: #f0f3fb;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+  z-index: 0;
+}
+
+.SM-AboutButton-us-wrapper button:hover::before {
+  transform: translate3d(100%, 0, 0);
+}
+
+/* Join Us Button Styles */
+.SM-joinButton-us-wrapper button {
+  outline: none;
+  cursor: pointer;
+  border: none;
+  padding: 0.9rem 2rem;
+  margin-top: 10rem;
+  font-family: "Roboto", sans-serif;
+  font-size: 17px;
+  position: relative;
+  display: inline-block;
+  letter-spacing: 0.05rem;
+  font-weight: 700;
+  border-radius: 500px;
+  overflow: hidden;
+  background: #0A1630;
+  color: #000000;
+}
+
+.SM-joinButton-us-wrapper button span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+}
+
+.SM-joinButton-us-wrapper button:hover span {
+  color: #fffafa;
+}
+
+.SM-joinButton-us-wrapper button::before,
+.SM-joinButton-us-wrapper button::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.SM-joinButton-us-wrapper button::before {
+  content: "";
+  background: #fffafa;
+  width: 120%;
+  left: -10%;
+  transform: skew(30deg);
+  transition: transform 0.4s cubic-bezier(0.3, 1, 0.8, 1);
+}
+
+.SM-joinButton-us-wrapper button:hover::before {
+  transform: translate3d(100%, 0, 0);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive Design */
+@media screen and (max-width: 1024px) {
+  .SM-about-us-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px;
+  }
+
+  .SM-about-us-image,
+  .SM-about-us-text {
+    flex: 0 0 100%;
+    padding: 20px;
+  }
+
+  .SM-about-us-text h2 {
+    font-size: 2rem;
+  }
+
+  .SM-about-us-text h3 {
+    font-size: 1.1rem;
+  }
+
+  .SM-about-us-text p {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .SM-about-us-container {
+    padding: 40px 15px;
+  }
+
+  .SM-AboutButton-us-wrapper button,
+  .SM-joinButton-us-wrapper button {
+    padding: 0.8rem 1.8rem;
+    font-size: 16px;
+  }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) {
+  .SM-AboutButton-us-wrapper button:hover,
+  .SM-joinButton-us-wrapper button:hover {
+    transform: none;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .SM-about-us-content,
+  .SM-about-us-text h2,
+  .SM-about-us-text h3,
+  .SM-about-us-text p,
+  .SM-AboutButton-us-wrapper,
+  .SM-joinButton-us-wrapper {
+    animation: none;
+    opacity: 1;
+  }
+
+  .SM-AboutButton-us-wrapper button,
+  .SM-joinButton-us-wrapper button {
+    transition: none;
+  }
+}
