@@ -32,7 +32,11 @@ body {
   flex-direction: row;
   width: 100%;
   overflow-x: hidden;
-  overflow-y: auto; /* Allow scrolling within content */
+}
+
+.apMainContent {
+  flex-grow: 1; /* Makes the main content take the remaining space */
+  width: 100%;
 }
 
 /* Mobile-specific layout adjustments */
@@ -46,6 +50,11 @@ body {
   .mainContent > * {
     flex: 1;
     min-width: 0;
+  }
+
+  .apMainContent {
+    padding-top: 50px;
+    padding-bottom: 70px;
   }
 }
 
