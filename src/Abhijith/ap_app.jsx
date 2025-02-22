@@ -1,7 +1,7 @@
 import React from "react";
 import "./ap_app.css"; // Import global styles
-import Navbar from "../Abhijith/navbar/ap_Navbar";
-import DeviceManagement from "../Abhijith/main/ap_DeviceManagement";
+import Navbar from "./navbar/ap_Navbar";
+import DeviceManagement from "./main/ap_DeviceManagement";
 
 export default function App() {
   return (
