@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ParallaxProvider, Parallax } from "react-scroll-parallax";
 import { useNavigate } from 'react-router-dom';
-import "../../../app/App.css";
+import "../../../Hamza Khan/app/App.css";
 import "../../sections/SMHomeHeroSection.css";
 import "../../sections/SMAboutUsHome.css";
 import "../../sections/SMHowItWorks.css";
