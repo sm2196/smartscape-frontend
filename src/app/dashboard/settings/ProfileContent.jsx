@@ -9,7 +9,7 @@ import {
   MdPersonAddAlt1,
   MdAccountCircle,
 } from "react-icons/md"
-import styles from "./ProfileContent-as.module.css"
+import styles from "./ProfileContent.module.css"
 
 export default function ProfileContent() {
   const [isMobile, setIsMobile] = useState(false)

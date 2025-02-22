@@ -17,10 +17,10 @@ import { WeatherWidget } from "./Weather"
 import styles from "./SettingsNavbar.module.css"
 
 const navigation = [
-  { name: "Profiles", href: "#", icon: MdPerson },
+  { name: "Profiles", href: "/dashboard/settings", icon: MdPerson },
   { name: "Privacy & Security", href: "#", icon: MdSecurity },
   { name: "Admin Settings", href: "#", icon: MdSettings },
-  { name: "Notifications", href: "#", icon: MdNotifications },
+  { name: "Notifications", href: "/dashboard/settings/notifications", icon: MdNotifications },
   { name: "Rooms & Devices", href: "#", icon: MdDevices },
   { name: "Dashboard", href: "#", icon: MdArrowBackIosNew },
 ]

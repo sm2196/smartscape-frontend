@@ -15,11 +15,8 @@
   font-family: "Roboto", sans-serif;
 }
 
-body,
-html {
+body {
   margin: 0;
-  padding: 0;
-  height: 100vh;
 }
 
 .container {
@@ -51,4 +48,6 @@ html {
     min-width: 0;
   }
 }
+
+
 
