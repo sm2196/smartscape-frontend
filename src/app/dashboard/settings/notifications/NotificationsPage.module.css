@@ -1,4 +1,4 @@
-.mainContent {
+.notificationMainContent {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
@@ -83,7 +83,7 @@
   }
 
   @media (max-width: 480px) {
-    .mainContent {
+    .notificationMainContent {
       padding: 10px;
     }
 
