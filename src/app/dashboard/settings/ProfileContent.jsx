@@ -11,7 +11,6 @@ import {
 } from "react-icons/md"
 import styles from "./ProfileContent.module.css"
 
-
 export default function ProfileContent() {
   const [isMobile] = useState(false)
   const [editingField, setEditingField] = useState(null)
@@ -25,9 +24,15 @@ export default function ProfileContent() {
   })
   const [tempValue, setTempValue] = useState("")
 
-  // Simulated authentication function
+  const displayMapping = {
+    legalName: "Legal name",
+    email: "Email address",
+    phoneNumbers: "Phone numbers",
+    governmentId: "Government ID",
+    address: "Address",
+  }
+
   const handleSignOut = () => {
-    // Add authentication logic here
     console.log("Signing out...")
   }
 
@@ -36,7 +41,6 @@ export default function ProfileContent() {
   }
 
   const confirmDelete = () => {
-    // Add account deletion logic here
     console.log("Deleting account...")
     setDeleteDialogOpen(false)
   }
@@ -77,19 +81,15 @@ export default function ProfileContent() {
     },
   ]
 
-  const personalInfoSections = [
-    { title: "Legal name", value: fieldValues.legalName, action: "Edit" },
-    { title: "Email address", value: fieldValues.email, action: "Edit" },
-    {
-      title: "Phone numbers",
-      value: fieldValues.phoneNumbers.length
-        ? fieldValues.phoneNumbers.join(", ")
-        : "Add a number to get in touch with you. You can add other numbers and choose how they're used.",
-      action: "Add",
-    },
-    { title: "Government ID", value: fieldValues.governmentId, action: "Edit" },
-    { title: "Address", value: fieldValues.address, action: "Edit" },
-  ]
+  const personalInfoSections = Object.keys(fieldValues).map((key) => ({
+    title: displayMapping[key],
+    value: Array.isArray(fieldValues[key])
+      ? fieldValues[key].length
+        ? fieldValues[key].join(", ")
+        : "Add a number to get in touch with you. You can add other numbers and choose how they're used."
+      : fieldValues[key],
+    action: key === "phoneNumbers" ? "Add" : "Edit",
+  }))
 
   return (
     <main className={styles.profileMainContent}>
@@ -135,7 +135,7 @@ export default function ProfileContent() {
                 {title}
                 <button
                   className={styles.editButton}
-                  onClick={() => handleEdit(title.toLowerCase().replace(/\s+/g, ""))}
+                  onClick={() => handleEdit(Object.keys(displayMapping).find(key => displayMapping[key] === title))}
                 >
                   {action}
                 </button>
@@ -150,11 +150,11 @@ export default function ProfileContent() {
       {editingField && (
         <div className={styles.modalOverlay} onClick={() => setEditingField(null)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h2 className={styles.modalTitle}>Edit {editingField}</h2>
-            <p className={styles.modalDescription}>Make changes to your {editingField}. Click save when you're done.</p>
+            <h2 className={styles.modalTitle}>{editingField === "phoneNumbers" ? "Add" : "Edit"} {displayMapping[editingField]}</h2>
+            <p className={styles.modalDescription}>Make changes to your {displayMapping[editingField]}. Click save when you're done.</p>
             <div className={styles.modalContent}>
               <label htmlFor="value" className={styles.modalLabel}>
-                {editingField}
+                {displayMapping[editingField]}
               </label>
               <input
                 id="value"
@@ -196,4 +196,3 @@ export default function ProfileContent() {
     </main>
   )
 }
-
