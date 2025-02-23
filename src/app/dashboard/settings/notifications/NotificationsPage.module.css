@@ -82,7 +82,7 @@
     color: white;
   }
 
-  @media (max-width: 768px) {
+  @media (max-width: 480px) {
     .mainContent {
       padding: 10px;
     }

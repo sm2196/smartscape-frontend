@@ -21,7 +21,7 @@ const navigation = [
   { name: "Privacy & Security", href: "/dashboard/settings/privacy", icon: MdSecurity },
   { name: "Admin Settings", href: "#", icon: MdSettings },
   { name: "Notifications", href: "/dashboard/settings/notifications", icon: MdNotifications },
-  { name: "Rooms & Devices", href: "/dashboard/settings/devices", icon: MdDevices },
+  { name: "Rooms & Devices", href: "/dashboard/settings/roomdevices", icon: MdDevices },
   { name: "Dashboard", href: "#", icon: MdArrowBackIosNew },
 ]
 

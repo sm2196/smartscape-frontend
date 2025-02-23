@@ -1,4 +1,4 @@
-import DeviceManagement from "./DeviceManagement";
+import DeviceManagement from "./RoomDeviceManagement";
 
 export default function RoomDevicePage() {
   return (

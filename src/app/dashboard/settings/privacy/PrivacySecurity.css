@@ -502,29 +502,13 @@ background-color: rgb(108, 10, 10);
 }
 
 /* Mobile-specific layout adjustments */
-@media (max-width: 768px) {
-    .mainContent {
-        flex-direction: column;
-        padding-top: 64px;
-        /* Match navbar height */
-        height: calc(100vh - 64px);
-        /* Subtract navbar height */
-    }
-
-    .mainContent>* {
-        flex: 1;
-        min-width: 0;
-
-    }
-
+@media (max-width: 480px) {
     .title {
         width: 90%;
-
     }
 
     .subtitle {
         width: 90%;
-
     }
 
     .grid-container {
@@ -532,7 +516,6 @@ background-color: rgb(108, 10, 10);
         display: flex !important;
         flex-direction: column !important;
         gap: 20px;
-
     }
 }
 

@@ -1,0 +1,259 @@
+.deviceManagementContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  background-color: white;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sectionHeader {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #152447;
+  margin-bottom: 1rem;
+}
+
+.buttonList {
+  flex-direction: column;
+  margin-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.buttonItem {
+  width: 100%;
+  padding: 1rem;
+  background-color: #e2e8f0;
+  border: none;
+  border-radius: 0.5rem;
+  color: #152447;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background-color 0.2s;
+}
+
+.buttonItem:hover {
+  background-color: #cbd5e1;
+}
+
+.buttonGroup {
+  display: grid;
+  margin-top: 0.5rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.buttonGroup .buttonItem {
+  background-color: #152447;
+  color: white;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.buttonGroup .buttonItem:hover {
+  background-color: #1e3a8a;
+}
+
+.chevronIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #152447;
+}
+
+/* Popup Styles */
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+}
+
+.popupContent {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+  width: 90%;
+  max-width: 500px;
+}
+
+.popupContent h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #152447;
+  margin-bottom: 1rem;
+}
+
+.toggleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #e2e8f0;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.toggleSwitch {
+  position: relative;
+  display: inline-block;
+  width: 3rem;
+  height: 1.5rem;
+}
+
+.toggleInput {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggleSlider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  border-radius: 1.5rem;
+  transition: 0.4s;
+}
+
+.toggleSlider:before {
+  position: absolute;
+  content: "";
+  height: 1.25rem;
+  width: 1.25rem;
+  left: 0.125rem;
+  bottom: 0.125rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.4s;
+}
+
+.toggleInput:checked + .toggleSlider {
+  background-color: #152447;
+}
+
+.toggleInput:checked + .toggleSlider:before {
+  transform: translateX(1.5rem);
+}
+
+.dropdown {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #e2e8f0;
+  border: none;
+  border-radius: 0.5rem;
+  color: #152447;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23152447'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1.25rem;
+}
+
+.popupButton {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #e2e8f0;
+  border: none;
+  border-radius: 0.5rem;
+  color: #152447;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+}
+
+.popupButton:hover {
+  background-color: #cbd5e1;
+}
+
+.popupClose {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #152447;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+.popupClose:hover {
+  background-color: #1e3a8a;
+}
+
+@media (max-width: 480px) {
+  .deviceManagementContainer {
+    padding: 0;
+    background-color: #f1f5f9;
+  }
+
+  .section {
+    gap: 0;
+  }
+
+  .sectionHeader {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0;
+    font-size: 1.125rem;
+  }
+
+  .buttonList {
+    gap: 0.5rem;
+  }
+
+  .buttonList {
+    gap: 1px;
+  }
+
+  .buttonItem {
+    padding: 0.75rem 1rem;
+    border-radius: 0;
+    background-color: white;
+    font-size: 0.875rem;
+  }
+
+  .buttonGroup {
+    gap: 0.5rem;
+  }
+
+  .buttonGroup {
+    gap: 1px;
+    margin-top: 1px;
+  }
+
+  .buttonGroup .buttonItem {
+    padding: 0.75rem;
+    background-color: #152447;
+    border-radius: 0;
+    font-size: 0.875rem;
+  }
+
+  .chevronIcon {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
