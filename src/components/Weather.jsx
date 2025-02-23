@@ -1,7 +1,16 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
-import { MdWbSunny, MdCloud, MdGrain, MdAcUnit, MdThunderstorm, MdFilterDrama, MdLocationOn, MdNightsStay } from "react-icons/md";
+import {
+  MdWbSunny,
+  MdCloud,
+  MdGrain,
+  MdAcUnit,
+  MdThunderstorm,
+  MdFilterDrama,
+  MdLocationOn,
+  MdNightsStay,
+} from "react-icons/md";
 import styles from "./Weather.module.css";
 
 const weatherIcons = {
@@ -17,7 +26,11 @@ const weatherIcons = {
 const UPDATE_INTERVAL = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 export function WeatherWidget() {
-  const [weather, setWeather] = useState({ temp: "--", condition: "loading", location: "Detecting..." });
+  const [weather, setWeather] = useState({
+    temp: "--",
+    condition: "loading",
+    location: "Detecting...",
+  });
   const [lastUpdateTime, setLastUpdateTime] = useState(0);
 
   useEffect(() => {
@@ -34,10 +47,15 @@ export function WeatherWidget() {
         const locationData = await locationResponse.json();
         const { lat, lon, city, countryCode } = locationData;
 
-        const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-        if (!weatherResponse.ok) throw new Error("Failed to fetch weather data");
+        const weatherResponse = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`
+        );
+        if (!weatherResponse.ok)
+          throw new Error("Failed to fetch weather data");
         const weatherData = await weatherResponse.json();
-        const condition = mapWeatherCodeToCondition(weatherData.current_weather.weathercode);
+        const condition = mapWeatherCodeToCondition(
+          weatherData.current_weather.weathercode
+        );
 
         setWeather({
           temp: weatherData.current_weather.temperature,
@@ -68,7 +86,17 @@ export function WeatherWidget() {
     return "unknown";
   };
 
-  const WeatherIcon = weather.isDay ? weatherIcons[weather.condition] || MdFilterDrama : weatherIcons.night;
+  let WeatherIcon;
+
+  if (weather.isDay) {
+    // Daytime logic
+    WeatherIcon = weatherIcons[weather.condition] || MdFilterDrama;
+  } else {
+    // Nighttime logic
+    WeatherIcon = weather.condition === "clear"
+      ? weatherIcons.night // If it's night and clear, show night icon
+      : weatherIcons[weather.condition] || MdFilterDrama; // Otherwise show condition icon or default to fog
+  }
 
   return (
     <div className={styles.weatherWidget}>

@@ -58,8 +58,8 @@ export default function SettingsNavbar() {
     <div className={`${styles.navbar} ${isMenuOpen ? styles.menuOpen : ""}`}>
       <div className={styles.mobileHeader}>
         <div className={styles.timeDisplay}>
-          <div className={styles.currentTime}>{timeString}</div>
-          <div className={styles.currentDate}>{dateString}</div>
+          <div className={styles.currentTime} suppressHydrationWarning={true}>{timeString}</div>
+          <div className={styles.currentDate} suppressHydrationWarning={true}>{dateString}</div>
         </div>
         <button className={styles.menuToggle} onClick={toggleMenu}>
           {isMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
