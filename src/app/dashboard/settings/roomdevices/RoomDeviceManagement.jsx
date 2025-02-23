@@ -23,15 +23,15 @@ const DeviceManagement = () => {
 
   const rooms = [
     { name: "Hall", content: ["Hall 1", "Hall 2", "Master Bedroom Hall"] },
-    { name: "Dining room", content: null },
+    { name: "Kitchen", content: ["Main Kitchen", "Dinner Table"] },
     { name: "Bedroom", content: ["Bedroom 1", "Bedroom 2", "Master Bedroom"] },
-    { name: "Study room", content: null },
-    { name: "Backyard", content: null },
+    { name: "Study room", content: ["Main Room", "Storage"] },
+    { name: "Backyard", content: ["Barbicu Corner", "Pool", "Gym Room"] },
     { name: "Parking lot", content: ["Closed Garage", "Outside Garage"] },
-  ]
+  ];
 
   const devices = [
-    { name: "Network configuration", type: "network", icon: MdWifi },
+    { name: "Network settings", type: "network", icon: MdWifi },
     { name: "Choose by room", type: "room", icon: MdChevronRight },
     { name: "Choose by category", type: "category", icon: MdChevronRight },
   ]
