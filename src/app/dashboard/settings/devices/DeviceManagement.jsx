@@ -37,56 +37,56 @@ const DeviceManagement = () => {
   ];
 
   return (
-    <div className={styles.ap_deviceManagementContainer}>
+    <div className={styles.deviceManagementContainer}>
       {/* Rooms Section */}
-      <div className={styles.ap_section}>
-        <h2 className={styles.ap_sectionHeader}>Rooms</h2>
-        <div className={styles.ap_buttonList}>
+      <div className={styles.section}>
+        <h2 className={styles.sectionHeader}>Rooms</h2>
+        <div className={styles.buttonList}>
           {rooms.map(({ name, content }) => (
             <Button
               key={name}
               variant="ghost"
-              className={styles.ap_buttonItem}
+              className={styles.buttonItem}
               onClick={() => (content ? openPopup("room", name) : null)}
             >
               {name}
-              <MdChevronRight className={styles.ap_chevronIcon} />
+              <MdChevronRight className={styles.chevronIcon} />
             </Button>
           ))}
         </div>
-        <div className={styles.ap_buttonGroup}>
-          <Button className={styles.ap_buttonItem}>Add Rooms</Button>
-          <Button className={styles.ap_buttonItem}>Remove Rooms</Button>
+        <div className={styles.buttonGroup}>
+          <Button className={styles.buttonItem}>Add Rooms</Button>
+          <Button className={styles.buttonItem}>Remove Rooms</Button>
         </div>
       </div>
 
       {/* Devices Section */}
-      <div className={styles.ap_section}>
-        <h2 className={styles.ap_sectionHeader}>Devices</h2>
-        <div className={styles.ap_buttonList}>
+      <div className={styles.section}>
+        <h2 className={styles.sectionHeader}>Devices</h2>
+        <div className={styles.buttonList}>
           {devices.map(({ name, type }) => (
             <Button
               key={name}
               variant="ghost"
-              className={styles.ap_buttonItem}
+              className={styles.buttonItem}
               onClick={() => openPopup(type)}
             >
               {name}
-              <MdChevronRight className={styles.ap_chevronIcon} />
+              <MdChevronRight className={styles.chevronIcon} />
             </Button>
           ))}
         </div>
-        <div className={styles.ap_buttonGroup}>
-          <Button className={styles.ap_buttonItem}>Add Device</Button>
-          <Button className={styles.ap_buttonItem}>Remove Device</Button>
+        <div className={styles.buttonGroup}>
+          <Button className={styles.buttonItem}>Add Device</Button>
+          <Button className={styles.buttonItem}>Remove Device</Button>
         </div>
       </div>
 
       {/* Pop-up for selected options */}
       {popupType && (
-        <div className={styles.ap_popupOverlay} onClick={closePopup}>
+        <div className={styles.popupOverlay} onClick={closePopup}>
           <div
-            className={styles.ap_popupContent}
+            className={styles.popupContent}
             onClick={(e) => e.stopPropagation()}
           >
             <h3>Options</h3>
@@ -94,44 +94,44 @@ const DeviceManagement = () => {
             {popupType === "network" && (
               <div>
                 {/* WiFi Toggle */}
-                <div className={styles.ap_toggleContainer}>
+                <div className={styles.toggleContainer}>
                   <label htmlFor="wifiToggle">WiFi:</label>
-                  <label className={styles.ap_toggleSwitch}>
+                  <label className={styles.toggleSwitch}>
                     <input
                       type="checkbox"
                       id="wifiToggle"
-                      className={styles.ap_toggleInput}
+                      className={styles.toggleInput}
                       checked={wifiEnabled}
                       onChange={() => setWifiEnabled(!wifiEnabled)}
                     />
-                    <span className={styles.ap_toggleSlider}></span>
+                    <span className={styles.toggleSlider}></span>
                   </label>
                 </div>
 
                 {/* WiFi Network Selection */}
-                <select className={styles.ap_dropdown}>
+                <select className={styles.dropdown}>
                   <option>Eduroam</option>
                   <option>HWUD_Temp</option>
                   <option>HWUD_Guest</option>
                 </select>
 
                 {/* Bluetooth Toggle */}
-                <div className={styles.ap_toggleContainer}>
+                <div className={styles.toggleContainer}>
                   <label htmlFor="bluetoothToggle">Bluetooth:</label>
-                  <label className={styles.ap_toggleSwitch}>
+                  <label className={styles.toggleSwitch}>
                     <input
                       type="checkbox"
                       id="bluetoothToggle"
-                      className={styles.ap_toggleInput}
+                      className={styles.toggleInput}
                       checked={bluetoothEnabled}
                       onChange={() => setBluetoothEnabled(!bluetoothEnabled)}
                     />
-                    <span className={styles.ap_toggleSlider}></span>
+                    <span className={styles.toggleSlider}></span>
                   </label>
                 </div>
 
                 {/* Bluetooth Device List */}
-                <select className={styles.ap_dropdown}>
+                <select className={styles.dropdown}>
                   <option>XYZ Camera</option>
                   <option>XYZ TV</option>
                 </select>
@@ -139,19 +139,19 @@ const DeviceManagement = () => {
             )}
 
             {popupType === "room" && (
-              <div className={styles.ap_popupList}>
+              <div className={styles.popupList}>
                 {/* Show sub-options if a specific room is selected */}
                 {selectedRoom
                   ? rooms
                       .find((room) => room.name === selectedRoom)
                       ?.content?.map((item, index) => (
-                        <Button key={index} className={styles.ap_popupButton}>
+                        <Button key={index} className={styles.popupButton}>
                           {item}
                         </Button>
                       ))
                   : /* Otherwise, show all available rooms */
                     rooms.map(({ name }) => (
-                      <Button key={name} className={styles.ap_popupButton}>
+                      <Button key={name} className={styles.popupButton}>
                         {name}
                       </Button>
                     ))}
@@ -159,7 +159,7 @@ const DeviceManagement = () => {
             )}
 
             {popupType === "category" && (
-              <div className={styles.ap_popupList}>
+              <div className={styles.popupList}>
                 {[
                   "Appliances",
                   "Bulbs",
@@ -172,14 +172,14 @@ const DeviceManagement = () => {
                   "Thermostats",
                   "TVs",
                 ].map((item, index) => (
-                  <Button key={index} className={styles.ap_popupButton}>
+                  <Button key={index} className={styles.popupButton}>
                     {item}
                   </Button>
                 ))}
               </div>
             )}
 
-            <Button className={styles.ap_popupClose} onClick={closePopup}>
+            <Button className={styles.popupClose} onClick={closePopup}>
               Close
             </Button>
           </div>

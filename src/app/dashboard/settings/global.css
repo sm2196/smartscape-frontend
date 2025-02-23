@@ -34,11 +34,6 @@ body {
   overflow-x: hidden;
 }
 
-.apMainContent {
-  flex-grow: 1; /* Makes the main content take the remaining space */
-  width: 100%;
-}
-
 /* Mobile-specific layout adjustments */
 @media (max-width: 480px) {
   .mainContent {
@@ -50,11 +45,6 @@ body {
   .mainContent > * {
     flex: 1;
     min-width: 0;
-  }
-
-  .apMainContent {
-    padding-top: 50px;
-    padding-bottom: 70px;
   }
 }
 

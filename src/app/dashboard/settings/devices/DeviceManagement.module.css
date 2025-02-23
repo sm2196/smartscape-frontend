@@ -1,7 +1,7 @@
 /* DeviceManagement.module.css */
 
 /* General container styles */
-.ap_deviceManagementContainer {
+.deviceManagementContainer {
   width: 100%;
   max-width: 100%;
   display: flex;
@@ -11,14 +11,14 @@
 }
 
 /* Section styles */
-.ap_section {
+.section {
   border-radius: 8px;
   padding: 8px;
   flex: 1;
 }
 
 /* Section Header styles */
-.ap_sectionHeader {
+.sectionHeader {
   display: flex;
   justify-content: space-between;
   /* Ensures the title and buttons are on the same line */
@@ -29,7 +29,7 @@
 }
 
 /* Button Group for Add/Remove device buttons */
-.ap_buttonGroup {
+.buttonGroup {
   display: flex;
   justify-content: center;
   /* Centers the buttons horizontally */
@@ -38,7 +38,7 @@
 }
 
 /* Enhanced individual button styles */
-.ap_buttonGroup .ap_buttonItem {
+.buttonGroup .buttonItem {
   background-color: #152447;
   color: white;
   width: 200px;
@@ -53,19 +53,19 @@
 }
 
 /* Hover effects */
-.ap_buttonGroup .ap_buttonItem:hover {
+.buttonGroup .buttonItem:hover {
   background-color: #D2DCF5;
   color: #152447;
   transform: scale(1.05);
 }
 
 /* Focus effect for accessibility */
-.ap_buttonGroup .ap_buttonItem:focus {
+.buttonGroup .buttonItem:focus {
   outline: none;
   box-shadow: 0 0 0 4px rgba(77, 72, 146, 0.3);
 }
 
-.ap_buttonList {
+.buttonList {
   display: grid;
     grid-template-columns: repeat(2, 1fr);
     /* 2 columns */
@@ -77,7 +77,7 @@
 }
 
 /* Individual Button Item styles */
-.ap_buttonItem {
+.buttonItem {
   background-color: #D2DCF5;
   border: 1px solid #333;
   padding: 16px;
@@ -94,13 +94,13 @@
 }
 
 /* Hover effect for buttons */
-.ap_buttonItem:hover {
+.buttonItem:hover {
   background-color: #e0e0e0;
   transform: scale(1.05);
 }
 
 /* Chevron icon style */
-.ap_chevronIcon {
+.chevronIcon {
   width: 14px;
   height: 14px;
   margin-left: 8px;
@@ -109,7 +109,7 @@
 /* ====== Toggle Switch Improvements ====== */
 
 /* Toggle Switch Wrapper */
-.ap_toggleSwitch {
+.toggleSwitch {
   position: relative;
   display: inline-block;
   width: 50px;
@@ -117,14 +117,14 @@
 }
 
 /* Hide the default checkbox */
-.ap_toggleInput {
+.toggleInput {
   opacity: 0;
   width: 0;
   height: 0;
 }
 
 /* The slider (background of toggle) */
-.ap_toggleSlider {
+.toggleSlider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -138,7 +138,7 @@
 }
 
 /* The slider circle (toggle knob) */
-.ap_toggleSlider::before {
+.toggleSlider::before {
   content: "";
   position: absolute;
   height: 18px;
@@ -151,17 +151,17 @@
 }
 
 /* Toggle ON state */
-.ap_toggleInput:checked+.ap_toggleSlider {
+.toggleInput:checked+.toggleSlider {
   background-color: green;
 }
 
 /* Move the toggle knob when switched ON */
-.ap_toggleInput:checked+.ap_toggleSlider::before {
+.toggleInput:checked+.toggleSlider::before {
   transform: translateX(24px);
 }
 
 /* Toggle Container */
-.ap_toggleContainer {
+.toggleContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -174,7 +174,7 @@
 /* ====== Popup Styling ====== */
 
 /* Overlay for pop-up */
-.ap_popupOverlay {
+.popupOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -189,7 +189,7 @@
 }
 
 /* Popup content container */
-.ap_popupContent {
+.popupContent {
   background-color: white;
   padding: 20px;
   border-radius: 12px;
@@ -202,21 +202,21 @@
 }
 
 /* Popup title */
-.ap_popupContent h3 {
+.popupContent h3 {
   font-size: 1.5rem;
   margin-bottom: 10px;
   color: #152447;
 }
 
 /* Default: Column layout for less than or equal to 5 buttons */
-.ap_popupList {
+.popupList {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
 /* If there are more than 5 buttons, switch to a 2-row grid */
-.ap_popupList:has(.ap_popupButton:nth-child(6)) {
+.popupList:has(.popupButton:nth-child(6)) {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   /* 2 columns */
@@ -226,7 +226,7 @@
 }
 
 /* Popup button */
-.ap_popupButton {
+.popupButton {
   background-color: #D2DCF5;
   padding: 12px;
   border-radius: 8px;
@@ -239,12 +239,12 @@
   width: 100%;
 }
 
-.ap_popupButton:hover {
+.popupButton:hover {
   background-color: #e0e0e0;
 }
 
 /* Close button */
-.ap_popupClose {
+.popupClose {
   margin-top: 20px;
   background-color: #ff4d4d;
   color: white;
@@ -257,12 +257,12 @@
   width: 100%;
 }
 
-.ap_popupClose:hover {
+.popupClose:hover {
   background-color: #d63030;
 }
 
 /* Toggle switch styling */
-.ap_toggleContainer {
+.toggleContainer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -273,7 +273,7 @@
 }
 
 /* Select dropdown */
-.ap_dropdown {
+.dropdown {
   background-color: #D2DCF5;
   color: #333;
   width: 100%;
@@ -299,50 +299,50 @@
 
 /* Further adjustment for mobile screens */
 @media (max-width: 480px) {
-  .ap_roomsGrid {
+  .roomsGrid {
     grid-template-columns: repeat(1, 1fr);
     /* Make it 1 column for mobile */
     grid-template-rows: auto;
   }
 
-  .ap_buttonGroup {
+  .buttonGroup {
     flex-direction: column;
     align-items: center;
   }
 
-  .ap_buttonGroup .ap_buttonItem {
+  .buttonGroup .buttonItem {
     font-size: 0.85rem;
     width: 100%;
     margin: 0 5px;
     margin-top: 10px;
   }
 
-  .ap_buttonList {
+  .buttonList {
     grid-template-columns: repeat(1, 1fr); /* Switch to 1 column on small screens */
     grid-template-rows: auto;
     gap: 8px;
   }
 
-  .ap_buttonItem {
+  .buttonItem {
     padding: 15px;
     font-size: 1rem;
   }
 
-  .ap_popupContent {
+  .popupContent {
     padding: 15px;
   }
 
-  .ap_popupButton,
-  .ap_popupClose {
+  .popupButton,
+  .popupClose {
     font-size: 1rem;
     padding: 10px;
   }
 
-  .ap_popupList:has(.ap_popupButton:nth-child(6)) {
+  .popupList:has(.popupButton:nth-child(6)) {
   display: flex;
 }
 
-  .ap_dropdown{
+  .dropdown{
     padding: 10px;
     height: 45px;
   }
