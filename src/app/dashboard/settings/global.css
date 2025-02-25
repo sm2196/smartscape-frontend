@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/utilities.css" layer(utilities) prefix(tw);
+
 :root {
   --silver: #c4c4c4;
   --oxford-blue: #0a1630;
@@ -17,14 +21,6 @@
 
 body {
   margin: 0;
-}
-
-.container {
-  display: flex;
-  flex-direction: row;
-  min-height: 100vh;
-  max-height: 100vh; /* Add max-height */
-  overflow: hidden; /* Prevent body scroll */
 }
 
 .mainContent {
