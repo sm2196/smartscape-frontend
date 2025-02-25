@@ -239,7 +239,7 @@
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    margin-top: 5px;
+    margin-top: 0px;
     border-radius: 5px;
 }
 
@@ -304,8 +304,8 @@
     border-radius: 5px;
 }
 
-.unlink-btn:hover{
-background-color: rgb(108, 10, 10);
+.unlink-btn:hover {
+    background-color: rgb(108, 10, 10);
 
 }
 
@@ -318,9 +318,9 @@ background-color: rgb(108, 10, 10);
     border-radius: 5px;
 }
 
-.link-btn:hover{
-    background-color:#005141;
-    }
+.link-btn:hover {
+    background-color: #005141;
+}
 
 .general-settings {
     grid-column: span 2;
@@ -329,6 +329,7 @@ background-color: rgb(108, 10, 10);
     border: 1px solid #152447;
     border-radius: 10px;
 }
+
 .integrated-status,
 .not-integrated-status {
     font-size: 0.85rem;
@@ -518,38 +519,3 @@ background-color: rgb(108, 10, 10);
         gap: 20px;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
