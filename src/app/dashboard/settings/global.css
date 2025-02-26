@@ -10,6 +10,7 @@
   --space-cadet: #152447;
   --lavender: #d2dcf5;
   --snow: #fffafa;
+  --active: #d2dcf51a;
 
   --text-primary: var(--snow);
   --text-secondary: var(--silver);
@@ -18,31 +19,3 @@
 * {
   font-family: "Roboto", sans-serif;
 }
-
-body {
-  margin: 0;
-}
-
-.mainContent {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  overflow-x: hidden;
-}
-
-/* Mobile-specific layout adjustments */
-@media (max-width: 480px) {
-  .mainContent {
-    flex-direction: column;
-    padding-top: 64px; /* Match navbar height */
-    height: calc(100vh - 64px); /* Subtract navbar height */
-  }
-
-  .mainContent > * {
-    flex: 1;
-    min-width: 0;
-  }
-}
-
-
-
