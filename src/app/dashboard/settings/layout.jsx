@@ -8,7 +8,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className="tw:font-roboto">
       <body className="tw:m-0">
         <div className="tw:flex tw:flex-row tw:max-h-screen tw:overflow-hidden">
           <SettingsNavbar />
