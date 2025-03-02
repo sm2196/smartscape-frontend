@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import {
   MdOutlineMode,
   MdDeleteOutline,
@@ -8,6 +8,7 @@ import {
   MdSwitchAccount,
   MdPersonAddAlt1,
   MdAccountCircle,
+  MdAddAPhoto,
 } from "react-icons/md"
 import styles from "./ProfileContent.module.css"
 
@@ -15,6 +16,9 @@ export default function ProfileContent() {
   const [isMobile] = useState(false)
   const [editingField, setEditingField] = useState(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [profileImage, setProfileImage] = useState(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef(null)
   const [fieldValues, setFieldValues] = useState({
     legalName: "Gerald",
     email: "x*****@hw.ac.uk",
@@ -58,6 +62,47 @@ export default function ProfileContent() {
       }))
       setEditingField(null)
     }
+  }
+
+  const handleProfileImageClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    setIsUploading(true)
+
+    // Create a FileReader to read the image file
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      setProfileImage(event.target.result)
+      setIsUploading(false)
+    }
+    reader.onerror = () => {
+      console.error("Error reading file")
+      setIsUploading(false)
+    }
+    reader.readAsDataURL(file)
+
+    // In a real application, you would upload the file to your server or a storage service
+    // For example:
+    // const formData = new FormData()
+    // formData.append('profileImage', file)
+    // fetch('/api/upload-profile-image', {
+    //   method: 'POST',
+    //   body: formData
+    // })
+    // .then(response => response.json())
+    // .then(data => {
+    //   setProfileImage(data.imageUrl)
+    //   setIsUploading(false)
+    // })
+    // .catch(error => {
+    //   console.error('Error uploading image:', error)
+    //   setIsUploading(false)
+    // })
   }
 
   const accountActions = [
@@ -105,7 +150,24 @@ export default function ProfileContent() {
         </div>
 
         <div className={styles.profileInfo}>
-          <MdAccountCircle className={styles.logo} size={54} aria-hidden="true" />
+          <div className={styles.profileImageContainer} onClick={handleProfileImageClick}>
+            {profileImage ? (
+              <img src={profileImage || "/placeholder.svg"} alt="Profile" className={styles.profileImage} />
+            ) : (
+              <MdAccountCircle className={styles.logo} size={54} aria-hidden="true" />
+            )}
+            <div className={styles.profileImageOverlay}>
+              <MdAddAPhoto size={20} />
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageUpload}
+              accept="image/*"
+              className={styles.fileInput}
+            />
+            {isUploading && <div className={styles.uploadingIndicator}>Uploading...</div>}
+          </div>
           <div className={styles.textContainer}>
             <p>Admin XYZ</p>
             <p>xyz1234@hw.ac.uk</p>
@@ -135,7 +197,7 @@ export default function ProfileContent() {
                 {title}
                 <button
                   className={styles.editButton}
-                  onClick={() => handleEdit(Object.keys(displayMapping).find(key => displayMapping[key] === title))}
+                  onClick={() => handleEdit(Object.keys(displayMapping).find((key) => displayMapping[key] === title))}
                 >
                   {action}
                 </button>
@@ -150,8 +212,12 @@ export default function ProfileContent() {
       {editingField && (
         <div className={styles.modalOverlay} onClick={() => setEditingField(null)}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <h2 className={styles.modalTitle}>{editingField === "phoneNumbers" ? "Add" : "Edit"} {displayMapping[editingField]}</h2>
-            <p className={styles.modalDescription}>Make changes to your {displayMapping[editingField]}. Click save when you're done.</p>
+            <h2 className={styles.modalTitle}>
+              {editingField === "phoneNumbers" ? "Add" : "Edit"} {displayMapping[editingField]}
+            </h2>
+            <p className={styles.modalDescription}>
+              Make changes to your {displayMapping[editingField]}. Click save when you're done.
+            </p>
             <div className={styles.modalContent}>
               <label htmlFor="value" className={styles.modalLabel}>
                 {displayMapping[editingField]}
@@ -196,3 +262,4 @@ export default function ProfileContent() {
     </main>
   )
 }
+
