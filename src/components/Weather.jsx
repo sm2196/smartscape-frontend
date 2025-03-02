@@ -11,7 +11,6 @@ import {
   MdLocationOn,
   MdNightsStay,
 } from "react-icons/md";
-import styles from "./Weather.module.css";
 
 const weatherIcons = {
   clear: MdWbSunny,
@@ -93,22 +92,27 @@ export function WeatherWidget() {
     WeatherIcon = weatherIcons[weather.condition] || MdFilterDrama;
   } else {
     // Nighttime logic
-    WeatherIcon = weather.condition === "clear"
-      ? weatherIcons.night // If it's night and clear, show night icon
-      : weatherIcons[weather.condition] || MdFilterDrama; // Otherwise show condition icon or default to fog
+    WeatherIcon =
+      weather.condition === "clear"
+        ? weatherIcons.night // If it's night and clear, show night icon
+        : weatherIcons[weather.condition] || MdFilterDrama; // Otherwise show condition icon or default to fog
   }
 
   return (
-    <div className={styles.weatherWidget}>
-      <div className={styles.leftContent}>
-        <WeatherIcon className={styles.weatherIcon} />
-        <div className={styles.weatherInfo}>
-          <div className={styles.temperature}>{weather.temp}°C</div>
-          <div className={styles.condition}>{weather.condition}</div>
+    <div className="tw:text-[color:var(--text-primary)] tw:flex tw:justify-between tw:-mx-8 tw:px-8 tw:py-4 tw:bg-[color:#d2dcf50d]">
+      <div className="tw:flex tw:items-center tw:gap-3">
+        <WeatherIcon className="tw:text-[32px] tw:opacity-90" />
+        <div className="tw:flex tw:flex-col tw:gap-0.5">
+          <div className="tw:text-xl tw:leading-none tw:tracking-[-0.5px]">
+            {weather.temp}°C
+          </div>
+          <div className="tw:text-[13px] tw:text-[color:var(--text-secondary)] tw:capitalize">
+            {weather.condition}
+          </div>
         </div>
       </div>
-      <div className={styles.location}>
-        <MdLocationOn className={styles.locationIcon} />
+      <div className="tw:flex tw:items-center tw:gap-1 tw:text-[13px] tw:text-[color:var(--text-secondary)] tw:pl-4 tw:border-l-[color:var(--active)] tw:border-l">
+        <MdLocationOn className="tw:text-sm" />
         <span>{weather.location}</span>
       </div>
     </div>

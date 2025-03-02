@@ -74,7 +74,7 @@ export default function SettingsNavbar() {
 
         tw:max-sm:w-full tw:max-sm:fixed tw:max-sm:z-[1]
         tw:max-sm:h-auto tw:max-sm:px-4 tw:max-sm:py-2
-        ${isMenuOpen ? "tw:max-sm:h-screen" : ""}`}
+        ${isMenuOpen ? "tw:max-sm:h-screen" : ""}`} // Expands navbar to full height on mobile
     >
       <div className="tw:max-sm:flex tw:max-sm:h-10">
         <div className="tw:flex-col tw:mb-10 tw:max-sm:hidden">
@@ -102,7 +102,7 @@ export default function SettingsNavbar() {
             <Link
               key={item.name}
               href={item.href}
-              className={`tw:flex tw:items-center tw:gap-4 tw:text-[color:var(--text-primary)] tw:no-underline tw:transition-all tw:duration-[0.2s] tw:ease-[ease] tw:font-medium tw:px-4 tw:py-3 tw:rounded-xl tw:hover:bg-[color:#d2dcf50d]
+              className={`tw:flex tw:items-center tw:gap-4 tw:text-[color:var(--text-primary)] tw:no-underline tw:transition-all tw:duration-300 tw:ease-[ease] tw:font-medium tw:px-4 tw:py-3 tw:rounded-xl tw:hover:bg-[color:#d2dcf50d]
 
               tw:max-sm:text-lg tw:max-sm:min-h-[48px] tw:max-sm:p-4
               ${isActive ? "tw:bg-[color:var(--active)]" : ""}`}
