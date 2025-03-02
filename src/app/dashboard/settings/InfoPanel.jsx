@@ -57,11 +57,11 @@ export default function InfoPanel() {
 
   // Base paragraph styling applied to both collapsed and expanded states.
   const paragraphBaseClasses =
-    "tw:text-[#717171] tw:text-base tw:transition-all tw:duration-300 tw:ease-out tw:bg-[#F1F0F5] tw:rounded-lg";
+    "tw:text-[#717171] tw:text-base tw:transition-all tw:duration-300 tw:ease-out tw:bg-[#F1F0F5] tw:rounded-lg tw:max-sm:px-2 tw:max-sm:py-0";
   // When expanded, the paragraph becomes fully visible.
   const paragraphExpandedClasses =
-    "tw:max-h-[1000px] tw:opacity-100 tw:mt-2.5 tw:p-2.5";
-  // // When collapsed, the paragraph is hidden.
+    "tw:max-h-[1000px] tw:opacity-100 tw:mt-2.5 tw:p-2.5 tw:max-sm:mt-2";
+  // When collapsed, the paragraph is hidden.
   const paragraphCollapsedClasses = "tw:max-h-0 tw:opacity-0 tw:mt-0 tw:px-2.5";
 
   return (
