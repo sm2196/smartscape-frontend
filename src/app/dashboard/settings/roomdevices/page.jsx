@@ -1,5 +1,5 @@
-import DeviceManagement from "./RoomDeviceManagement";
+import RoomDeviceManagement from "./RoomDeviceManagement";
 
 export default function RoomDevicePage() {
-  return <DeviceManagement />;
+  return <RoomDeviceManagement />;
 }

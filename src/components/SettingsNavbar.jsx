@@ -22,7 +22,10 @@ const navigation = [
     href: "/dashboard/settings/privacy",
     icon: MdSecurity,
   },
-  { name: "Admin Settings", href: "#", icon: MdSettings },
+  { name: "Admin Settings",
+    href: "/dashboard/settings/admin",
+    icon: MdSettings
+  },
   {
     name: "Notifications",
     href: "/dashboard/settings/notifications",
