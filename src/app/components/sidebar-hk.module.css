@@ -1,4 +1,4 @@
-.hksidebar {
+.sidebar {
   width: 250px;
   height: 100vh;
   background-color: #0a1630;
@@ -6,30 +6,34 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  overflow-y: auto;
 }
 
-.hktimeDisplay {
+.timeDisplay {
   margin-bottom: 20px;
   text-align: center;
 }
 
-.hkcurrentTime {
+.currentTime {
   font-size: 1.5rem;
   font-weight: bold;
 }
 
-.hkcurrentDate {
+.currentDate {
   font-size: 1rem;
 }
 
-.hknavMenu {
+.navMenu {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.hknavLink {
+.navLink {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -40,13 +44,41 @@
   transition: background-color 0.3s ease;
 }
 
-.hknavLink:hover {
+.navLink:hover {
   background-color: #152447;
 }
 
-.hkactive {
+.active {
   background-color: #152447;
   font-weight: bold;
 }
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: fixed;
+    bottom: auto;
+    z-index: 1000;
+  }
+
+  .timeDisplay {
+    display: none;
+  }
+
+  .navMenu {
+    flex-direction: row;
+    justify-content: space-around;
+    overflow-x: auto;
+  }
+
+  .navLink {
+    flex-direction: column;
+    text-align: center;
+    font-size: 0.8rem;
+  }
+}
+
+
 
 

@@ -1,19 +1,14 @@
-"use client";
+"use client"
+import { Sidebar } from "./components/sidebar-hk"
+import EmergencyControl from "./hk-emergencycontrol"
 
-import React from "react";
-import "./hk-emergencycontrol.module.css";
-import {Sidebar} from "./components/sidebar-hk";
-import EmergencyControl from "./hk-emergencycontrol";
-
-const Page = () => {
+export default function Home() {
   return (
-    <div className="dashboardLayout">
+    <div className="flex min-h-screen">
       <Sidebar />
-      <main className="mainContent">
-        <EmergencyControl/>
-        </main>
-        </div>
-  );
-};
+      <EmergencyControl />
+    </div>
+  )
+}
 
-export default Page;
+

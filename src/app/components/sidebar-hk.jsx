@@ -1,8 +1,9 @@
 "use client"
+
 import { MdHome, MdInsertChart, MdLocalPolice, MdOutlineDevicesOther, MdSettings, MdChat } from "react-icons/md"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import styles from "./sidebar-hk.module.css"
+import styles from "./Sidebar.module.css"
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: MdHome },
@@ -26,7 +27,7 @@ export function Sidebar() {
   })
 
   return (
-    <div className={styles.sidebar}>
+    <aside className={styles.sidebar}>
       <div className={styles.timeDisplay}>
         <div className={styles.currentTime}>{timeString}</div>
         <div className={styles.currentDate}>{dateString}</div>
@@ -42,6 +43,7 @@ export function Sidebar() {
           )
         })}
       </nav>
-    </div>
+    </aside>
   )
 }
+
