@@ -10,19 +10,81 @@
   color: var(--oxford-blue);
   font-size: 2rem;
   margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Header Actions */
+.headerActions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.iconButtonGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  color: var(--oxford-blue);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.iconButton:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.iconButton:active {
+  transform: translateY(0);
+}
+
+.deleteButton {
+  color: #dc2626;
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
 }
 
 /* Profile box styles */
 .profileBox {
   background-color: var(--lavender);
   padding: 20px;
-  border-radius: 8px;
-  margin-bottom: 20px;
+  border-radius: 12px;
+  margin-bottom: 24px;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 0;
   position: relative;
   width: 100%;
   box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.profileBox:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.profileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .profileInfo {
@@ -30,27 +92,41 @@
   align-items: center;
 }
 
-.logo {
-  margin-right: 10px;
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.textContainer p {
+.profileName {
   margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--oxford-blue);
 }
 
-.textContainer p:first-child {
-  margin-bottom: 5px;
+.profileEmail {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
 }
 
 /* Profile image styles */
 .profileImageContainer {
   position: relative;
-  width: 54px;
-  height: 54px;
+  width: 64px;
+  height: 64px;
   border-radius: 50%;
-  margin-right: 10px;
+  margin-right: 16px;
   overflow: hidden;
   cursor: pointer;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease;
+}
+
+.profileImageContainer:hover {
+  transform: scale(1.05);
 }
 
 .profileImage {
@@ -58,6 +134,12 @@
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  color: var(--oxford-blue);
 }
 
 .profileImageOverlay {
@@ -100,75 +182,110 @@
 }
 
 /* Action icons */
-.actionIcons {
-  position: absolute;
-  top: 10px;
-  right: 26px;
+.profileActions {
   display: flex;
-  gap: 10px;
-  margin-bottom: 10px;
+  justify-content: flex-end;
+  width: 100%;
 }
 
-.iconButton {
-  all: unset;
+.actionButtons {
+  display: flex;
+  gap: 8px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background-color: white;
+  border: none;
+  border-radius: 8px;
+  color: var(--oxford-blue);
+  font-weight: 500;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  font-size: 14px;
 }
 
-.iconButton:hover {
-  opacity: 0.8;
+.actionButton:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+}
+
+.actionButton:active {
+  transform: translateY(0);
+}
+
+.deleteButton {
+  color: #dc2626;
+}
+
+.deleteButton:hover {
+  background-color: #fee2e2;
 }
 
 /* User icons and buttons */
 .userIcons {
-  display: flex;
-  flex-direction: row;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin: 20px 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
 }
 
 .iconWithText {
-  flex: 1;
-  min-width: 160px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border-radius: 8px;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
   background-color: #f8f9fa;
   transition: all 0.2s ease;
   cursor: pointer;
   border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .iconWithText:hover {
   background-color: #f0f0f0;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .iconWithText:active {
   transform: translateY(0);
 }
 
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+}
+
 .iconWithText span {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--oxford-blue);
   font-weight: 500;
 }
 
 .signOutButton {
-  align-self: flex-start;
-  margin-top: 25px;
-  margin-left: auto;
-  padding: 8px 12px;
+  padding: 8px 16px;
   background-color: transparent;
   color: var(--oxford-blue);
   border: 2px solid var(--oxford-blue);
-  border-radius: 4px;
+  border-radius: 8px;
   cursor: pointer;
   font-weight: bold;
   transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
 }
 
 .signOutButton:hover {
@@ -182,56 +299,81 @@
 }
 
 /* Personal information styles */
+.personalInfoSection {
+  margin-top: 16px;
+}
+
 .personalInfo {
   font-size: 24px;
   color: var(--oxford-blue);
+  margin-bottom: 16px;
+  font-weight: 600;
 }
 
 .infoList {
   list-style: none;
   padding: 0;
   margin: 0;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .infoItem {
-  margin-bottom: 15px;
+  padding: 16px 20px;
   position: relative;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #ebebeb;
 }
 
-.infoTitle {
+.infoItem:last-child {
+  border-bottom: none;
+}
+
+.infoItem:hover {
+  background-color: #f0f0f0;
+}
+
+.infoHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 8px;
+}
+
+.infoTitle {
   font-size: 16px;
-  color: #000000;
+  font-weight: 600;
+  color: #333;
 }
 
 .editButton {
-  all: unset;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   font-weight: bold;
-  color: #222222;
+  color: var(--oxford-blue);
+  background: none;
+  border: none;
   cursor: pointer;
-  text-decoration: underline;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
 
 .editButton:hover {
-  opacity: 0.8;
+  background-color: rgba(21, 36, 71, 0.1);
 }
 
 .infoValue {
   font-size: 14px;
-  color: #717171;
-  margin: 5px 0 0;
+  color: #555;
+  margin: 0;
 }
 
-.infoUnderline {
-  margin-top: 15px;
-  border-bottom: 1px solid #ebebeb;
-  width: 100%;
-}
-
-/* Add these new modal styles */
+/* Modal styles */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -243,32 +385,83 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modal {
   background-color: white;
-  border-radius: 8px;
-  padding: 24px;
+  border-radius: 12px;
   width: 90%;
   max-width: 480px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  animation: slideUp 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  padding: 20px 24px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .modalTitle {
   font-size: 18px;
   font-weight: 600;
-  margin: 0 0 8px 0;
+  margin: 0;
   color: var(--oxford-blue);
+}
+
+.modalCloseButton {
+  background: none;
+  border: none;
+  color: #777;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  background-color: #f5f5f5;
+  color: #333;
 }
 
 .modalDescription {
   color: #666;
-  margin-bottom: 24px;
+  margin: 0;
+  padding: 16px 24px;
   font-size: 14px;
+  border-bottom: 1px solid #eee;
 }
 
 .modalContent {
-  margin-bottom: 24px;
+  padding: 24px;
 }
 
 .modalLabel {
@@ -283,36 +476,67 @@
   width: 100%;
   padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 14px;
   box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modalInput:focus {
   outline: none;
   border-color: var(--oxford-blue);
+  box-shadow: 0 0 0 2px rgba(21, 36, 71, 0.1);
+}
+
+.modalInput::placeholder {
+  color: #aaa;
+}
+
+.inputError {
+  border-color: #dc2626;
+}
+
+.errorMessage {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 6px;
 }
 
 .modalFooter {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
+  padding: 16px 24px;
+  border-top: 1px solid #eee;
 }
 
 .modalButtonPrimary,
 .modalButtonSecondary {
   padding: 10px 16px;
-  border-radius: 4px;
+  border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   font-size: 14px;
   min-width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .modalButtonPrimary {
   background-color: var(--oxford-blue);
   color: white;
   border: none;
+}
+
+.modalButtonPrimary:hover {
+  background-color: #0a1225;
+}
+
+.modalButtonPrimary:active {
+  transform: scale(0.98);
 }
 
 .modalButtonSecondary {
@@ -325,6 +549,10 @@
   background-color: #f5f5f5;
 }
 
+.modalButtonSecondary:active {
+  transform: scale(0.98);
+}
+
 .modalButtonDanger {
   background-color: #dc2626;
   border-color: #dc2626;
@@ -332,23 +560,185 @@
 }
 
 .modalButtonDanger:hover {
-  opacity: 0.9;
+  background-color: #b91c1c;
+}
+
+/* Account management styles */
+.accountManagementOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accountOption {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: #f8f9fa;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+  width: 100%;
+  font-size: 15px;
+  color: var(--oxford-blue);
+}
+
+.accountOption:hover {
+  background-color: #f0f0f0;
+}
+
+.dangerOption {
+  color: #dc2626;
+}
+
+.dangerOption:hover {
+  background-color: #fee2e2;
+}
+
+.accountsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.accountItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.accountAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0e0e0;
+  color: #666;
+}
+
+.accountAvatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.accountInfo {
+  flex: 1;
+}
+
+.accountName {
+  font-weight: 500;
+  color: #333;
+}
+
+.accountEmail {
+  font-size: 12px;
+  color: #666;
+}
+
+.activeAccount {
+  font-size: 12px;
+  padding: 4px 8px;
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.switchToButton {
+  padding: 4px 12px;
+  background-color: var(--oxford-blue);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.switchToButton:hover {
+  background-color: #0a1225;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.deleteModal,
+.signOutModal {
+  max-width: 400px;
+}
+
+/* Toast notification */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: #10b981;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 1100;
+  animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s forwards;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 /* Responsive styles */
 @media (max-width: 480px) {
+  .profileMainContent {
+    padding: 16px;
+  }
+
+  .header {
+    font-size: 1.5rem;
+  }
+
+  .profileBox {
+    padding: 16px;
+  }
+
   .userIcons {
     grid-template-columns: 1fr;
-    gap: 12px;
   }
 
   .iconWithText {
-    justify-content: center;
+    justify-content: flex-start;
   }
 
   .modal {
     width: 95%;
-    margin: 16px;
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   .modalFooter {
@@ -359,6 +749,43 @@
   .modalButtonPrimary,
   .modalButtonSecondary {
     width: 100%;
+  }
+
+  .profileImageContainer {
+    width: 48px;
+    height: 48px;
+  }
+
+  .iconButton {
+    width: 32px;
+    height: 32px;
+  }
+
+  .profileHeader {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .headerActions {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
+
+  .signOutButton {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+
+  .profileImageContainer {
+    width: 56px;
+    height: 56px;
+  }
+
+  .logo {
+    width: 56px;
+    height: 56px;
   }
 }
 
