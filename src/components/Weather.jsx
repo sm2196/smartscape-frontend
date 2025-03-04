@@ -30,16 +30,10 @@ export function WeatherWidget() {
     condition: "loading",
     location: "Detecting...",
   });
-  const [lastUpdateTime, setLastUpdateTime] = useState(0);
 
   useEffect(() => {
     async function fetchLocationAndWeather() {
       try {
-        const now = Date.now();
-        if (now - lastUpdateTime < UPDATE_INTERVAL) {
-          console.log("Skipping update due to rate limit");
-          return;
-        }
 
         const locationResponse = await fetch("http://ip-api.com/json");
         if (!locationResponse.ok) throw new Error("Failed to fetch location");
@@ -63,7 +57,6 @@ export function WeatherWidget() {
           isDay: weatherData.current_weather.is_day === 1, // 1 for day, 0 for night
         });
 
-        setLastUpdateTime(now);
       } catch (error) {
         console.error("Error fetching location or weather data:", error);
       }
@@ -73,7 +66,7 @@ export function WeatherWidget() {
 
     const intervalId = setInterval(fetchLocationAndWeather, UPDATE_INTERVAL);
     return () => clearInterval(intervalId);
-  }, [lastUpdateTime]);
+  }, []);
 
   const mapWeatherCodeToCondition = (code) => {
     if ([0, 1].includes(code)) return "clear";
