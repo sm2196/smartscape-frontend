@@ -208,8 +208,9 @@ const AdminSettings = () => {
                 <div className={styles.familySection}>
                   <div className={styles.sectionHeader}>
                     <h2>Family Members</h2>
-                    <button className={styles.addButton} onClick={() => setShowAddMember(true)}>
+                    <button className={styles.mobileAddButton} onClick={() => setShowAddMember(true)}>
                       <MdAdd size={20} />
+                      <span>Add Member</span>
                     </button>
                   </div>
                   <div className={styles.memberList}>
@@ -226,6 +227,15 @@ const AdminSettings = () => {
                       </div>
                     ))}
                   </div>
+                  {familyMembers.length === 0 && (
+                    <div className={styles.emptyState}>
+                      <p>No family members added yet.</p>
+                      <button className={styles.addButton} onClick={() => setShowAddMember(true)}>
+                        <MdAdd size={20} />
+                        Add Member
+                      </button>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className={styles.permissionsSection}>
