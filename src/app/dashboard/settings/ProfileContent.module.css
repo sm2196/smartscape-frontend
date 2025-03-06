@@ -39,7 +39,6 @@
   color: var(--oxford-blue);
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .iconButton:hover {
@@ -693,6 +692,10 @@
   animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s forwards;
 }
 
+.toastError {
+  background-color: #dc2626;
+}
+
 @keyframes slideIn {
   from {
     transform: translateX(100%);
@@ -710,6 +713,31 @@
   }
   to {
     opacity: 0;
+  }
+}
+
+/* Loading styles */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(21, 36, 71, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--oxford-blue);
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -751,11 +779,6 @@
     width: 100%;
   }
 
-  .profileImageContainer {
-    width: 48px;
-    height: 48px;
-  }
-
   .iconButton {
     width: 32px;
     height: 32px;
@@ -788,4 +811,3 @@
     height: 56px;
   }
 }
-
