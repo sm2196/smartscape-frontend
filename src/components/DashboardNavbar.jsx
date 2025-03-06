@@ -57,7 +57,7 @@ export default function SettingsNavbar() {
   return (
     <div
       className={`tw:w-[280px] tw:flex tw:flex-col tw:p-8
-        tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)]
+        tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)] tw:border-r tw:border-[color:var(--active)]
 
         tw:max-sm:w-full tw:max-sm:fixed tw:max-sm:z-[1]
         tw:max-sm:h-auto tw:max-sm:px-4 tw:max-sm:py-2
