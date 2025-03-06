@@ -2,41 +2,25 @@
 
 import { useState, useEffect } from "react";
 import {
-  MdPerson,
-  MdSecurity,
+  MdHome,
+  MdInsertChart,
+  MdLocalPolice,
+  MdOutlineDevicesOther,
   MdSettings,
-  MdNotifications,
-  MdDevices,
-  MdArrowBackIosNew,
+  MdChat,
   MdMenu,
-  MdClose,
+  MdClose
 } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { WeatherWidget } from "./Weather";
 
 const navigation = [
-  { name: "Profiles", href: "/dashboard/settings", icon: MdPerson },
-  {
-    name: "Privacy & Security",
-    href: "/dashboard/settings/privacy",
-    icon: MdSecurity,
-  },
-  { name: "Admin Settings",
-    href: "/dashboard/settings/admin",
-    icon: MdSettings
-  },
-  {
-    name: "Notifications",
-    href: "/dashboard/settings/notifications",
-    icon: MdNotifications,
-  },
-  {
-    name: "Rooms & Devices",
-    href: "/dashboard/settings/roomdevices",
-    icon: MdDevices,
-  },
-  { name: "Dashboard", href: "/dashboard", icon: MdArrowBackIosNew },
+  { name: "Home", href: "/dashboard", icon: MdHome },
+  { name: "Consumption Analysis", href: "#", icon: MdInsertChart },
+  { name: "Emergency Controls", href: "#", icon: MdLocalPolice },
+  { name: "Device Controls", href: "#", icon: MdOutlineDevicesOther },
+  { name: "Customer Support", href: "#", icon: MdChat },
+  { name: "Settings", href: "/dashboard/settings", icon: MdSettings },
 ];
 
 export default function SettingsNavbar() {
@@ -72,7 +56,7 @@ export default function SettingsNavbar() {
 
   return (
     <div
-      className={`tw:w-[280px] tw:flex tw:flex-col tw:h-screen tw:p-8
+      className={`tw:w-[280px] tw:flex tw:flex-col tw:p-8
         tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)]
 
         tw:max-sm:w-full tw:max-sm:fixed tw:max-sm:z-[1]
@@ -81,24 +65,33 @@ export default function SettingsNavbar() {
     >
       <div className="tw:max-sm:flex tw:max-sm:h-10">
         <div className="tw:flex-col tw:mb-10 tw:max-sm:hidden">
-          <div className="tw:text-[clamp(2.5rem,6vw,3.5rem)] tw:font-light
+          <div
+            className="tw:text-[clamp(2.5rem,6vw,3.5rem)] tw:font-light
           tw:text-[color:var(--text-primary)] tw:leading-[1.1] tw:mb-2"
-          suppressHydrationWarning={true}>
+            suppressHydrationWarning={true}
+          >
             {timeString}
           </div>
-          <div className="tw:text-[clamp(1rem,2vw,1.125rem)]
+          <div
+            className="tw:text-[clamp(1rem,2vw,1.125rem)]
           tw:text-[color:var(--text-secondary)]"
-          suppressHydrationWarning={true}>
+            suppressHydrationWarning={true}
+          >
             {dateString}
           </div>
         </div>
-        <button className="tw:hidden tw:max-sm:block tw:text-[color:var(--text-primary)]
-         tw:p-1 tw:bg-transparent tw:border-none" onClick={toggleMenu}>
+        <button
+          className="tw:hidden tw:max-sm:block tw:text-[color:var(--text-primary)]
+         tw:p-1 tw:bg-transparent tw:border-none"
+          onClick={toggleMenu}
+        >
           {isMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
         </button>
       </div>
-      <nav className={`tw:flex tw:flex-col tw:gap-2 tw:max-sm:mt-3 tw:max-sm:pb-3
-      ${isMenuOpen ? "tw:max-sm:block" : "tw:max-sm:hidden"}`}>
+      <nav
+        className={`tw:flex tw:flex-col tw:gap-2 tw:max-sm:mt-3 tw:max-sm:pb-3
+      ${isMenuOpen ? "tw:max-sm:block" : "tw:max-sm:hidden"}`}
+      >
         {navigation.map((item) => {
           const isActive = pathname === item.href;
           return (
@@ -109,16 +102,14 @@ export default function SettingsNavbar() {
 
               tw:max-sm:text-lg tw:max-sm:min-h-[48px] tw:max-sm:p-4
               ${isActive ? "tw:bg-[color:var(--active)]" : ""}`}
-              onClick={() => setIsMenuOpen(false)}>
+              onClick={() => setIsMenuOpen(false)}
+            >
               <item.icon className="tw:text-2xl" />
               <span className="tw:flex-1">{item.name}</span>
             </Link>
           );
         })}
       </nav>
-      <div className="tw:mt-auto tw:mb-8 tw:max-sm:hidden">
-        <WeatherWidget />
-      </div>
     </div>
   );
 }

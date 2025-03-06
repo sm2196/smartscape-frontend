@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
@@ -6,6 +7,7 @@
 
 @theme {
   --font-roboto: "Roboto", sans-serif;
+  --font-inter: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 :root {
@@ -16,6 +18,34 @@
   --snow: #fffafa;
   --active: #d2dcf51a;
 
+  --background-dark: var(--oxford-blue);
+  --surface-dark: var(--space-cadet);
+  --card-dark: var(--space-cadet);
+  --card-hover: #1c2d5a;
+  --card-active: var(--lavender);
   --text-primary: var(--snow);
   --text-secondary: var(--silver);
+
+  --status-yellow: #ffd700;
+  --status-green: #4ade80;
+  --status-blue: #60a5fa;
+  --status-pink: #f472b6;
+}
+
+/* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(210, 220, 245, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 220, 245, 0.3);
 }

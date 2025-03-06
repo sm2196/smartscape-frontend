@@ -1,5 +1,5 @@
-import SettingsNavbar from "../../../components/SettingsNavbar";
-import "../../global.css";
+import SettingsNavbar from "@/components/SettingsNavbar";
+import "@/app/global.css";
 
 export const viewport = {
   width: "device-width",
