@@ -337,14 +337,46 @@ h2 {
   margin: 10px 0;
 }
 
+@media screen and (max-width: 768px) {
+  .mainContent {
+    flex-direction: column;
+    padding-top: 74px;
+    height: calc(100vh - 64px);
+  }
 
+  .faq-nav {
+    display: none;
+  }
 
+  .faq-container {
+    max-width: 100%;
+    padding: 0 15px;
+  }
 
+  .faq-item {
+    width: 100%;
+  }
 
+  .videoBtn {
+    width: 50px;
+    height: 40px;
+    font-size: 0.9em;
+    top: 10px;
+    right: 15px;
+    top: 80px;
 
+  }
 
+  .videoBtn:hover {
+    background-color: #152447;
+  }
 
+  .IconContainer {
+    background: transparent;
+  }
 
+  .text {
+    display: none;
+  }
 
-
-
+}
