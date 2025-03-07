@@ -18,6 +18,14 @@ const faqs = [
 
 // User & Household Management
 { category: "user-household", question: "What is the difference between an admin and a general user?", answer: "- 'Admin:' Manages household settings, users, security, and devices.\n- 'General User:' Can control devices but needs admin approval to join a household." },
+{ category: "user-household", question: "How do I link a general user to my household?", answer: "Go to 'Settings > Manage Users > Add User', enter their email, and send an invite. They must accept the invitation before they can access household devices." },
+{ category: "user-household", question: "How can I approve or remove a linked user?", answer: "As an admin, go to Manage Users, select the user, and click Approve or Remove." },
+{ category: "user-household", question: "What documents are required for admin verification?", answer: "Emirates ID (Proof of identity)\nLease Agreement (Proof of housing)\nUtility bill with the same address as the lease" },
+{ category: "user-household", question: "How do I change my admin PIN?", answer: "Go to Settings > Security, enter your current PIN, and set a new one." },
+{ category: "user-household", question: "How do I check which family members are online?", answer: "Your Dashboard displays all household members with their online/offline status." },
+{ category: "user-household", question: "How do I delete my household account and all associated data?", answer: "As an admin, go to Settings > Account Management, select Delete Household, and confirm." },
+{ category: "user-household", question: "How do I add, name, and manage rooms in my household?", answer: "Go to Manage Rooms, click Add Room, name it, and assign devices." },
+
 
 
 // Devices & Automation
