@@ -13,51 +13,6 @@
   font-weight: 700;
 }
 
-/* Header Actions */
-.headerActions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-.iconButtonGroup {
-  display: flex;
-  gap: 8px;
-}
-
-.iconButton {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  padding: 0;
-  background-color: white;
-  border: none;
-  border-radius: 8px;
-  color: var(--oxford-blue);
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.iconButton:hover {
-  background-color: #f0f0f0;
-  transform: translateY(-2px);
-}
-
-.iconButton:active {
-  transform: translateY(0);
-}
-
-.deleteButton {
-  color: #dc2626;
-}
-
-.deleteButton:hover {
-  background-color: #fee2e2;
-}
-
 /* Profile box styles */
 .profileBox {
   background-color: var(--lavender);
@@ -216,14 +171,6 @@
 
 .actionButton:active {
   transform: translateY(0);
-}
-
-.deleteButton {
-  color: #dc2626;
-}
-
-.deleteButton:hover {
-  background-color: #fee2e2;
 }
 
 /* User icons and buttons */
@@ -779,21 +726,10 @@
     width: 100%;
   }
 
-  .iconButton {
-    width: 32px;
-    height: 32px;
-  }
-
   .profileHeader {
     flex-direction: row;
     align-items: center;
     gap: 12px;
-  }
-
-  .headerActions {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 8px;
   }
 
   .signOutButton {
@@ -811,3 +747,4 @@
     height: 56px;
   }
 }
+

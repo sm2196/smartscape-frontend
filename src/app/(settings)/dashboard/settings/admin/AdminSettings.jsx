@@ -18,10 +18,10 @@ const AdminSettings = () => {
   const [newMemberName, setNewMemberName] = useState("")
   const [newMemberEmail, setNewMemberEmail] = useState("")
   const [permissions, setPermissions] = useState({
-    electricity: false,
-    water: false,
-    voltage: false,
-    control: false,
+    "read electricity consumption levels": false,
+    "read daily water consumption levels": false,
+    "read device temperature levels": false,
+    "control household devices": false,
   })
   const [selectedMember, setSelectedMember] = useState(null)
   const [isMobile, setIsMobile] = useState(false)

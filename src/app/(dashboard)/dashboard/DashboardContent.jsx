@@ -81,7 +81,7 @@ export default function DashboardContent() {
       </RoomSection>
 
       {/* Add padding div for action bar */}
-      <div style={{ paddingBottom: "25px" }} />
+      <div className={"tw:pb-7 tw:max-sm:pb-14"} />
 
       <div className={styles.actionBar}>
         <button className={styles.actionButton}>

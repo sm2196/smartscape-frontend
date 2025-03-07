@@ -224,19 +224,7 @@ export default function ProfileContent() {
             </div>
           </div>
 
-          <div className={styles.headerActions}>
-            <div className={styles.iconButtonGroup}>
-              <button className={styles.iconButton} onClick={() => handleEdit("username")} title="Edit Username">
-                <MdOutlineMode size={20} />
-              </button>
-              <button
-                className={`${styles.iconButton} ${styles.deleteButton}`}
-                onClick={handleDelete}
-                title="Delete Account"
-              >
-                <MdDeleteOutline size={20} />
-              </button>
-            </div>
+          <div>
             <button className={styles.signOutButton} onClick={handleSignOut}>
               Sign Out
             </button>
