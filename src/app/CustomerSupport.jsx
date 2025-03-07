@@ -3,9 +3,18 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { FaVideo } from "react-icons/fa6";
 import { IoChatbubblesOutline } from "react-icons/io5";
 const faqs = [
-  // Account & Security
-{ category: "account-security", question: "How do I verify my email or phone number?", answer: "Once you sign up, you'll receive an OTP (One-Time Password) via email or SMS. Enter the OTP on the verification screen to complete the process. If you don’t receive the OTP, you can request a new one after 1 minute." },
-
+   // Account & Security
+   { category: "account-security", question: "How do I verify my email or phone number?", answer: "Once you sign up, you'll receive an OTP (One-Time Password) via email or SMS. Enter the OTP on the verification screen to complete the process. If you don’t receive the OTP, you can request a new one after 1 minute." },
+   { category: "account-security", question: "What should I do if I don’t receive the OTP?", answer: "- Check your spam or junk folder (for email).\n- Ensure your phone has network coverage (for SMS).\n- Wait a minute before requesting a new OTP.\n- If the issue persists, contact support." },
+   { category: "account-security", question: "Can I change my email or phone number after registration?", answer: "Yes! Go to 'Settings > Account Information' to update your email or phone. You will need to verify the new email/phone before it is updated." },
+   { category: "account-security", question: "How do I reset my password if I forget it?", answer: "Click 'Forgot Password?' on the login page, enter your registered email, and follow the instructions in the reset email." },
+   { category: "account-security", question: "What happens if my account gets locked after multiple failed login attempts?", answer: "For security reasons, your account will be locked after '4 failed attempts'. You can unlock it by resetting your password or waiting '15 minutes' before trying again." },
+   { category: "account-security", question: "How do I enable two-factor authentication?", answer: "Go to Settings > Security, and toggle 2FA On. You’ll be required to verify via SMS or email each time you log in from a new device." },
+   { category: "account-security", question: "How do I control who can see my personal information?", answer: "Under Privacy Settings, you can choose who can see your profile details. You can also limit data sharing with third-party services." },
+   { category: "account-security", question: "Can I disable data sharing with third-party services?", answer: "Yes! Go to Privacy Settings and toggle off third-party data sharing." },
+   { category: "account-security", question: "How do I receive alerts for security events like break-ins?", answer: "Ensure Security Alerts are enabled under Settings > Notifications. You will receive real-time alerts via push notifications, SMS, or email." },
+   { category: "account-security", question: "How do I activate emergency lockdown mode?", answer: "Press and hold the Lockdown button in the app, or use the admin PIN on your security panel to activate lockdown instantly." },
+   { category: "account-security", question: "Can I log out of all sessions if I suspect suspicious activity?", answer: "Yes! Go to Settings > Active Sessions, and tap Log Out of All Devices to end all active sessions." },
 
 // User & Household Management
 { category: "user-household", question: "What is the difference between an admin and a general user?", answer: "- 'Admin:' Manages household settings, users, security, and devices.\n- 'General User:' Can control devices but needs admin approval to join a household." },
