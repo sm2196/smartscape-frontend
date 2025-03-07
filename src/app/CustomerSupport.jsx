@@ -42,7 +42,13 @@ const faqs = [
 
 // Energy & Consumption
 { category: "energy-consumption", question: "How can I track my household’s electricity and water usage?", answer: "Your 'Dashboard' provides real-time consumption stats for electricity and water." },
-
+{ category: "energy-consumption", question: "What do the trend charts and analytics mean?", answer: "The system analyzes your consumption trends, showing daily, weekly, and monthly usage to help you optimize energy use." },
+{ category: "energy-consumption", question: "How does the system determine if a device is idle?", answer: "Idle devices are identified based on low or zero electricity usage over a period." },
+{ category: "energy-consumption", question: "How do I get notifications when my consumption is too high?", answer: "Set Threshold Alerts in Consumption Settings to receive notifications when usage exceeds a set limit." },
+{ category: "energy-consumption", question: "Can I see daily, weekly, and monthly consumption reports?", answer: "Yes! The Reports section provides breakdowns by day, week, and month." },
+{ category: "energy-consumption", question: "How does the system calculate energy and water savings?", answer: "The system compares automatic shutdown savings with regular usage to determine efficiency gains." },
+{ category: "energy-consumption", question: "Can I receive energy-saving tips based on my usage?", answer: "Yes! The Energy Tips section offers insights based on your past consumption." },
+{ category: "energy-consumption", question: "Can I share my energy consumption statistics on social media?", answer: "Yes! In Reports, tap Share Statistics to post your eco-friendly impact." }
 
 ];
 const FAQItem = ({ question, answer, isOpen, onClick }) => {
