@@ -8,7 +8,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="tw:font-inter">
+    <html lang="en" className="tw:font-roboto">
       <body className="tw:m-0 tw:text-[color:var(--text-primary)]">
         <div className="tw:flex tw:h-screen">
           <DashboardNavbar />

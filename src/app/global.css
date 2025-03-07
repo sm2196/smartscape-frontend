@@ -1,5 +1,4 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
 
 @layer theme, base, components, utilities;
 @import "tailwindcss/theme.css" layer(theme) prefix(tw);
@@ -7,7 +6,6 @@
 
 @theme {
   --font-roboto: "Roboto", sans-serif;
-  --font-inter: "Inter", system-ui, -apple-system, sans-serif;
 }
 
 :root {
