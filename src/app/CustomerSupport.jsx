@@ -71,11 +71,17 @@ const FAQ = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("account-security");
 
+  const isMobile = window.innerWidth <= 768; // Detect mobile view
+
   const filteredFaqs = searchQuery
     ? faqs.filter((faq) =>
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : isMobile
+    ? faqs // Show all questions on mobile
     : faqs.filter((faq) => faq.category === activeCategory);
+
+
 
   const handleTutorialButtonClick = () => {
     // Placeholder for video tutorial action
@@ -88,6 +94,8 @@ const FAQ = () => {
     // Placeholder for live chat logic
     window.open("https://www.example.com/live-chat", "_blank"); // Replace with your actual live chat URL
   };
+
+
 
   return (
     <div className="faq-container">
