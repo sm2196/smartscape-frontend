@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ParallaxProvider } from 'react-scroll-parallax';
-import SMNavbar from '../../Swapna/components/layout/Navbar/SMNavbar';
-import Home from '../../Swapna/components/pages/Home/SMHomePage';
-import About from '../../Swapna/components/pages/AboutUsPage/SMAboutUsPage';
-import Services from '../../Swapna/components/pages/Services/SMServices';
-import ContactMe from '../../Swapna/components/pages/ContactMe/SMContactMe';
-import ScrollToTop from '../../Swapna/components/ScrollToTop';
+import SMNavbar from '../components/layout/Navbar/SMNavbar';
+import Home from '../components/pages/Home/SMHomePage';
+import About from '../components/pages/AboutUsPage/SMAboutUsPage';
+import Services from '../components/pages/Services/SMServices';
+import ContactMe from '../components/pages/ContactMe/SMContactMe';
+import ScrollToTop from '../components/ScrollToTop';
 import './App.css';
 
 function App() {
