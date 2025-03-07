@@ -18,6 +18,11 @@ const FAQ = () => {
     window.open("https://www.example.com/tutorial-video", "_blank"); // Replace with your actual tutorial URL
 
 
+    const handleClick = () => {
+      // Placeholder for live chat logic
+      window.open("https://www.example.com/live-chat", "_blank"); // Replace with your actual live chat URL
+    };
+
   };
   return (
       <div className="faq-container">
