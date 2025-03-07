@@ -28,12 +28,11 @@ export default function ProfileContent() {
   const fileInputRef = useRef(null)
   const [fieldValues, setFieldValues] = useState({
     legalName: "Gerald",
-    email: "x*****@hw.ac.uk",
+    email: "xyz1234@hw.ac.uk",
     phoneNumbers: [],
     governmentId: "Verified",
     address: "Not provided",
   })
-  const [username, setUsername] = useState("Admin XYZ")
   const [tempValue, setTempValue] = useState("")
   const [newAccountData, setNewAccountData] = useState({
     name: "",
@@ -48,7 +47,6 @@ export default function ProfileContent() {
   ])
 
   const displayMapping = {
-    username: "Username",
     legalName: "Legal name",
     email: "Email address",
     phoneNumbers: "Phone numbers",
@@ -76,27 +74,19 @@ export default function ProfileContent() {
   }
 
   const handleEdit = (field) => {
-    if (field === "username") {
-      setEditingField("username")
-      setTempValue(username)
-    } else {
-      setEditingField(field)
-      setTempValue(fieldValues[field]?.toString() || "")
-    }
-  }
+    setEditingField(field);
+    setTempValue(fieldValues[field]?.toString() || "");
+  };
 
   const handleSave = () => {
-    if (editingField === "username") {
-      setUsername(tempValue)
-      setEditingField(null)
-    } else if (editingField) {
+    if (editingField) {
       setFieldValues((prev) => ({
         ...prev,
         [editingField]: tempValue,
-      }))
-      setEditingField(null)
+      }));
+      setEditingField(null);
     }
-  }
+  };
 
   const handleProfileImageClick = () => {
     fileInputRef.current?.click()
@@ -219,8 +209,8 @@ export default function ProfileContent() {
               {isUploading && <div className={styles.uploadingIndicator}>Uploading...</div>}
             </div>
             <div className={styles.textContainer}>
-              <p className={styles.profileName}>{username}</p>
-              <p className={styles.profileEmail}>xyz1234@hw.ac.uk</p>
+              <p className={styles.profileName}>{fieldValues.legalName}</p>
+              <p className={styles.profileEmail}>{fieldValues.email}</p>
             </div>
           </div>
 
