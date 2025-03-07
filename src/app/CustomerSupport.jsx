@@ -30,7 +30,15 @@ const faqs = [
 
 // Devices & Automation
 { category: "devices-automation", question: "How do I add a new smart device to the system?", answer: "1. Ensure your device is powered on.\n2. Go to 'Device Management > Add Device'.\n3. The system will scan for compatible devices.\n4. Select your device and follow the on-screen setup." },
-
+{ category: "devices-automation", question: "Why is my device not appearing in the app?", answer: "- Ensure the device is powered on and connected to WiFi.\n- Check if it is compatible with the system.\n- Restart your router and try again.\n- If issues persist, reset the device and re-add it." },
+{ category: "devices-automation", question: "How can I check if a device is currently online or offline?", answer: "Your Dashboard will show real-time device statuses." },
+{ category: "devices-automation", question: "Can I set up automation rules for specific devices?", answer: "Yes! Go to Device Automation, select a device, and configure schedules or triggers." },
+{ category: "devices-automation", question: "How do I exclude a device from automatic shutdown rules?", answer: "In Device Settings, select Exclusions and add the device." },
+{ category: "devices-automation", question: "How do I override automatic shutdown for certain devices?", answer: "Enable Manual Override in Device Settings to temporarily disable automatic shutdown." },
+{ category: "devices-automation", question: "How do I set up my notification preferences?", answer: "Go to Settings > Notifications, where you can enable/disable alerts for specific events." },
+{ category: "devices-automation", question: "Can I receive alerts via email instead of push notifications?", answer: "Yes! In Notification Preferences, select Email Alerts." },
+{ category: "devices-automation", question: "What kind of alerts does the system provide?", answer: "The system alerts you about:\n- Security issues (break-ins, unauthorized access)\n- Device statuses (offline, malfunctioning)\n- Energy consumption (high usage, peak hours)" },
+{ category: "devices-automation", question: "How do I disable notifications for certain events?", answer: "In Settings > Notifications, toggle off the events you don’t want notifications for." },
 
 // Energy & Consumption
 { category: "energy-consumption", question: "How can I track my household’s electricity and water usage?", answer: "Your 'Dashboard' provides real-time consumption stats for electricity and water." },
