@@ -261,7 +261,7 @@ const AdminSettings = () => {
                       "ID Verification",
                       "Utility Bills",
                       "Insurance Documents",
-                      "Smart Devices Certificates",
+                      "Smart Device Registration",
                     ].map((doc) => (
                       <div key={doc} className={styles.documentItem}>
                         <span>{doc}</span>
@@ -345,7 +345,7 @@ const AdminSettings = () => {
                   "ID Verification",
                   "Utility Bills",
                   "Insurance Documents",
-                  "Smart Devices Certificates",
+                  "Smart Device Registration",
                 ].map((doc) => (
                   <div key={doc} className={styles.documentItem}>
                     <span>{doc}</span>
