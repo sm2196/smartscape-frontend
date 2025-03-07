@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+
+:root {
+  --silver: #c4c4c4;
+  --oxford-blue: #3c66c1;
+  --space-cadet: #152447;
+  --lavender: #d2dcf5;
+  --snow: #fffafa;
+
+  --background-dark: var(--oxford-blue);
+  --surface-dark: var(--space-cadet);
+  --card-dark: var(--space-cadet);
+  --card-hover: #1c2d5a;
+  --card-active: var(--lavender);
+  --text-primary: var(--snow);
+  --text-secondary: var(--silver);
+
+  --status-yellow: #ffd700;
+  --status-green: #4ade80;
+  --status-blue: #60a5fa;
+  --status-pink: #f472b6;
+}
+
+body {
+  margin: 0;
+  background-color: var(--background-dark);
+  color: var(--text-primary);
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.dashboardLayout {
+  display: flex;
+  height: 100vh;
+  background-color: var(--background-dark);
+}
+
+.mainContent {
+  flex: 1;
+  overflow: auto;
+  padding: 32px;
+  background: var(--snow);
+}
+
+* Scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(210, 220, 245, 0.2);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(210, 220, 245, 0.3);
+}
+
+.wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: inline-flex;
+  list-style: none;
+  height: 65px;
+  width: 100%;
+  padding-top: 40px;
+  justify-content: right;
+  z-index: 1000;
+}
+
+.wrapper .icon {
+  position: relative;
+  background: #152447;
+  border-radius: 50%;
+  margin: 10px;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .tooltip {
+  position: absolute;
+  top: 0;
+  font-size: 14px;
+  background: #152447;
+  color: #fff;
+  padding: 5px 8px;
+  border-radius: 5px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .tooltip::before {
+  position: absolute;
+  content: "";
+  height: 8px;
+  width: 8px;
+  background: #152447;
+  bottom: -3px;
+  left: 50%;
+  transform: translate(-50%) rotate(45deg);
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.wrapper .icon:hover .tooltip {
+  top: -45px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.wrapper .icon:hover span,
+.wrapper .icon:hover .tooltip {
+  text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+}
+
+.wrapper .live-chat {
+  background: #152447;
+  color: #fff;
+}
+
+.wrapper .live-chat:hover {
+  background: #D2DCF5;
+  color: #152447;
+
+}
+
+.wrapper .live-chat:hover .tooltip,
+.wrapper .live-chat:hover .tooltip::before {
+  background: #D2DCF5;
+  color: #152447;
+}
