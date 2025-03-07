@@ -2,7 +2,24 @@ import React, { useState } from "react";
 import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { FaVideo } from "react-icons/fa6";
 import { IoChatbubblesOutline } from "react-icons/io5";
+const faqs = [
+  // Account & Security
+{ category: "account-security", question: "How do I verify my email or phone number?", answer: "Once you sign up, you'll receive an OTP (One-Time Password) via email or SMS. Enter the OTP on the verification screen to complete the process. If you don’t receive the OTP, you can request a new one after 1 minute." },
 
+
+// User & Household Management
+{ category: "user-household", question: "What is the difference between an admin and a general user?", answer: "- 'Admin:' Manages household settings, users, security, and devices.\n- 'General User:' Can control devices but needs admin approval to join a household." },
+
+
+// Devices & Automation
+{ category: "devices-automation", question: "How do I add a new smart device to the system?", answer: "1. Ensure your device is powered on.\n2. Go to 'Device Management > Add Device'.\n3. The system will scan for compatible devices.\n4. Select your device and follow the on-screen setup." },
+
+
+// Energy & Consumption
+{ category: "energy-consumption", question: "How can I track my household’s electricity and water usage?", answer: "Your 'Dashboard' provides real-time consumption stats for electricity and water." },
+
+
+];
 const FAQItem = ({ question, answer, isOpen, onClick }) => {
   return (
     <div className={`faq-item ${isOpen ? "open" : ""}`} onClick={onClick}>
