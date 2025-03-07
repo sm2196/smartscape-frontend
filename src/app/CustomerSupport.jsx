@@ -1,6 +1,22 @@
 import React, { useState } from "react";
+import { IoMdArrowDropdown, IoMdArrowDropup } from "react-icons/io";
 import { FaVideo } from "react-icons/fa6";
 import { IoChatbubblesOutline } from "react-icons/io5";
+
+const FAQItem = ({ question, answer, isOpen, onClick }) => {
+  return (
+    <div className={`faq-item ${isOpen ? "open" : ""}`} onClick={onClick}>
+      <div className="faq-question">
+        <span style={{ color: "#0A1630" }}>
+          {isOpen ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}
+        </span>{" "}
+        {question}
+      </div>
+      {isOpen && <hr className="faq-divider" />}
+      {isOpen && <div className="faq-answer">{answer}</div>}
+    </div>
+  );
+};
 
 const FAQ = () => {
  const [openIndex, setOpenIndex] = useState(null);
