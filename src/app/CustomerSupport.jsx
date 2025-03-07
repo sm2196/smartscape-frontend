@@ -35,6 +35,17 @@ const FAQ = () => {
          </div>
        </div>
 
+       <div className="faq-nav">
+        {["account-security", "user-household", "devices-automation", "energy-consumption"].map((category) => (
+          <div
+            key={category}
+            className={`faq-nav-item ${activeCategory === category ? "active" : ""}`}
+            onClick={() => setActiveCategory(category)}
+          >
+            {category.replace("-", " ").charAt(0).toUpperCase() + category.slice(1).replace("-", " ")}
+          </div>
+        ))}
+      </div>
   </div>)
 };
 
