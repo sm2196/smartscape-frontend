@@ -28,22 +28,6 @@ const AdminSettings = () => {
   const [activeTab, setActiveTab] = useState("family")
   const [showAddMember, setShowAddMember] = useState(false)
 
-  // Prevent scrolling when PIN entry is displayed
-  useEffect(() => {
-    if (!authenticated) {
-      // Add no-scroll class to body when PIN entry is shown
-      document.body.classList.add(styles.noScroll)
-    } else {
-      // Remove no-scroll class when authenticated
-      document.body.classList.remove(styles.noScroll)
-    }
-
-    // Cleanup function to ensure class is removed when component unmounts
-    return () => {
-      document.body.classList.remove(styles.noScroll)
-    }
-  }, [authenticated])
-
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth <= 768)
@@ -82,7 +66,7 @@ const AdminSettings = () => {
         <div className={styles.pinBox}>
           <MdShield className={styles.pinIcon} size={32} />
           <h2 className={styles.pinTitle}>Admin Access Required</h2>
-          <form onSubmit={handlePinSubmit} className={styles.pinForm}>
+          <form onSubmit={handlePinSubmit}>
             <div className={styles.pinInputContainer}>
               {[0, 1, 2, 3].map((index) => (
                 <input

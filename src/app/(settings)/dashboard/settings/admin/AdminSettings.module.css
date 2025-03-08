@@ -489,7 +489,11 @@
 }
 
 /* Mobile styles */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
+  .pinContainer {
+    position: fixed;
+  }
+
   .content {
     padding: 1rem;
   }
@@ -675,7 +679,6 @@
 
 /* PIN Entry styles */
 .pinContainer {
-  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -744,13 +747,5 @@
   color: #dc2626;
   margin-top: 1rem;
   font-size: 0.875rem;
-}
-
-/* No-scroll utility class */
-.noScroll {
-  overflow: hidden;
-  height: 100%;
-  position: fixed;
-  width: 100%;
 }
 
