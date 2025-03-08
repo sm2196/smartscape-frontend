@@ -36,8 +36,12 @@ export default function ProfileContent() {
     address: "Not provided",
   })
   const [tempValue, setTempValue] = useState("")
+  const [tempFirstName, setTempFirstName] = useState("")
+  const [tempLastName, setTempLastName] = useState("")
+  const [fieldError, setFieldError] = useState("")
   const [newAccountData, setNewAccountData] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -87,15 +91,41 @@ export default function ProfileContent() {
   const handleEdit = (field) => {
     setManageAccountOpen(false)
     setEditingField(field)
-    setTempValue(fieldValues[field]?.toString() || "")
+    setFieldError("")
+
+    if (field === "legalName") {
+      // Split the legal name into first and last name
+      const nameParts = fieldValues[field].split(" ")
+      setTempFirstName(nameParts[0] || "")
+      setTempLastName(nameParts.slice(1).join(" ") || "")
+    } else {
+      setTempValue(fieldValues[field]?.toString() || "")
+    }
   }
 
   const handleSave = () => {
     if (editingField) {
-      setFieldValues((prev) => ({
-        ...prev,
-        [editingField]: tempValue,
-      }))
+      if (editingField === "legalName") {
+        if (!tempFirstName.trim() || !tempLastName.trim()) {
+          setFieldError("Please fill out all fields")
+          return
+        }
+
+        setFieldValues((prev) => ({
+          ...prev,
+          [editingField]: `${tempFirstName} ${tempLastName}`,
+        }))
+      } else {
+        if (!tempValue.trim()) {
+          setFieldError("Please fill out this field")
+          return
+        }
+
+        setFieldValues((prev) => ({
+          ...prev,
+          [editingField]: tempValue,
+        }))
+      }
       setEditingField(null)
     }
   }
@@ -140,14 +170,15 @@ export default function ProfileContent() {
 
     const newAccount = {
       id: availableAccounts.length + 1,
-      name: newAccountData.name,
+      name: `${newAccountData.firstName} ${newAccountData.lastName}`,
       email: newAccountData.email,
       isActive: false,
     }
 
     setAvailableAccounts([...availableAccounts, newAccount])
     setNewAccountData({
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -199,7 +230,8 @@ export default function ProfileContent() {
 
   const handleCancelAddAccount = () => {
     setNewAccountData({
-      name: "",
+      firstName: "",
+      lastName: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -280,7 +312,6 @@ export default function ProfileContent() {
         </ul>
       </div>
 
-      {/* Edit Field Modal */}
       {editingField && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
@@ -296,17 +327,50 @@ export default function ProfileContent() {
               Make changes to your {displayMapping[editingField].toLowerCase()}. Click save when you're done.
             </p>
             <div className={styles.modalContent}>
-              <label htmlFor="value" className={styles.modalLabel}>
-                {displayMapping[editingField]}
-              </label>
-              <input
-                id="value"
-                className={styles.modalInput}
-                value={tempValue}
-                onChange={(e) => setTempValue(e.target.value)}
-                placeholder={`Enter your ${displayMapping[editingField].toLowerCase()}`}
-                autoFocus
-              />
+              {editingField === "legalName" ? (
+                <div className={styles.nameFieldsRow}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="firstName" className={styles.modalLabel}>
+                      First Name
+                    </label>
+                    <input
+                      id="firstName"
+                      className={`${styles.modalInput} ${fieldError && !tempFirstName.trim() ? styles.inputError : ""}`}
+                      value={tempFirstName}
+                      onChange={(e) => setTempFirstName(e.target.value)}
+                      placeholder="Enter your first name"
+                      autoFocus
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="lastName" className={styles.modalLabel}>
+                      Last Name
+                    </label>
+                    <input
+                      id="lastName"
+                      className={`${styles.modalInput} ${fieldError && !tempLastName.trim() ? styles.inputError : ""}`}
+                      value={tempLastName}
+                      onChange={(e) => setTempLastName(e.target.value)}
+                      placeholder="Enter your last name"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <label htmlFor="value" className={styles.modalLabel}>
+                    {displayMapping[editingField]}
+                  </label>
+                  <input
+                    id="value"
+                    className={`${styles.modalInput} ${fieldError ? styles.inputError : ""}`}
+                    value={tempValue}
+                    onChange={(e) => setTempValue(e.target.value)}
+                    placeholder={`Enter your ${displayMapping[editingField].toLowerCase()}`}
+                    autoFocus
+                  />
+                </>
+              )}
+              {fieldError && <div className={styles.errorMessage}>{fieldError}</div>}
             </div>
             <div className={styles.modalFooter}>
               <button className={styles.modalButtonSecondary} onClick={() => setEditingField(null)}>
@@ -462,19 +526,35 @@ export default function ProfileContent() {
             </div>
             <form onSubmit={handleAddAccount}>
               <div className={styles.modalContent}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="name" className={styles.modalLabel}>
-                    Full Name
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    className={styles.modalInput}
-                    value={newAccountData.name}
-                    onChange={handleNewAccountChange}
-                    placeholder="Enter full name"
-                    required
-                  />
+                <div className={styles.nameFieldsRow}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="firstName" className={styles.modalLabel}>
+                      First Name
+                    </label>
+                    <input
+                      id="firstName"
+                      name="firstName"
+                      className={styles.modalInput}
+                      value={newAccountData.firstName}
+                      onChange={handleNewAccountChange}
+                      placeholder="Enter first name"
+                      required
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="lastName" className={styles.modalLabel}>
+                      Last Name
+                    </label>
+                    <input
+                      id="lastName"
+                      name="lastName"
+                      className={styles.modalInput}
+                      value={newAccountData.lastName}
+                      onChange={handleNewAccountChange}
+                      placeholder="Enter last name"
+                      required
+                    />
+                  </div>
                 </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="email" className={styles.modalLabel}>

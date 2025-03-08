@@ -436,6 +436,18 @@
   color: #aaa;
 }
 
+/* Add styles for name fields row */
+.nameFieldsRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.nameFieldsRow .formGroup {
+  flex: 1;
+  margin-bottom: 0;
+}
+
 /* Add styles for password input wrapper and toggle button */
 .passwordInputWrapper {
   position: relative;
@@ -781,6 +793,11 @@
   .logo {
     width: 56px;
     height: 56px;
+  }
+
+  .nameFieldsRow {
+    flex-direction: column;
+    gap: 16px;
   }
 }
 
