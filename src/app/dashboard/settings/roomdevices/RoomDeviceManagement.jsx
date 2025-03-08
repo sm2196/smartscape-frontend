@@ -10,46 +10,56 @@ const DeviceManagement = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [wifiEnabled, setWifiEnabled] = useState(false);
   const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
-  const [newRoomName, setNewRoomName] = useState(""); // State for new room name
-  const [newRoomCategory, setNewRoomCategory] = useState(""); // State for category selection
-  const [rooms, setRooms] = useState([
+  const [newRoomName, setNewRoomName] = useState(""); // New state for room name
+  const [newDeviceCategory, setNewDeviceCategory] = useState(""); // New state for device category
+  const [newDeviceName, setNewDeviceName] = useState(""); // New state for device name
+
+  const openPopup = (type, room = null) => {
+    setPopupType(type);
+    if (room) setSelectedRoom(room);
+  };
+
+  const closePopup = () => {
+    setPopupType(null);
+    setSelectedRoom(null);
+    setNewRoomName(""); // Reset new room name when closing popup
+    setNewDeviceCategory(""); // Reset new device category when closing popup
+    setNewDeviceName(""); // Reset new device name when closing popup
+  };
+
+  const handleSaveRoom = () => {
+    if (newRoomName.trim() !== "") {
+      // Add the new room to the rooms array
+      setRooms((prevRooms) => [
+        ...prevRooms,
+        { name: newRoomName, content: [] },
+      ]);
+      closePopup(); // Close the popup after saving
+    }
+  };
+
+  const handleSaveDevice = () => {
+    if (newDeviceCategory.trim() !== "" && newDeviceName.trim() !== "") {
+      // Save the new device here
+      console.log("New Device:", newDeviceCategory, newDeviceName);
+      closePopup(); // Close the popup after saving
+    }
+  };
+
+  const rooms = [
     { name: "Hall", content: ["Hall 1", "Hall 2", "Master Bedroom Hall"] },
     { name: "Kitchen", content: ["Main Kitchen", "Dinner Table"] },
     { name: "Bedroom", content: ["Bedroom 1", "Bedroom 2", "Master Bedroom"] },
     { name: "Study room", content: ["Main Room", "Storage"] },
     { name: "Backyard", content: ["Barbicu Corner", "Pool", "Gym Room"] },
     { name: "Parking lot", content: ["Closed Garage", "Outside Garage"] },
-  ]);
+  ];
 
   const devices = [
     { name: "Network settings", type: "network", icon: MdWifi },
     { name: "Choose by room", type: "room", icon: MdChevronRight },
     { name: "Choose by category", type: "category", icon: MdChevronRight },
   ];
-
-  const openPopup = (type, room = null) => {
-    setPopupType(type);
-    if (room) setSelectedRoom(room);
-    if (type === "addRoom") {
-      setNewRoomName(""); // Reset new room name for adding
-      setNewRoomCategory(""); // Reset new room category
-    }
-  };
-
-  const closePopup = () => {
-    setPopupType(null);
-    setSelectedRoom(null);
-  };
-
-  const handleAddRoom = () => {
-    if (newRoomName && newRoomCategory) {
-      setRooms((prevRooms) => [
-        ...prevRooms,
-        { name: newRoomName, content: [], category: newRoomCategory },
-      ]);
-      closePopup();
-    }
-  };
 
   return (
     <div className={styles.deviceManagementContainer}>
@@ -73,10 +83,10 @@ const DeviceManagement = () => {
             className={styles.buttonItem}
             onClick={() => openPopup("addRoom")}
           >
-            <MdAdd /> Add Room
+            <MdAdd /> Add Rooms
           </Button>
           <Button className={styles.buttonItem}>
-            <MdRemove /> Remove Room
+            <MdRemove /> Remove Rooms
           </Button>
         </div>
       </div>
@@ -97,7 +107,10 @@ const DeviceManagement = () => {
           ))}
         </div>
         <div className={styles.buttonGroup}>
-          <Button className={styles.buttonItem}>
+          <Button
+            className={styles.buttonItem}
+            onClick={() => openPopup("addDevice")}
+          >
             <MdAdd /> Add Device
           </Button>
           <Button className={styles.buttonItem}>
@@ -197,38 +210,77 @@ const DeviceManagement = () => {
               </div>
             )}
 
+            {/* Add Room Popup */}
             {popupType === "addRoom" && (
-              <div className={styles.popupForm}>
-                <label htmlFor="newRoomName">Room Name:</label>
-                <input
-                  type="text"
-                  id="newRoomName"
-                  value={newRoomName}
-                  onChange={(e) => setNewRoomName(e.target.value)}
-                  placeholder="Enter room name"
-                />
-
-                <label htmlFor="newRoomCategory">Room Category:</label>
+              <div>
+                <h3>Add New Room</h3>
                 <select
-                  id="newRoomCategory"
-                  value={newRoomCategory}
-                  onChange={(e) => setNewRoomCategory(e.target.value)}
+                  className={styles.dropdown}
+                  onChange={(e) => setSelectedRoom(e.target.value)}
+                  value={selectedRoom || ""}
                 >
-                  <option value="">Select Category</option>
-                  <option value="Living Room">Living Room</option>
-                  <option value="Bedroom">Bedroom</option>
-                  <option value="Kitchen">Kitchen</option>
-                  <option value="Outdoor">Outdoor</option>
+                  {rooms.map(({ name }) => (
+                    <option key={name} value={name}>
+                      {name}
+                    </option>
+                  ))}
                 </select>
 
-                <div className={styles.popupButtons}>
-                  <Button
-                    className={styles.popupButton}
-                    onClick={handleAddRoom}
-                  >
-                    Save
-                  </Button>
-                </div>
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  placeholder="Enter room name"
+                  value={newRoomName}
+                  onChange={(e) => setNewRoomName(e.target.value)}
+                />
+
+                <Button className={styles.popupButton} onClick={handleSaveRoom}>
+                  Save
+                </Button>
+              </div>
+            )}
+
+            {/* Add Device Popup */}
+            {popupType === "addDevice" && (
+              <div>
+                <h3>Add New Device</h3>
+                <select
+                  className={styles.dropdown}
+                  onChange={(e) => setNewDeviceCategory(e.target.value)}
+                  value={newDeviceCategory || ""}
+                >
+                  {[
+                    "Appliances",
+                    "Bulbs",
+                    "Cameras & Video Doorbells",
+                    "Garage Door Openers",
+                    "Hubs",
+                    "Locks",
+                    "Plugs",
+                    "Sensors",
+                    "Thermostats",
+                    "TVs",
+                  ].map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+
+                <input
+                  type="text"
+                  className={styles.inputField}
+                  placeholder="Enter device name"
+                  value={newDeviceName}
+                  onChange={(e) => setNewDeviceName(e.target.value)}
+                />
+
+                <Button
+                  className={styles.popupButton}
+                  onClick={handleSaveDevice}
+                >
+                  Save
+                </Button>
               </div>
             )}
 
