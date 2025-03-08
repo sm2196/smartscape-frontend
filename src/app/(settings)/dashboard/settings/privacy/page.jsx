@@ -1,5 +1,9 @@
 import PrivacySecurity from "./PrivacySecurity";
 
 export default function PrivacySecurityPage() {
-  return <PrivacySecurity />;
+  return (
+    <div className="tw:overflow-auto tw:w-full">
+      <PrivacySecurity />
+    </div>
+  );
 }

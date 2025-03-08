@@ -673,44 +673,6 @@
   }
 }
 
-.modalContent {
-  width: 100%;
-  max-width: 500px;
-  background-color: white;
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  animation: scaleIn 0.2s ease-out;
-  overflow: hidden;
-}
-
-.inputGroup {
-  margin-bottom: 1rem;
-  width: 100%;
-}
-
-.inputGroup label {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 500;
-  margin-bottom: 0.5rem;
-}
-
-.inputGroup input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-  box-sizing: border-box;
-}
-
-.inputGroup input:focus {
-  outline: none;
-  border-color: #0f172a;
-  box-shadow: 0 0 0 2px rgb(15 23 42 / 0.1);
-}
-
 /* PIN Entry styles */
 .pinContainer {
   inset: 0;
@@ -725,7 +687,7 @@
 
 .pinBox {
   width: 100%;
-  max-width: 480px;
+  max-width: 1279px;
   padding: 3rem;
   background-color: white;
   border-radius: 1.5rem;

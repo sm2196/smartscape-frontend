@@ -39,7 +39,7 @@ export default function InfoPanel() {
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 480);
+      setIsMobile(window.innerWidth <= 1023);
     };
 
     checkMobile();
@@ -57,27 +57,27 @@ export default function InfoPanel() {
 
   // Base paragraph styling applied to both collapsed and expanded states.
   const paragraphBaseClasses =
-    "tw:text-[#717171] tw:text-base tw:transition-all tw:duration-300 tw:ease-out tw:bg-[#F1F0F5] tw:rounded-lg tw:max-sm:px-2 tw:max-sm:py-0";
+    "tw:text-[#717171] tw:text-base tw:transition-all tw:duration-300 tw:ease-out tw:bg-[#F1F0F5] tw:rounded-lg tw:max-lg:px-2 tw:max-lg:py-0";
   // When expanded, the paragraph becomes fully visible.
   const paragraphExpandedClasses =
-    "tw:max-h-[1000px] tw:opacity-100 tw:mt-2.5 tw:p-2.5 tw:max-sm:mt-2";
+    "tw:max-h-[1000px] tw:opacity-100 tw:mt-2.5 tw:p-2.5 tw:max-lg:mt-2";
   // When collapsed, the paragraph is hidden.
   const paragraphCollapsedClasses = "tw:max-h-0 tw:opacity-0 tw:mt-0 tw:px-2.5";
 
   return (
-    <aside className="tw:max-w-[400px] tw:border tw:shadow-md tw:my-2.5 tw:p-5 tw:rounded-xl tw:border-solid tw:border-[#ddd] tw:max-sm:my-0 tw:max-sm:p-3">
-      <div className="tw:flex tw:flex-col tw:gap-[15px] tw:max-sm:gap-1 tw:max-sm:bg-[#f8f9fa] tw:max-sm:mb-1">
+    <aside className="tw:max-w-[400px] tw:border tw:shadow-md tw:my-2.5 tw:p-5 tw:rounded-xl tw:border-solid tw:border-[#ddd] tw:mx-auto tw:max-lg:my-0 tw:max-lg:p-3 tw:max-lg:max-w-full">
+      <div className="tw:flex tw:flex-col tw:gap-[15px] tw:max-lg:gap-1 tw:max-lg:bg-[#f8f9fa] tw:max-lg:mb-1">
         {sections.map(({ id, icon: Icon, iconColor, title, content }) => (
           <div
             key={id}
-            className="tw:bg-[#f9f9f9] tw:p-2.5 tw:rounded-lg tw:hover:translate-y-[-5px]  tw:max-sm:p-1.5"
+            className="tw:bg-[#f9f9f9] tw:p-2.5 tw:rounded-lg tw:hover:translate-y-[-5px]  tw:max-lg:p-1.5"
           >
             <button
-              className="tw:flex tw:gap-[15px] tw:w-full tw:cursor-pointer text-lg tw:text-[#333] tw:transition-[background-color] tw:duration-300 tw:rounded-lg tw:border-none tw:hover:bg-[#e0e0e0] tw:items-center tw:px-[15px] tw:bg-transparent tw:text-left tw:text-[18px] tw:max-sm:p-2 tw:max-sm:gap-[10px]"
+              className="tw:flex tw:gap-[15px] tw:w-full tw:cursor-pointer text-lg tw:text-[#333] tw:transition-[background-color] tw:duration-300 tw:rounded-lg tw:border-none tw:hover:bg-[#e0e0e0] tw:items-center tw:px-[15px] tw:bg-transparent tw:text-left tw:text-[18px] tw:max-lg:p-2 tw:max-lg:gap-[10px]"
               onClick={() => toggleSection(id)}
             >
               <Icon size={isMobile ? 24 : 58} color={iconColor} />
-              <h2 className="tw:m-0 tw:flex-1 tw:max-sm:text-base">{title}</h2>
+              <h2 className="tw:m-0 tw:flex-1 tw:max-lg:text-base">{title}</h2>
             </button>
             <p
               className={`${paragraphBaseClasses} ${

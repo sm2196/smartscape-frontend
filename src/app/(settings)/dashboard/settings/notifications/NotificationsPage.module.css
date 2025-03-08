@@ -79,7 +79,7 @@
     color: white;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 1023px) {
     .notificationMainContent {
       width: auto;
       padding: 10px;

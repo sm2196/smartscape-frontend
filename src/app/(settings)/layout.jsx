@@ -14,7 +14,7 @@ export default function RootLayout({ children }) {
           <SettingsNavbar />
           <div
             className="tw:flex tw:w-full
-            tw:max-sm:flex-col tw:max-sm:pt-16"
+            tw:max-lg:flex-col tw:max-lg:pt-16"
           >
             {children}
           </div>

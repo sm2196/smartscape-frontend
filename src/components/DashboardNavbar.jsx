@@ -59,12 +59,12 @@ export default function SettingsNavbar() {
       className={`tw:w-[280px] tw:flex tw:flex-col tw:p-8
         tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)] tw:border-r tw:border-[color:var(--active)]
 
-        tw:max-sm:w-full tw:max-sm:fixed tw:max-sm:z-[1]
-        tw:max-sm:h-auto tw:max-sm:px-4 tw:max-sm:py-2
-        ${isMenuOpen ? "tw:max-sm:h-screen" : ""}`} // Expands navbar to full height on mobile
+        tw:max-lg:w-full tw:max-lg:fixed tw:max-lg:z-[1]
+        tw:max-lg:h-auto tw:max-lg:px-4 tw:max-lg:py-2
+        ${isMenuOpen ? "tw:max-lg:h-screen" : ""}`} // Expands navbar to full height on mobile
     >
-      <div className="tw:max-sm:flex tw:max-sm:h-10">
-        <div className="tw:flex-col tw:mb-10 tw:max-sm:hidden">
+      <div className="tw:max-lg:flex tw:max-lg:h-10">
+        <div className="tw:flex-col tw:mb-10 tw:max-lg:hidden">
           <div
             className="tw:text-[clamp(2.5rem,6vw,3.5rem)] tw:font-light
           tw:text-[color:var(--text-primary)] tw:leading-[1.1] tw:mb-2"
@@ -81,7 +81,7 @@ export default function SettingsNavbar() {
           </div>
         </div>
         <button
-          className="tw:hidden tw:max-sm:block tw:text-[color:var(--text-primary)]
+          className="tw:hidden tw:max-lg:block tw:text-[color:var(--text-primary)]
          tw:p-1 tw:bg-transparent tw:border-none"
           onClick={toggleMenu}
         >
@@ -89,8 +89,8 @@ export default function SettingsNavbar() {
         </button>
       </div>
       <nav
-        className={`tw:flex tw:flex-col tw:gap-2 tw:max-sm:mt-3 tw:max-sm:pb-3
-      ${isMenuOpen ? "tw:max-sm:block" : "tw:max-sm:hidden"}`}
+        className={`tw:flex tw:flex-col tw:gap-2 tw:max-lg:mt-3 tw:max-lg:pb-3
+      ${isMenuOpen ? "tw:max-lg:block" : "tw:max-lg:hidden"}`}
       >
         {navigation.map((item) => {
           const isActive = pathname === item.href;
@@ -100,7 +100,7 @@ export default function SettingsNavbar() {
               href={item.href}
               className={`tw:flex tw:items-center tw:gap-4 tw:text-[color:var(--text-primary)] tw:no-underline tw:transition-all tw:duration-300 tw:ease-[ease] tw:font-medium tw:px-4 tw:py-3 tw:rounded-xl tw:hover:bg-[color:#d2dcf50d]
 
-              tw:max-sm:text-lg tw:max-sm:min-h-[48px] tw:max-sm:p-4
+              tw:max-lg:text-lg tw:max-lg:min-h-[48px] tw:max-lg:p-4
               ${isActive ? "tw:bg-[color:var(--active)]" : ""}`}
               onClick={() => setIsMenuOpen(false)}
             >

@@ -1,7 +1,6 @@
 .privacyContainer {
-    width: 100%;
-    margin: auto;
     padding: 20px;
+    margin: auto;
 }
 
 .title {
@@ -502,7 +501,7 @@
 }
 
 /* Mobile-specific layout adjustments */
-@media (max-width: 480px) {
+@media (max-width: 1279px) {
     .privacyContainer {
         width: auto;
       }

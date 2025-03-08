@@ -345,7 +345,7 @@
   background-color: white;
   border-radius: 12px;
   width: 90%;
-  max-width: 480px;
+  max-width: 1023px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.3s ease-out;
   overflow: hidden;
@@ -687,7 +687,7 @@
 }
 
 /* Responsive styles */
-@media (max-width: 480px) {
+@media (max-width: 1023px) {
   .profileMainContent {
     padding: 16px;
   }
