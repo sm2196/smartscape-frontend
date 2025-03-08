@@ -89,7 +89,7 @@ export default function NotificationsPage() {
   ]
 
   return (
-    <main className={styles.mainContent}>
+    <main className={styles.notificationMainContent}>
       <h1 className={styles.header}>Notifications</h1>
       <p className={styles.description}>Manage alerts for electricity, water, security, and your smart devices.</p>
 
