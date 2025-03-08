@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import {
   MdOutlineMode,
   MdDeleteOutline,
@@ -29,7 +29,8 @@ export default function ProfileContent() {
   const [isUploading, setIsUploading] = useState(false)
   const fileInputRef = useRef(null)
   const [fieldValues, setFieldValues] = useState({
-    legalName: "Gerald",
+    firstName: "Gerald",
+    lastName: "Smith",
     email: "xyz1234@hw.ac.uk",
     phoneNumbers: [],
     governmentId: "Verified",
@@ -47,7 +48,7 @@ export default function ProfileContent() {
     confirmPassword: "",
   })
   const [availableAccounts, setAvailableAccounts] = useState([
-    { id: 1, name: "Admin XYZ", email: "xyz1234@hw.ac.uk", isActive: true },
+    { id: 1, name: `${fieldValues.firstName} ${fieldValues.lastName}`, email: fieldValues.email, isActive: true },
     { id: 2, name: "John Doe", email: "john.doe@hw.ac.uk", isActive: false },
     {
       id: 3,
@@ -60,8 +61,17 @@ export default function ProfileContent() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
+  useEffect(() => {
+    setAvailableAccounts((accounts) =>
+      accounts.map((account) =>
+        account.id === 1 ? { ...account, name: `${fieldValues.firstName} ${fieldValues.lastName}` } : account,
+      ),
+    )
+  }, [fieldValues.firstName, fieldValues.lastName])
+
+  // Display fields
   const displayMapping = {
-    legalName: "Legal name",
+    name: "Legal name",
     email: "Email address",
     phoneNumbers: "Phone numbers",
     governmentId: "Government ID",
@@ -93,11 +103,10 @@ export default function ProfileContent() {
     setEditingField(field)
     setFieldError("")
 
-    if (field === "legalName") {
-      // Split the legal name into first and last name
-      const nameParts = fieldValues[field].split(" ")
-      setTempFirstName(nameParts[0] || "")
-      setTempLastName(nameParts.slice(1).join(" ") || "")
+    if (field === "name") {
+      // Set the first and last name for editing
+      setTempFirstName(fieldValues.firstName || "")
+      setTempLastName(fieldValues.lastName || "")
     } else {
       setTempValue(fieldValues[field]?.toString() || "")
     }
@@ -105,7 +114,7 @@ export default function ProfileContent() {
 
   const handleSave = () => {
     if (editingField) {
-      if (editingField === "legalName") {
+      if (editingField === "name") {
         if (!tempFirstName.trim() || !tempLastName.trim()) {
           setFieldError("Please fill out all fields")
           return
@@ -113,8 +122,16 @@ export default function ProfileContent() {
 
         setFieldValues((prev) => ({
           ...prev,
-          [editingField]: `${tempFirstName} ${tempLastName}`,
+          firstName: tempFirstName,
+          lastName: tempLastName,
         }))
+
+        // Update the first account's name in availableAccounts
+        setAvailableAccounts((accounts) =>
+          accounts.map((account) =>
+            account.id === 1 ? { ...account, name: `${tempFirstName} ${tempLastName}` } : account,
+          ),
+        )
       } else {
         if (!tempValue.trim()) {
           setFieldError("Please fill out this field")
@@ -218,15 +235,40 @@ export default function ProfileContent() {
     },
   ]
 
-  const personalInfoSections = Object.keys(fieldValues).map((key) => ({
-    title: displayMapping[key],
-    value: Array.isArray(fieldValues[key])
-      ? fieldValues[key].length
-        ? fieldValues[key].join(", ")
-        : "Add a number to get in touch with you. You can add other numbers and choose how they're used."
-      : fieldValues[key],
-    action: key === "phoneNumbers" ? "Add" : key === "governmentId" ? null : "Edit",
-  }))
+  const personalInfoSections = [
+    {
+      title: displayMapping.name,
+      value: `${fieldValues.firstName} ${fieldValues.lastName}`,
+      action: "Edit",
+      field: "name",
+    },
+    {
+      title: displayMapping.email,
+      value: fieldValues.email,
+      action: "Edit",
+      field: "email",
+    },
+    {
+      title: displayMapping.phoneNumbers,
+      value: fieldValues.phoneNumbers.length
+        ? fieldValues.phoneNumbers.join(", ")
+        : "Add a number to get in touch with you. You can add other numbers and choose how they're used.",
+      action: "Add",
+      field: "phoneNumbers",
+    },
+    {
+      title: displayMapping.governmentId,
+      value: fieldValues.governmentId,
+      action: null,
+      field: "governmentId",
+    },
+    {
+      title: displayMapping.address,
+      value: fieldValues.address,
+      action: "Edit",
+      field: "address",
+    },
+  ]
 
   const handleCancelAddAccount = () => {
     setNewAccountData({
@@ -265,7 +307,7 @@ export default function ProfileContent() {
               {isUploading && <div className={styles.uploadingIndicator}>Uploading...</div>}
             </div>
             <div className={styles.textContainer}>
-              <p className={styles.profileName}>{fieldValues.legalName}</p>
+              <p className={styles.profileName}>{`${fieldValues.firstName} ${fieldValues.lastName}`}</p>
               <p className={styles.profileEmail}>{fieldValues.email}</p>
             </div>
           </div>
@@ -292,15 +334,12 @@ export default function ProfileContent() {
       <div className={styles.personalInfoSection}>
         <h2 className={styles.personalInfo}>Personal Info</h2>
         <ul className={styles.infoList}>
-          {personalInfoSections.map(({ title, value, action }) => (
+          {personalInfoSections.map(({ title, value, action, field }) => (
             <li key={title} className={styles.infoItem}>
               <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>{title}</div>
                 {action && (
-                  <button
-                    className={styles.editButton}
-                    onClick={() => handleEdit(Object.keys(displayMapping).find((key) => displayMapping[key] === title))}
-                  >
+                  <button className={styles.editButton} onClick={() => handleEdit(field)}>
                     {action === "Edit" ? <MdOutlineMode size={16} /> : <MdAdd size={16} />}
                     <span>{action}</span>
                   </button>
@@ -327,7 +366,7 @@ export default function ProfileContent() {
               Make changes to your {displayMapping[editingField].toLowerCase()}. Click save when you're done.
             </p>
             <div className={styles.modalContent}>
-              {editingField === "legalName" ? (
+              {editingField === "name" ? (
                 <div className={styles.nameFieldsRow}>
                   <div className={styles.formGroup}>
                     <label htmlFor="firstName" className={styles.modalLabel}>
@@ -445,7 +484,7 @@ export default function ProfileContent() {
             </div>
             <div className={styles.modalContent}>
               <div className={styles.accountManagementOptions}>
-                <button className={styles.accountOption} onClick={() => handleEdit("legalName")}>
+                <button className={styles.accountOption} onClick={() => handleEdit("name")}>
                   <MdOutlineMode size={20} />
                   <span>Edit Profile Information</span>
                 </button>
