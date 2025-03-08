@@ -147,11 +147,11 @@
   transition: 0.4s;
 }
 
-.toggleInput:checked + .toggleSlider {
+.toggleInput:checked+.toggleSlider {
   background-color: #152447;
 }
 
-.toggleInput:checked + .toggleSlider:before {
+.toggleInput:checked+.toggleSlider:before {
   transform: translateX(1.5rem);
 }
 
@@ -169,6 +169,12 @@
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   background-size: 1.25rem;
+}
+
+.popupList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .popupButton {
@@ -223,10 +229,6 @@
     gap: 0.5rem;
   }
 
-  .buttonList {
-    gap: 1px;
-  }
-
   .buttonItem {
     padding: 0.75rem 1rem;
     border-radius: 0;
@@ -236,11 +238,6 @@
 
   .buttonGroup {
     gap: 0.5rem;
-  }
-
-  .buttonGroup {
-    gap: 1px;
-    margin-top: 1px;
   }
 
   .buttonGroup .buttonItem {
@@ -255,4 +252,3 @@
     height: 1rem;
   }
 }
-
