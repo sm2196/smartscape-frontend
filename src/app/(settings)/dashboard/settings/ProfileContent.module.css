@@ -436,6 +436,44 @@
   color: #aaa;
 }
 
+/* Add styles for password input wrapper and toggle button */
+.passwordInputWrapper {
+  position: relative;
+  width: 100%;
+}
+
+.passwordInputWrapper .modalInput {
+  width: 100%;
+  padding-right: 40px; /* Make room for the toggle button */
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.passwordToggle:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: #333;
+}
+
+.passwordToggle:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(21, 36, 71, 0.1);
+}
+
 .inputError {
   border-color: #dc2626;
 }
