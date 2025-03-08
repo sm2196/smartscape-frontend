@@ -1,5 +1,9 @@
 import DashboardContent from "./DashboardContent";
 
 export default function DashboardPage() {
-  return <DashboardContent />;
+  return (
+    <div className="tw:overflow-auto tw:w-full">
+      <DashboardContent />
+    </div>
+  );
 }
