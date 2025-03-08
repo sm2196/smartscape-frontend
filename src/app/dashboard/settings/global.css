@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+:root {
+  --silver: #c4c4c4;
+  --oxford-blue: #0a1630;
+  --space-cadet: #152447;
+  --lavender: #d2dcf5;
+  --snow: #fffafa;
+
+  --text-primary: var(--snow);
+  --text-secondary: var(--silver);
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+}
+
+body {
+  margin: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  max-height: 100vh; /* Add max-height */
+  overflow: hidden; /* Prevent body scroll */
+}
+
+.mainContent {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.apMainContent {
+  flex-grow: 1; /* Makes the main content take the remaining space */
+  width: 100%;
+}
+
+/* Mobile-specific layout adjustments */
+@media (max-width: 480px) {
+  .mainContent {
+    flex-direction: column;
+    padding-top: 64px; /* Match navbar height */
+    height: calc(100vh - 64px); /* Subtract navbar height */
+  }
+
+  .mainContent > * {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .apMainContent {
+    padding-top: 50px;
+    padding-bottom: 70px;
+  }
+}
+
+
+
