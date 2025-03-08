@@ -32,9 +32,9 @@ export default function ProfileContent() {
     firstName: "Gerald",
     lastName: "Smith",
     email: "xyz1234@hw.ac.uk",
-    phoneNumbers: [],
+    phoneNumbers: "",
     governmentId: "Verified",
-    address: "Not provided",
+    address: "",
   })
   const [tempValue, setTempValue] = useState("")
   const [tempFirstName, setTempFirstName] = useState("")
@@ -251,9 +251,9 @@ export default function ProfileContent() {
     {
       title: displayMapping.phoneNumbers,
       value: fieldValues.phoneNumbers.length
-        ? fieldValues.phoneNumbers.join(", ")
-        : "Add a number to get in touch with you. You can add other numbers and choose how they're used.",
-      action: "Add",
+        ? fieldValues.phoneNumbers
+        : "Add a number to get in touch with you.",
+      action: "Edit",
       field: "phoneNumbers",
     },
     {
@@ -264,7 +264,7 @@ export default function ProfileContent() {
     },
     {
       title: displayMapping.address,
-      value: fieldValues.address,
+      value: fieldValues.address.length ? fieldValues.address : "Add your address so we can reach you.",
       action: "Edit",
       field: "address",
     },
@@ -356,7 +356,7 @@ export default function ProfileContent() {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>
-                {editingField === "phoneNumbers" ? "Add" : "Edit"} {displayMapping[editingField]}
+                {"Edit"} {displayMapping[editingField]}
               </h2>
               <button className={styles.modalCloseButton} onClick={() => setEditingField(null)}>
                 <MdClose size={20} />
