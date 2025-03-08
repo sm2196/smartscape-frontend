@@ -72,7 +72,7 @@ export default function SettingsNavbar() {
 
   return (
     <div
-      className={`tw:w-[280px] tw:flex tw:flex-col tw:h-screen tw:p-8
+      className={`tw:w-[280px] tw:flex tw:flex-col tw:p-8 tw:pb-0
         tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)]
 
         tw:max-sm:w-full tw:max-sm:fixed tw:max-sm:z-[1]
@@ -116,7 +116,7 @@ export default function SettingsNavbar() {
           );
         })}
       </nav>
-      <div className="tw:mt-auto tw:mb-8 tw:max-sm:hidden">
+      <div className="tw:mt-auto tw:max-sm:hidden">
         <WeatherWidget />
       </div>
     </div>

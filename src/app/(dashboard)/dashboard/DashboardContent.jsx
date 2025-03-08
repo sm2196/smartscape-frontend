@@ -42,7 +42,7 @@ const bedroomDevices = {
 export default function DashboardContent() {
   const [selectedBedroom, setSelectedBedroom] = useState("Master Bedroom")
   return (
-    <>
+    <div className={styles.dashboardMainContent}>
       <RoomSection title="Living Room">
         <DeviceCard icon={LuLamp} title="Lamp" status="Off" />
         <DeviceCard icon={LuHeater} title="Heater" status="Off" />
@@ -93,6 +93,6 @@ export default function DashboardContent() {
           Turn Off TV and Speakers
         </button>
       </div>
-    </>
+    </div>
   )
 }

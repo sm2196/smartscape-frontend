@@ -503,18 +503,12 @@
 
 /* Mobile-specific layout adjustments */
 @media (max-width: 480px) {
-    .title {
-        width: 90%;
-    }
-
-    .subtitle {
-        width: 90%;
-    }
+    .privacyContainer {
+        width: auto;
+      }
 
     .grid-container {
-        width: 90%;
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 20px;
+        display: flex;
+        flex-direction: column;
     }
 }

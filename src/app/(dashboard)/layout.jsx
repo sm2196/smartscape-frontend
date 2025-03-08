@@ -9,10 +9,10 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="tw:font-roboto">
-      <body className="tw:m-0 tw:text-[color:var(--text-primary)]">
+      <body className="tw:m-0 tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)]">
         <div className="tw:flex tw:h-screen">
           <DashboardNavbar />
-          <div className="tw:flex-1 tw:overflow-auto tw:p-8 tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)] tw:max-sm:pt-16">
+          <div className="tw:w-full tw:max-sm:flex-col tw:max-sm:pt-16 tw:max-sm:flex">
             {children}
           </div>
         </div>

@@ -1,18 +1,40 @@
-import { FiChevronDown } from "react-icons/fi";
-import { useState } from "react";
-import styles from "./RoomSection.module.css";
+"use client"
+
+import { FiChevronDown } from "react-icons/fi"
+import { useState, useEffect, useRef } from "react" // Add useRef and useEffect
+import styles from "./RoomSection.module.css"
 
 export function RoomSection({ title, rooms, handleRoomChange, children }) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null) // Add ref for dropdown container
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false)
+      }
+    }
+
+    // Add event listener when dropdown is open
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside)
+    }
+
+    // Cleanup event listener
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [isDropdownOpen])
 
   const handleRoomSelect = (room) => {
-    handleRoomChange(room);
-    setIsDropdownOpen(false);
-  };
+    handleRoomChange(room)
+    setIsDropdownOpen(false)
+  }
 
   return (
     <div className={styles.roomSection}>
-      <div className={styles.roomTitleWrapper}>
+      <div className={styles.roomTitleWrapper} ref={dropdownRef}>
         <h2 className={styles.roomTitle}>
           {title}
           {rooms && (
@@ -33,5 +55,5 @@ export function RoomSection({ title, rooms, handleRoomChange, children }) {
       </div>
       <div className={styles.deviceGrid}>{children}</div>
     </div>
-  );
+  )
 }

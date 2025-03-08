@@ -1,5 +1,9 @@
 import Notifications from "./NotificationsPage";
 
 export default function NotificationPage() {
-  return <Notifications />;
+  return (
+    <div className="tw:overflow-auto tw:w-full">
+      <Notifications />
+    </div>
+  );
 }

@@ -1,3 +1,7 @@
+.dashboardMainContent {
+  padding: 20px;
+}
+
 .actionBar {
   position: fixed;
   bottom: 32px;
