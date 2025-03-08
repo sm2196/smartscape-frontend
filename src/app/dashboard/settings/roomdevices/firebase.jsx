@@ -1,13 +1,6 @@
 import { initializeApp } from "firebase/app";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-} from "firebase/firestore";
-import { getAuth, signInAnonymously } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAlcx97VjChNpSbLZbvfeMkremnLXHJgo0",
@@ -21,12 +14,6 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-
-// Sign in user anonymously
-signInAnonymously(auth)
-  .then(() => console.log("Signed in anonymously"))
-  .catch((error) => console.error("Auth Error:", error));
-
-export { db, collection, addDoc, getDocs, deleteDoc, doc };
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+export default app;

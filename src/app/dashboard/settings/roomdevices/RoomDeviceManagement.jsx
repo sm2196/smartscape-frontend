@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdChevronRight, MdAdd, MdRemove, MdWifi } from "react-icons/md";
 import Button from "./RoomDeviceButton";
 import styles from "./RoomDeviceManagement.module.css";
+import roomsData from "./rooms.json"; // Import the rooms data from the JSON file
 
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null);
@@ -13,6 +14,7 @@ const DeviceManagement = () => {
   const [newRoomName, setNewRoomName] = useState(""); // New state for room name
   const [newDeviceCategory, setNewDeviceCategory] = useState(""); // New state for device category
   const [newDeviceName, setNewDeviceName] = useState(""); // New state for device name
+  const [rooms, setRooms] = useState(roomsData); // Load rooms data from JSON file
 
   const openPopup = (type, room = null) => {
     setPopupType(type);
@@ -45,15 +47,6 @@ const DeviceManagement = () => {
       closePopup(); // Close the popup after saving
     }
   };
-
-  const rooms = [
-    { name: "Hall", content: ["Hall 1", "Hall 2", "Master Bedroom Hall"] },
-    { name: "Kitchen", content: ["Main Kitchen", "Dinner Table"] },
-    { name: "Bedroom", content: ["Bedroom 1", "Bedroom 2", "Master Bedroom"] },
-    { name: "Study room", content: ["Main Room", "Storage"] },
-    { name: "Backyard", content: ["Barbicu Corner", "Pool", "Gym Room"] },
-    { name: "Parking lot", content: ["Closed Garage", "Outside Garage"] },
-  ];
 
   const devices = [
     { name: "Network settings", type: "network", icon: MdWifi },
