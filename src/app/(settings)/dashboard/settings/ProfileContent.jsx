@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
+import { useState, useRef } from "react";
 import {
   MdOutlineMode,
   MdDeleteOutline,
@@ -12,39 +12,44 @@ import {
   MdClose,
   MdAdd,
   MdLogout,
-} from "react-icons/md"
-import styles from "./ProfileContent.module.css"
+} from "react-icons/md";
+import styles from "./ProfileContent.module.css";
 
 export default function ProfileContent() {
-  const [isMobile] = useState(false)
-  const [editingField, setEditingField] = useState(null)
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [signOutDialogOpen, setSignOutDialogOpen] = useState(false)
-  const [manageAccountOpen, setManageAccountOpen] = useState(false)
-  const [switchAccountOpen, setSwitchAccountOpen] = useState(false)
-  const [addAccountOpen, setAddAccountOpen] = useState(false)
-  const [profileImage, setProfileImage] = useState(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef(null)
+  const [isMobile] = useState(false);
+  const [editingField, setEditingField] = useState(null);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [signOutDialogOpen, setSignOutDialogOpen] = useState(false);
+  const [manageAccountOpen, setManageAccountOpen] = useState(false);
+  const [switchAccountOpen, setSwitchAccountOpen] = useState(false);
+  const [addAccountOpen, setAddAccountOpen] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
   const [fieldValues, setFieldValues] = useState({
     legalName: "Gerald",
     email: "xyz1234@hw.ac.uk",
     phoneNumbers: [],
     governmentId: "Verified",
     address: "Not provided",
-  })
-  const [tempValue, setTempValue] = useState("")
+  });
+  const [tempValue, setTempValue] = useState("");
   const [newAccountData, setNewAccountData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
-  })
+  });
   const [availableAccounts, setAvailableAccounts] = useState([
     { id: 1, name: "Admin XYZ", email: "xyz1234@hw.ac.uk", isActive: true },
     { id: 2, name: "John Doe", email: "john.doe@hw.ac.uk", isActive: false },
-    { id: 3, name: "Jane Smith", email: "jane.smith@hw.ac.uk", isActive: false },
-  ])
+    {
+      id: 3,
+      name: "Jane Smith",
+      email: "jane.smith@hw.ac.uk",
+      isActive: false,
+    },
+  ]);
 
   const displayMapping = {
     legalName: "Legal name",
@@ -52,26 +57,26 @@ export default function ProfileContent() {
     phoneNumbers: "Phone numbers",
     governmentId: "Government ID",
     address: "Address",
-  }
+  };
 
   const handleSignOut = () => {
-    setSignOutDialogOpen(true)
-  }
+    setSignOutDialogOpen(true);
+  };
 
   const confirmSignOut = () => {
-    console.log("Signing out...")
-    setSignOutDialogOpen(false)
+    console.log("Signing out...");
+    setSignOutDialogOpen(false);
     // In a real app, you would redirect to login page or clear auth state
-  }
+  };
 
   const handleDelete = () => {
-    setDeleteDialogOpen(true)
-  }
+    setDeleteDialogOpen(true);
+  };
 
   const confirmDelete = () => {
-    console.log("Deleting account...")
-    setDeleteDialogOpen(false)
-  }
+    console.log("Deleting account...");
+    setDeleteDialogOpen(false);
+  };
 
   const handleEdit = (field) => {
     setEditingField(field);
@@ -89,41 +94,41 @@ export default function ProfileContent() {
   };
 
   const handleProfileImageClick = () => {
-    fileInputRef.current?.click()
-  }
+    fileInputRef.current?.click();
+  };
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
+    const file = e.target.files[0];
+    if (!file) return;
 
-    setIsUploading(true)
+    setIsUploading(true);
 
     // Create a FileReader to read the image file
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (event) => {
-      setProfileImage(event.target.result)
-      setIsUploading(false)
-    }
+      setProfileImage(event.target.result);
+      setIsUploading(false);
+    };
     reader.onerror = () => {
-      console.error("Error reading file")
-      setIsUploading(false)
-    }
-    reader.readAsDataURL(file)
-  }
+      console.error("Error reading file");
+      setIsUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const handleNewAccountChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     setNewAccountData((prev) => ({
       ...prev,
       [name]: value,
-    }))
-  }
+    }));
+  };
 
   const handleAddAccount = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (newAccountData.password !== newAccountData.confirmPassword) {
-      alert("Passwords do not match")
-      return
+      alert("Passwords do not match");
+      return;
     }
 
     const newAccount = {
@@ -131,27 +136,27 @@ export default function ProfileContent() {
       name: newAccountData.name,
       email: newAccountData.email,
       isActive: false,
-    }
+    };
 
-    setAvailableAccounts([...availableAccounts, newAccount])
+    setAvailableAccounts([...availableAccounts, newAccount]);
     setNewAccountData({
       name: "",
       email: "",
       password: "",
       confirmPassword: "",
-    })
-    setAddAccountOpen(false)
-  }
+    });
+    setAddAccountOpen(false);
+  };
 
   const handleSwitchAccount = (id) => {
     setAvailableAccounts(
       availableAccounts.map((account) => ({
         ...account,
         isActive: account.id === id,
-      })),
-    )
-    setSwitchAccountOpen(false)
-  }
+      }))
+    );
+    setSwitchAccountOpen(false);
+  };
 
   const accountActions = [
     {
@@ -172,7 +177,7 @@ export default function ProfileContent() {
       mobileText: "Add",
       onClick: () => setAddAccountOpen(true),
     },
-  ]
+  ];
 
   const personalInfoSections = Object.keys(fieldValues).map((key) => ({
     title: displayMapping[key],
@@ -181,8 +186,9 @@ export default function ProfileContent() {
         ? fieldValues[key].join(", ")
         : "Add a number to get in touch with you. You can add other numbers and choose how they're used."
       : fieldValues[key],
-    action: key === "phoneNumbers" ? "Add" : "Edit",
-  }))
+    action:
+      key === "phoneNumbers" ? "Add" : key === "governmentId" ? null : "Edit",
+  }));
 
   return (
     <main className={styles.profileMainContent}>
@@ -190,11 +196,22 @@ export default function ProfileContent() {
       <div className={styles.profileBox}>
         <div className={styles.profileHeader}>
           <div className={styles.profileInfo}>
-            <div className={styles.profileImageContainer} onClick={handleProfileImageClick}>
+            <div
+              className={styles.profileImageContainer}
+              onClick={handleProfileImageClick}
+            >
               {profileImage ? (
-                <img src={profileImage || "/placeholder.svg"} alt="Profile" className={styles.profileImage} />
+                <img
+                  src={profileImage || "/placeholder.svg"}
+                  alt="Profile"
+                  className={styles.profileImage}
+                />
               ) : (
-                <MdAccountCircle className={styles.logo} size={64} aria-hidden="true" />
+                <MdAccountCircle
+                  className={styles.logo}
+                  size={64}
+                  aria-hidden="true"
+                />
               )}
               <div className={styles.profileImageOverlay}>
                 <MdAddAPhoto size={20} />
@@ -206,7 +223,9 @@ export default function ProfileContent() {
                 accept="image/*"
                 className={styles.fileInput}
               />
-              {isUploading && <div className={styles.uploadingIndicator}>Uploading...</div>}
+              {isUploading && (
+                <div className={styles.uploadingIndicator}>Uploading...</div>
+              )}
             </div>
             <div className={styles.textContainer}>
               <p className={styles.profileName}>{fieldValues.legalName}</p>
@@ -240,13 +259,25 @@ export default function ProfileContent() {
             <li key={title} className={styles.infoItem}>
               <div className={styles.infoHeader}>
                 <div className={styles.infoTitle}>{title}</div>
-                <button
-                  className={styles.editButton}
-                  onClick={() => handleEdit(Object.keys(displayMapping).find((key) => displayMapping[key] === title))}
-                >
-                  {action === "Edit" ? <MdOutlineMode size={16} /> : <MdAdd size={16} />}
-                  <span>{action}</span>
-                </button>
+                {action && (
+                  <button
+                    className={styles.editButton}
+                    onClick={() =>
+                      handleEdit(
+                        Object.keys(displayMapping).find(
+                          (key) => displayMapping[key] === title
+                        )
+                      )
+                    }
+                  >
+                    {action === "Edit" ? (
+                      <MdOutlineMode size={16} />
+                    ) : (
+                      <MdAdd size={16} />
+                    )}
+                    <span>{action}</span>
+                  </button>
+                )}
               </div>
               <div className={styles.infoValue}>{value}</div>
             </li>
@@ -256,18 +287,26 @@ export default function ProfileContent() {
 
       {/* Edit Field Modal */}
       {editingField && (
-        <div className={styles.modalOverlay} onClick={() => setEditingField(null)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setEditingField(null)}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>
-                {editingField === "phoneNumbers" ? "Add" : "Edit"} {displayMapping[editingField]}
+                {editingField === "phoneNumbers" ? "Add" : "Edit"}{" "}
+                {displayMapping[editingField]}
               </h2>
-              <button className={styles.modalCloseButton} onClick={() => setEditingField(null)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setEditingField(null)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
             <p className={styles.modalDescription}>
-              Make changes to your {displayMapping[editingField].toLowerCase()}. Click save when you're done.
+              Make changes to your {displayMapping[editingField].toLowerCase()}.
+              Click save when you're done.
             </p>
             <div className={styles.modalContent}>
               <label htmlFor="value" className={styles.modalLabel}>
@@ -278,15 +317,23 @@ export default function ProfileContent() {
                 className={styles.modalInput}
                 value={tempValue}
                 onChange={(e) => setTempValue(e.target.value)}
-                placeholder={`Enter your ${displayMapping[editingField].toLowerCase()}`}
+                placeholder={`Enter your ${displayMapping[
+                  editingField
+                ].toLowerCase()}`}
                 autoFocus
               />
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setEditingField(null)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setEditingField(null)}
+              >
                 Cancel
               </button>
-              <button className={styles.modalButtonPrimary} onClick={handleSave}>
+              <button
+                className={styles.modalButtonPrimary}
+                onClick={handleSave}
+              >
                 Save changes
               </button>
             </div>
@@ -296,22 +343,38 @@ export default function ProfileContent() {
 
       {/* Delete Account Modal */}
       {deleteDialogOpen && (
-        <div className={styles.modalOverlay} onClick={() => setDeleteDialogOpen(false)}>
-          <div className={`${styles.modal} ${styles.deleteModal}`} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setDeleteDialogOpen(false)}
+        >
+          <div
+            className={`${styles.modal} ${styles.deleteModal}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Delete Account</h2>
-              <button className={styles.modalCloseButton} onClick={() => setDeleteDialogOpen(false)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setDeleteDialogOpen(false)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
             <p className={styles.modalDescription}>
-              Are you sure you want to delete your account? This action cannot be undone.
+              Are you sure you want to delete your account? This action cannot
+              be undone.
             </p>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setDeleteDialogOpen(false)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setDeleteDialogOpen(false)}
+              >
                 Cancel
               </button>
-              <button className={`${styles.modalButtonPrimary} ${styles.modalButtonDanger}`} onClick={confirmDelete}>
+              <button
+                className={`${styles.modalButtonPrimary} ${styles.modalButtonDanger}`}
+                onClick={confirmDelete}
+              >
                 Delete Account
               </button>
             </div>
@@ -321,20 +384,37 @@ export default function ProfileContent() {
 
       {/* Sign Out Confirmation Modal */}
       {signOutDialogOpen && (
-        <div className={styles.modalOverlay} onClick={() => setSignOutDialogOpen(false)}>
-          <div className={`${styles.modal} ${styles.signOutModal}`} onClick={(e) => e.stopPropagation()}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSignOutDialogOpen(false)}
+        >
+          <div
+            className={`${styles.modal} ${styles.signOutModal}`}
+            onClick={(e) => e.stopPropagation()}
+          >
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Sign Out</h2>
-              <button className={styles.modalCloseButton} onClick={() => setSignOutDialogOpen(false)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setSignOutDialogOpen(false)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
-            <p className={styles.modalDescription}>Are you sure you want to sign out?</p>
+            <p className={styles.modalDescription}>
+              Are you sure you want to sign out?
+            </p>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setSignOutDialogOpen(false)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setSignOutDialogOpen(false)}
+              >
                 Cancel
               </button>
-              <button className={styles.modalButtonPrimary} onClick={confirmSignOut}>
+              <button
+                className={styles.modalButtonPrimary}
+                onClick={confirmSignOut}
+              >
                 <MdLogout size={16} />
                 Sign Out
               </button>
@@ -345,36 +425,57 @@ export default function ProfileContent() {
 
       {/* Manage Account Modal */}
       {manageAccountOpen && (
-        <div className={styles.modalOverlay} onClick={() => setManageAccountOpen(false)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setManageAccountOpen(false)}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Manage Account</h2>
-              <button className={styles.modalCloseButton} onClick={() => setManageAccountOpen(false)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setManageAccountOpen(false)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
             <div className={styles.modalContent}>
               <div className={styles.accountManagementOptions}>
-                <button className={styles.accountOption} onClick={() => handleEdit("legalName")}>
+                <button
+                  className={styles.accountOption}
+                  onClick={() => handleEdit("legalName")}
+                >
                   <MdOutlineMode size={20} />
                   <span>Edit Profile Information</span>
                 </button>
-                <button className={styles.accountOption} onClick={() => setManageAccountOpen(false)}>
+                <button
+                  className={styles.accountOption}
+                  onClick={() => setManageAccountOpen(false)}
+                >
                   <MdSwitchAccount size={20} />
                   <span>Change Password</span>
                 </button>
-                <button className={styles.accountOption} onClick={() => setManageAccountOpen(false)}>
+                <button
+                  className={styles.accountOption}
+                  onClick={() => setManageAccountOpen(false)}
+                >
                   <MdPersonAddAlt1 size={20} />
                   <span>Privacy Settings</span>
                 </button>
-                <button className={`${styles.accountOption} ${styles.dangerOption}`} onClick={handleDelete}>
+                <button
+                  className={`${styles.accountOption} ${styles.dangerOption}`}
+                  onClick={handleDelete}
+                >
                   <MdDeleteOutline size={20} />
                   <span>Delete Account</span>
                 </button>
               </div>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setManageAccountOpen(false)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setManageAccountOpen(false)}
+              >
                 Close
               </button>
             </div>
@@ -384,16 +485,24 @@ export default function ProfileContent() {
 
       {/* Switch Account Modal */}
       {switchAccountOpen && (
-        <div className={styles.modalOverlay} onClick={() => setSwitchAccountOpen(false)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSwitchAccountOpen(false)}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Switch Account</h2>
-              <button className={styles.modalCloseButton} onClick={() => setSwitchAccountOpen(false)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setSwitchAccountOpen(false)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
             <div className={styles.modalContent}>
-              <p className={styles.modalDescription}>Select an account to switch to:</p>
+              <p className={styles.modalDescription}>
+                Select an account to switch to:
+              </p>
               <div className={styles.accountsList}>
                 {availableAccounts.map((account) => (
                   <div key={account.id} className={styles.accountItem}>
@@ -407,7 +516,10 @@ export default function ProfileContent() {
                     {account.isActive ? (
                       <div className={styles.activeAccount}>Current</div>
                     ) : (
-                      <button className={styles.switchToButton} onClick={() => handleSwitchAccount(account.id)}>
+                      <button
+                        className={styles.switchToButton}
+                        onClick={() => handleSwitchAccount(account.id)}
+                      >
                         Switch
                       </button>
                     )}
@@ -416,7 +528,10 @@ export default function ProfileContent() {
               </div>
             </div>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setSwitchAccountOpen(false)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setSwitchAccountOpen(false)}
+              >
                 Cancel
               </button>
             </div>
@@ -426,11 +541,17 @@ export default function ProfileContent() {
 
       {/* Add Account Modal */}
       {addAccountOpen && (
-        <div className={styles.modalOverlay} onClick={() => setAddAccountOpen(false)}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setAddAccountOpen(false)}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2 className={styles.modalTitle}>Add New Account</h2>
-              <button className={styles.modalCloseButton} onClick={() => setAddAccountOpen(false)}>
+              <button
+                className={styles.modalCloseButton}
+                onClick={() => setAddAccountOpen(false)}
+              >
                 <MdClose size={20} />
               </button>
             </div>
@@ -481,7 +602,10 @@ export default function ProfileContent() {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="confirmPassword" className={styles.modalLabel}>
+                  <label
+                    htmlFor="confirmPassword"
+                    className={styles.modalLabel}
+                  >
                     Confirm Password
                   </label>
                   <input
@@ -497,7 +621,11 @@ export default function ProfileContent() {
                 </div>
               </div>
               <div className={styles.modalFooter}>
-                <button type="button" className={styles.modalButtonSecondary} onClick={() => setAddAccountOpen(false)}>
+                <button
+                  type="button"
+                  className={styles.modalButtonSecondary}
+                  onClick={() => setAddAccountOpen(false)}
+                >
                   Cancel
                 </button>
                 <button type="submit" className={styles.modalButtonPrimary}>
@@ -510,6 +638,5 @@ export default function ProfileContent() {
         </div>
       )}
     </main>
-  )
+  );
 }
-
