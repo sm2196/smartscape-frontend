@@ -16,8 +16,13 @@ import {
   MdVisibilityOff,
 } from "react-icons/md"
 import styles from "./ProfileContent.module.css"
+import { useAuth } from "@/hooks/useAuth"
+import { signUpWithEmailAndPassword, deleteUserAccount } from "@/lib/firebase/auth"
+import { createProfile, getProfilesByEmail, cleanupUserData } from "@/lib/firebase/firestore"
+import { uploadProfileImage } from "@/lib/firebase/storage"
 
 export default function ProfileContent() {
+  const { user, profile, loading } = useAuth()
   const [isMobile] = useState(false)
   const [editingField, setEditingField] = useState(null)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -33,8 +38,9 @@ export default function ProfileContent() {
     lastName: "Smith",
     email: "xyz1234@hw.ac.uk",
     phoneNumbers: "",
-    governmentId: "Verified",
+    governmentId: "Verified", // Always set to "Verified"
     address: "",
+    role: "admin", // Add role field to track user type
   })
   const [tempValue, setTempValue] = useState("")
   const [tempFirstName, setTempFirstName] = useState("")
@@ -60,6 +66,66 @@ export default function ProfileContent() {
   const [passwordError, setPasswordError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [successMessage, setSuccessMessage] = useState("")
+
+  // New state variables for account deletion
+  const [deletePassword, setDeletePassword] = useState("")
+  const [deleteError, setDeleteError] = useState("")
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  // Load profile data when available
+  useEffect(() => {
+    if (profile) {
+      setFieldValues({
+        firstName: profile.firstName || "",
+        lastName: profile.lastName || "",
+        email: profile.email || "",
+        phoneNumbers: profile.phoneNumbers || "",
+        governmentId: "Verified", // Always set to "Verified"
+        address: profile.address || "",
+        role: profile.role || "admin",
+      })
+
+      if (profile.profileImageUrl) {
+        setProfileImage(profile.profileImageUrl)
+      }
+    }
+  }, [profile])
+
+  // Load available accounts
+  useEffect(() => {
+    const loadAccounts = async () => {
+      if (user) {
+        // If user is admin, get all users under this admin
+        // If user is not admin, get the admin and other users under the same admin
+        const { success, profiles } = await getProfilesByEmail(user.email)
+        if (success && profiles.length > 0) {
+          const formattedAccounts = profiles.map((profile) => ({
+            id: profile.id,
+            name: `${profile.firstName} ${profile.lastName}`,
+            email: profile.email,
+            isActive: profile.id === user.uid,
+            role: profile.role || "user",
+          }))
+          setAvailableAccounts(formattedAccounts)
+        } else {
+          // If no profiles found, just show the current user
+          setAvailableAccounts([
+            {
+              id: user.uid,
+              name: `${fieldValues.firstName} ${fieldValues.lastName}`,
+              email: fieldValues.email,
+              isActive: true,
+              role: fieldValues.role || "admin",
+            },
+          ])
+        }
+      }
+    }
+
+    loadAccounts()
+  }, [user, fieldValues.firstName, fieldValues.lastName, fieldValues.email, fieldValues.role])
 
   useEffect(() => {
     setAvailableAccounts((accounts) =>
@@ -93,9 +159,44 @@ export default function ProfileContent() {
     setDeleteDialogOpen(true)
   }
 
-  const confirmDelete = () => {
-    console.log("Deleting account...")
-    setDeleteDialogOpen(false)
+  const confirmDelete = async () => {
+    if (!deletePassword) {
+      setDeleteError("Please enter your password to confirm deletion")
+      return
+    }
+
+    setIsDeleting(true)
+    setDeleteError("")
+
+    try {
+      // First delete the user from Firebase Authentication
+      const authResult = await deleteUserAccount(deletePassword)
+
+      if (!authResult.success) {
+        setDeleteError(authResult.error || "Failed to delete account. Please check your password.")
+        setIsDeleting(false)
+        return
+      }
+
+      // Then clean up the user data in Firestore
+      if (user) {
+        await cleanupUserData(user.uid)
+      }
+
+      // Close the dialog and show success message
+      setDeleteDialogOpen(false)
+      setSuccessMessage("Account successfully deleted")
+
+      // Redirect to login page after a short delay
+      setTimeout(() => {
+        window.location.href = "/login" // Adjust this to your login page path
+      }, 2000)
+    } catch (error) {
+      console.error("Error during account deletion:", error)
+      setDeleteError("An unexpected error occurred. Please try again.")
+    }
+
+    setIsDeleting(false)
   }
 
   const handleEdit = (field) => {
@@ -151,23 +252,33 @@ export default function ProfileContent() {
     fileInputRef.current?.click()
   }
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0]
     if (!file) return
 
     setIsUploading(true)
 
-    // Create a FileReader to read the image file
-    const reader = new FileReader()
-    reader.onload = (event) => {
-      setProfileImage(event.target.result)
-      setIsUploading(false)
+    if (user) {
+      // Upload to Firebase Storage
+      const result = await uploadProfileImage(user.uid, file)
+      if (result.success) {
+        setProfileImage(result.imageUrl)
+      } else {
+        console.error("Error uploading image:", result.error)
+      }
+    } else {
+      // Create a FileReader to read the image file (local preview only)
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        setProfileImage(event.target.result)
+      }
+      reader.onerror = () => {
+        console.error("Error reading file")
+      }
+      reader.readAsDataURL(file)
     }
-    reader.onerror = () => {
-      console.error("Error reading file")
-      setIsUploading(false)
-    }
-    reader.readAsDataURL(file)
+
+    setIsUploading(false)
   }
 
   const handleNewAccountChange = (e) => {
@@ -178,30 +289,87 @@ export default function ProfileContent() {
     }))
   }
 
-  const handleAddAccount = (e) => {
+  const handleAddAccount = async (e) => {
     e.preventDefault()
+    setPasswordError("")
+    setSuccessMessage("")
+
     if (newAccountData.password !== newAccountData.confirmPassword) {
       setPasswordError("Passwords do not match")
       return
     }
 
-    const newAccount = {
-      id: availableAccounts.length + 1,
-      name: `${newAccountData.firstName} ${newAccountData.lastName}`,
-      email: newAccountData.email,
-      isActive: false,
+    setIsSubmitting(true)
+
+    try {
+      // Create the user in Firebase Authentication
+      const {
+        success,
+        user: newUser,
+        error,
+      } = await signUpWithEmailAndPassword(newAccountData.email, newAccountData.password)
+
+      if (!success) {
+        setPasswordError(error || "Failed to create account")
+        setIsSubmitting(false)
+        return
+      }
+
+      // Get admin data to inherit phone and address
+      const adminPhone = fieldValues.phoneNumbers || ""
+      const adminAddress = fieldValues.address || ""
+
+      // Create the profile document in Firestore
+      const profileData = {
+        firstName: newAccountData.firstName,
+        lastName: newAccountData.lastName,
+        email: newAccountData.email,
+        phoneNumbers: adminPhone, // Inherit from admin
+        governmentId: "Verified", // Always verified
+        address: adminAddress, // Inherit from admin
+        profileImageUrl: null,
+        role: "user", // Set role to user, not admin
+        adminId: user?.uid || null, // Reference to the admin user
+      }
+
+      const profileResult = await createProfile(newUser.uid, profileData)
+
+      if (profileResult.success) {
+        // Add the new account to the available accounts list
+        const newAccount = {
+          id: newUser.uid,
+          name: `${newAccountData.firstName} ${newAccountData.lastName}`,
+          email: newAccountData.email,
+          isActive: false,
+          role: "user",
+        }
+
+        setAvailableAccounts([...availableAccounts, newAccount])
+        setSuccessMessage("Account created successfully!")
+
+        // Reset the form
+        setNewAccountData({
+          firstName: "",
+          lastName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        })
+
+        // Close the modal after a delay
+        setTimeout(() => {
+          setAddAccountOpen(false)
+          setSuccessMessage("")
+        }, 2000)
+      } else {
+        setPasswordError("Failed to create profile")
+      }
+    } catch (error) {
+      console.error("Error creating account:", error)
+      setPasswordError("An unexpected error occurred")
     }
 
-    setAvailableAccounts([...availableAccounts, newAccount])
-    setNewAccountData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    })
-    setPasswordError("")
-    setAddAccountOpen(false)
+    setIsSubmitting(false)
   }
 
   const handleSwitchAccount = (id) => {
@@ -250,9 +418,7 @@ export default function ProfileContent() {
     },
     {
       title: displayMapping.phoneNumbers,
-      value: fieldValues.phoneNumbers.length
-        ? fieldValues.phoneNumbers
-        : "Add a number to get in touch with you.",
+      value: fieldValues.phoneNumbers.length ? fieldValues.phoneNumbers : "Add a number to get in touch with you.",
       action: "Edit",
       field: "phoneNumbers",
     },
@@ -279,7 +445,22 @@ export default function ProfileContent() {
       confirmPassword: "",
     })
     setPasswordError("")
+    setSuccessMessage("")
     setAddAccountOpen(false)
+  }
+
+  const handleDeletePasswordChange = (e) => {
+    setDeletePassword(e.target.value)
+    if (deleteError) setDeleteError("")
+  }
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Loading profile...</p>
+      </div>
+    )
   }
 
   return (
@@ -435,13 +616,53 @@ export default function ProfileContent() {
             </div>
             <p className={styles.modalDescription}>
               Are you sure you want to delete your account? This action cannot be undone.
+              {fieldValues.role === "admin" && (
+                <span className={styles.warningText}>
+                  <br />
+                  <br />
+                  Warning: As an administrator, deleting your account will also delete all user accounts you manage.
+                </span>
+              )}
             </p>
+            <div className={styles.modalContent}>
+              <div className={styles.formGroup}>
+                <label htmlFor="deletePassword" className={styles.modalLabel}>
+                  Enter your password to confirm
+                </label>
+                <div className={styles.passwordInputWrapper}>
+                  <input
+                    id="deletePassword"
+                    type={showPassword ? "text" : "password"}
+                    className={`${styles.modalInput} ${deleteError ? styles.inputError : ""}`}
+                    value={deletePassword}
+                    onChange={handleDeletePasswordChange}
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    className={styles.passwordToggle}
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
+                  </button>
+                </div>
+                {deleteError && <div className={styles.errorMessage}>{deleteError}</div>}
+              </div>
+            </div>
             <div className={styles.modalFooter}>
-              <button className={styles.modalButtonSecondary} onClick={() => setDeleteDialogOpen(false)}>
+              <button
+                className={styles.modalButtonSecondary}
+                onClick={() => setDeleteDialogOpen(false)}
+                disabled={isDeleting}
+              >
                 Cancel
               </button>
-              <button className={`${styles.modalButtonPrimary} ${styles.modalButtonDanger}`} onClick={confirmDelete}>
-                Delete Account
+              <button
+                className={`${styles.modalButtonPrimary} ${styles.modalButtonDanger}`}
+                onClick={confirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? <span className={styles.buttonSpinner}></span> : "Delete Account"}
               </button>
             </div>
           </div>
@@ -532,6 +753,7 @@ export default function ProfileContent() {
                     <div className={styles.accountInfo}>
                       <div className={styles.accountName}>{account.name}</div>
                       <div className={styles.accountEmail}>{account.email}</div>
+                      <div className={styles.accountRole}>{account.role === "admin" ? "Administrator" : "User"}</div>
                     </div>
                     {account.isActive ? (
                       <div className={styles.activeAccount}>Current</div>
@@ -659,20 +881,30 @@ export default function ProfileContent() {
                   </div>
                 </div>
                 {passwordError && <div className={styles.errorMessage}>{passwordError}</div>}
+                {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
               </div>
               <div className={styles.modalFooter}>
                 <button type="button" className={styles.modalButtonSecondary} onClick={handleCancelAddAccount}>
                   Cancel
                 </button>
-                <button type="submit" className={styles.modalButtonPrimary}>
-                  <MdAdd size={16} />
-                  Add Account
+                <button type="submit" className={styles.modalButtonPrimary} disabled={isSubmitting}>
+                  {isSubmitting ? (
+                    <span className={styles.buttonSpinner}></span>
+                  ) : (
+                    <>
+                      <MdAdd size={16} />
+                      Add Account
+                    </>
+                  )}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+
+      {/* Success Toast Notification */}
+      {successMessage && <div className={styles.toast}>{successMessage}</div>}
     </main>
   )
 }
