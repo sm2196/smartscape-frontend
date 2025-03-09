@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import "./SMNavbar.css";
-import { FaBars, FaTimes } from "react-icons/fa";
+import { FaBars, FaTimes, FaSearch } from "react-icons/fa";
 import SMIcons from "./SMNavIcons";
 
 function SMNavbar() {
   const [SMclick, setSMClick] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchNotFound, setSearchNotFound] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setSMClick(!SMclick);
@@ -14,6 +17,27 @@ function SMNavbar() {
 
   const closeMobileMenu = () => {
     setSMClick(false);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setSearchNotFound(false); // Reset search not found state on input change
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Check if the search query matches any content on the current page
+      const content = document.body.innerText.toLowerCase();
+      if (content.includes(searchQuery.toLowerCase())) {
+        alert("Search term found on this page.");
+      } else {
+        setSearchNotFound(true);
+        navigate(`/faq?query=${searchQuery}`);
+      }
+      setSearchQuery("");
+      closeMobileMenu();
+    }
   };
 
   useEffect(() => {
@@ -87,6 +111,23 @@ function SMNavbar() {
           </ul>
 
           <div className="SMnavbar-right">
+            <form className="SMsearch-form" onSubmit={handleSearchSubmit}>
+              <input
+                type="text"
+                className="SMsearch-input"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+              />
+              <button type="submit" className="SMsearch-button">
+                <FaSearch />
+              </button>
+            </form>
+            {searchNotFound && (
+              <div className="SMsearch-not-found">
+                <p>Search not found for "{searchQuery}".</p>
+              </div>
+            )}
             <SMIcons />
             <div
               className="SMmenu-icon"
