@@ -16,8 +16,8 @@ export default function RootLayout({ children }) {
         <div className="tw:flex tw:h-screen">
           <DashboardNavbar />
           <div
-            className="tw:flex tw:w-full
-          tw:max-lg:flex-col tw:max-lg:pt-16 tw:max-lg:flex"
+            className="tw:overflow-auto tw:w-full
+           tw:max-lg:flex-col tw:max-lg:pt-16 tw:max-lg:flex"
           >
             {children}
           </div>
