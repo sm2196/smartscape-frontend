@@ -221,8 +221,7 @@ const Cards = () => {
       </div>
     </Parallax>
   );
-};
-const AmbassadorForm = () => {
+};const AmbassadorForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -232,7 +231,6 @@ const AmbassadorForm = () => {
   });
 
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -255,7 +253,7 @@ const AmbassadorForm = () => {
     const auth = getAuth(app);
 
     try {
-      // Register the user with email and a default password (consider replacing with user-inputted password)
+      // Register the user with email and a default password
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, "defaultPassword123");
       const user = userCredential.user;
 
@@ -279,20 +277,10 @@ const AmbassadorForm = () => {
         await setDoc(doc(db, "Ambassadors", user.uid), ambassadorData, { merge: true });
 
         console.log("User Registered Successfully!");
-        toast.success("Registration successful");
+        toast.success("Successfully applied!");
 
-        // Send email verification
-        await sendEmailVerification(user);
-        console.log("Verification email sent!");
-        toast.info("A verification email has been sent. Please check your inbox.", { position: "top-right" });
-
-        // Clear the form after successful submission
+        // Clear only the form after successful submission
         setFormData({ fullName: "", email: "", phone: "", socialMedia: "", about: "" });
-
-        // Redirect to the OTP page
-        setTimeout(() => {
-          navigate("/OTP", { state: { phone: formData.phone } });
-        }, 1500);
       }
     } catch (error) {
       console.error("Error registering user:", error);
