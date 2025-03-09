@@ -9,7 +9,6 @@ import "../../sections/SMParallax.css";
 import { Link } from 'react-router-dom';
 import '../../sections/SMCards.css';
 import '../../sections/SMAmbassador.css';
-
 import {
   FaUserPlus,
   FaFileAlt,
@@ -24,6 +23,14 @@ import {
 } from "react-icons/fa";
 import '../../sections/SMAmbassador.css';
 import '../../layout/Footer/SMFooter.css';
+import { initializeApp } from 'firebase/app';
+import { auth,db } from "../../../firebase";
+import { app } from "@/firebase";
+import { setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { toast } from "react-toastify";
+
 
 const MainPicSection = () => {
   return (
@@ -215,27 +222,84 @@ const Cards = () => {
     </Parallax>
   );
 };
-
 const AmbassadorForm = () => {
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    socialMedia: '',
-    about: ''
+    fullName: "",
+    email: "",
+    phone: "",
+    socialMedia: "",
+    about: "",
   });
+
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    setLoading(true);
+
+    if (!formData.fullName || !formData.email || !formData.phone || !formData.about) {
+      toast.error("Please fill in all required fields.");
+      setLoading(false);
+      return;
+    }
+
+    const auth = getAuth(app);
+
+    try {
+      // Register the user with email and a default password (consider replacing with user-inputted password)
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, "defaultPassword123");
+      const user = userCredential.user;
+
+      if (user) {
+        // Prepare user data for Firestore
+        const ambassadorData = {
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          socialMedia: formData.socialMedia || "",
+          about: formData.about,
+          verified: false,  // User is not verified yet
+          admin: false,
+          userId: user.uid,
+          timestamp: serverTimestamp(),
+        };
+
+        console.log("Writing to Firestore:", ambassadorData); // Debugging step
+
+        // Save the user data to Firestore
+        await setDoc(doc(db, "Ambassadors", user.uid), ambassadorData, { merge: true });
+
+        console.log("User Registered Successfully!");
+        toast.success("Registration successful");
+
+        // Send email verification
+        await sendEmailVerification(user);
+        console.log("Verification email sent!");
+        toast.info("A verification email has been sent. Please check your inbox.", { position: "top-right" });
+
+        // Clear the form after successful submission
+        setFormData({ fullName: "", email: "", phone: "", socialMedia: "", about: "" });
+
+        // Redirect to the OTP page
+        setTimeout(() => {
+          navigate("/OTP", { state: { phone: formData.phone } });
+        }, 1500);
+      }
+    } catch (error) {
+      console.error("Error registering user:", error);
+      toast.error(error.message, { position: "top-right" });
+    }
+
+    setLoading(false);
   };
 
   return (
@@ -248,7 +312,7 @@ const AmbassadorForm = () => {
               <div className="SMambassador-heading-underline"></div>
             </h2>
             <p className="SMambassador-subtitle">
-              Join our community of smart home enthusiasts and help others transform their living spaces
+              Join our community of smart home enthusiasts and help others transform their living spaces.
             </p>
             <div className="SMform-group">
               <input
@@ -286,7 +350,7 @@ const AmbassadorForm = () => {
                 name="socialMedia"
                 value={formData.socialMedia}
                 onChange={handleChange}
-                placeholder="Social Media Handles"
+                placeholder="Social Media Handles (Optional)"
               />
             </div>
             <div className="SMform-group">
@@ -299,8 +363,8 @@ const AmbassadorForm = () => {
               />
             </div>
             <div className="SM-AmbassadorButton-wrapper">
-              <button type="submit">
-                <span>Submit Application</span>
+              <button type="submit" disabled={loading}>
+                <span>{loading ? "Submitting..." : "Submit Application"}</span>
               </button>
             </div>
           </form>
