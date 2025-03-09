@@ -27,6 +27,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onDelete, isAdmin,
       if (!result.success) {
         // Handle specific error cases with user-friendly messages
         switch (result.error) {
+          case "auth/invalid-credential":
           case "auth/wrong-password":
             setDeleteError("Incorrect password. Please try again.")
             break
@@ -36,7 +37,7 @@ export default function DeleteAccountModal({ isOpen, onClose, onDelete, isAdmin,
           case "auth/requires-recent-login":
             setDeleteError("For security, please log out and log in again before deleting your account.")
             break
-          case "auth/no-user":
+          case "auth/user-not-found":
             setDeleteError("Unable to verify your account. Please try logging in again.")
             break
           default:

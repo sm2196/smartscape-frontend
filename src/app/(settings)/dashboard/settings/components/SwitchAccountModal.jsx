@@ -27,7 +27,7 @@ export default function SwitchAccountModal({ isOpen, onClose, accounts, onSwitch
                 <div className={accountStyles.accountInfo}>
                   <div className={accountStyles.accountName}>{account.name}</div>
                   <div className={accountStyles.accountEmail}>{account.email}</div>
-                  <div className={accountStyles.accountRole}>{account.role === "admin" ? "Administrator" : "User"}</div>
+                  <div className={accountStyles.accountRole}>{account.admin ? "Administrator" : "User"}</div>
                 </div>
                 {account.isActive ? (
                   <div className={accountStyles.activeAccount}>Current</div>

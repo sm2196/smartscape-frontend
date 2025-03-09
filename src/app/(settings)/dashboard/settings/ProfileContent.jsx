@@ -31,7 +31,7 @@ export default function ProfileContent() {
     phoneNumbers: "",
     governmentId: "Verified", // Always set to "Verified"
     address: "",
-    role: "admin", // Add role field to track user type
+    admin: true, // Use boolean instead of role string
   })
 
   // State for modals
@@ -61,7 +61,7 @@ export default function ProfileContent() {
         phoneNumbers: profile.phoneNumbers || "",
         governmentId: "Verified", // Always set to "Verified"
         address: profile.address || "",
-        role: profile.role || "admin",
+        admin: profile.admin === true, // Convert to boolean if needed
       })
     }
   }, [profile])
@@ -77,7 +77,7 @@ export default function ProfileContent() {
             name: `${profile.firstName} ${profile.lastName}`,
             email: profile.email,
             isActive: profile.id === user.uid,
-            role: profile.role || "user",
+            admin: profile.admin === true,
           }))
           setAvailableAccounts(formattedAccounts)
         } else {
@@ -87,7 +87,7 @@ export default function ProfileContent() {
               name: `${fieldValues.firstName} ${fieldValues.lastName}`,
               email: fieldValues.email,
               isActive: true,
-              role: fieldValues.role || "admin",
+              admin: fieldValues.admin,
             },
           ])
         }
@@ -95,7 +95,7 @@ export default function ProfileContent() {
     }
 
     loadAccounts()
-  }, [user, fieldValues.firstName, fieldValues.lastName, fieldValues.email, fieldValues.role])
+  }, [user, fieldValues.firstName, fieldValues.lastName, fieldValues.email, fieldValues.admin])
 
   // Display mapping for field names
   const displayMapping = {
@@ -223,7 +223,6 @@ export default function ProfileContent() {
   }
 
   // Update the handleAddAccount function to better handle errors and display them to the user
-
   const handleAddAccount = async (newAccountData) => {
     setIsSubmitting(true)
     setSuccessMessage("")
@@ -264,7 +263,7 @@ export default function ProfileContent() {
         governmentId: "Verified", // Always verified
         address: adminAddress, // Inherit from admin
         profileImageUrl: null,
-        role: "user", // Set role to user, not admin
+        admin: false, // Set admin to false for new users
         adminId: user?.uid || null, // Reference to the admin user
       }
 
@@ -277,7 +276,7 @@ export default function ProfileContent() {
           name: `${newAccountData.firstName} ${newAccountData.lastName}`,
           email: newAccountData.email,
           isActive: false,
-          role: "user",
+          admin: false,
         }
 
         setAvailableAccounts([...availableAccounts, newAccount])
@@ -388,7 +387,7 @@ export default function ProfileContent() {
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onDelete={confirmDelete}
-        isAdmin={fieldValues.role === "admin"}
+        isAdmin={fieldValues.admin === true}
         isDeleting={isDeleting}
       />
 

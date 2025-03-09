@@ -112,7 +112,7 @@ export async function getProfilesByEmail(email) {
 
     const userProfile = { id: userProfileSnap.id, ...userProfileSnap.data() }
     const profiles = [userProfile]
-    const isAdmin = userProfile.role === "admin"
+    const isAdmin = userProfile.admin === true
 
     // If the user is an admin, get all profiles where adminId points to this user
     if (isAdmin) {
@@ -168,7 +168,7 @@ export async function cleanupUserData(userId) {
     }
 
     // If the user is an admin, handle their managed users
-    if (profile && profile.role === "admin") {
+    if (profile && profile.admin === true) {
       try {
         // Find all users managed by this admin using adminId field
         const managedUsersQuery = query(profilesCollection, where("adminId", "==", userId))
