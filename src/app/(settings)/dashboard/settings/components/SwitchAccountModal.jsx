@@ -1,7 +1,8 @@
 "use client"
 
 import { MdClose, MdAccountCircle } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
+import accountStyles from "./SwitchAccountModal.module.css"
 
 export default function SwitchAccountModal({ isOpen, onClose, accounts, onSwitchAccount }) {
   if (!isOpen) return null
@@ -17,21 +18,21 @@ export default function SwitchAccountModal({ isOpen, onClose, accounts, onSwitch
         </div>
         <div className={styles.modalContent}>
           <p className={styles.modalDescription}>Select an account to switch to:</p>
-          <div className={styles.accountsList}>
+          <div className={accountStyles.accountsList}>
             {accounts.map((account) => (
-              <div key={account.id} className={styles.accountItem}>
-                <div className={styles.accountAvatar}>
+              <div key={account.id} className={accountStyles.accountItem}>
+                <div className={accountStyles.accountAvatar}>
                   <MdAccountCircle size={24} />
                 </div>
-                <div className={styles.accountInfo}>
-                  <div className={styles.accountName}>{account.name}</div>
-                  <div className={styles.accountEmail}>{account.email}</div>
-                  <div className={styles.accountRole}>{account.role === "admin" ? "Administrator" : "User"}</div>
+                <div className={accountStyles.accountInfo}>
+                  <div className={accountStyles.accountName}>{account.name}</div>
+                  <div className={accountStyles.accountEmail}>{account.email}</div>
+                  <div className={accountStyles.accountRole}>{account.role === "admin" ? "Administrator" : "User"}</div>
                 </div>
                 {account.isActive ? (
-                  <div className={styles.activeAccount}>Current</div>
+                  <div className={accountStyles.activeAccount}>Current</div>
                 ) : (
-                  <button className={styles.switchToButton} onClick={() => onSwitchAccount(account.id)}>
+                  <button className={accountStyles.switchToButton} onClick={() => onSwitchAccount(account.id)}>
                     Switch
                   </button>
                 )}

@@ -1,7 +1,7 @@
 "use client"
 
 import { MdManageAccounts, MdSwitchAccount, MdAdd } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./AccountActions.module.css"
 
 export default function AccountActions({ onManageAccount, onSwitchAccount, onAddAccount, isMobile = false }) {
   const accountActions = [
@@ -38,3 +38,4 @@ export default function AccountActions({ onManageAccount, onSwitchAccount, onAdd
     </div>
   )
 }
+

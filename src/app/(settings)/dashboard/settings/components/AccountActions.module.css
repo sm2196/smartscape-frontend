@@ -1,0 +1,58 @@
+/* User icons and buttons */
+.userIcons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+
+.iconWithText {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f8f9fa;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.iconWithText:hover {
+  background-color: #f0f0f0;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.iconWithText:active {
+  transform: translateY(0);
+}
+
+.iconWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+}
+
+.iconWithText span {
+  font-size: 15px;
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+@media (max-width: 1023px) {
+  .userIcons {
+    grid-template-columns: 1fr;
+  }
+
+  .iconWithText {
+    justify-content: flex-start;
+  }
+}
+

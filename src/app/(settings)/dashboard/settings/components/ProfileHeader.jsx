@@ -2,7 +2,7 @@
 
 import { useState, useRef } from "react"
 import { MdAccountCircle, MdAddAPhoto } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ProfileHeader.module.css"
 import { uploadProfileImage } from "@/lib/firebase/storage"
 
 export default function ProfileHeader({ user, profile, handleSignOut }) {

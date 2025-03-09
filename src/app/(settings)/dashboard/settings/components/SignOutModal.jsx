@@ -1,7 +1,7 @@
 "use client"
 
 import { MdClose, MdLogout } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
 
 export default function SignOutModal({ isOpen, onClose, onSignOut }) {
   if (!isOpen) return null

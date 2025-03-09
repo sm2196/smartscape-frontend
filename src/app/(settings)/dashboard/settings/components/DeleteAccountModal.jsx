@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { MdClose, MdVisibility, MdVisibilityOff } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
 
 export default function DeleteAccountModal({ isOpen, onClose, onDelete, isAdmin, isDeleting }) {
   const [deletePassword, setDeletePassword] = useState("")

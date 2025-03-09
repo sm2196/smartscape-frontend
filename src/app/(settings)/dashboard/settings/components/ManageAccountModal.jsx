@@ -1,7 +1,8 @@
 "use client"
 
 import { MdClose, MdOutlineMode, MdSwitchAccount, MdPersonAddAlt1, MdDeleteOutline } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
+import accountStyles from "./ManageAccountModal.module.css"
 
 export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete }) {
   if (!isOpen) return null
@@ -16,20 +17,20 @@ export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete }
           </button>
         </div>
         <div className={styles.modalContent}>
-          <div className={styles.accountManagementOptions}>
-            <button className={styles.accountOption} onClick={() => onEdit("name")}>
+          <div className={accountStyles.accountManagementOptions}>
+            <button className={accountStyles.accountOption} onClick={() => onEdit("name")}>
               <MdOutlineMode size={20} />
               <span>Edit Profile Information</span>
             </button>
-            <button className={styles.accountOption} onClick={onClose}>
+            <button className={accountStyles.accountOption} onClick={onClose}>
               <MdSwitchAccount size={20} />
               <span>Change Password</span>
             </button>
-            <button className={styles.accountOption} onClick={onClose}>
+            <button className={accountStyles.accountOption} onClick={onClose}>
               <MdPersonAddAlt1 size={20} />
               <span>Privacy Settings</span>
             </button>
-            <button className={`${styles.accountOption} ${styles.dangerOption}`} onClick={onDelete}>
+            <button className={`${accountStyles.accountOption} ${accountStyles.dangerOption}`} onClick={onDelete}>
               <MdDeleteOutline size={20} />
               <span>Delete Account</span>
             </button>

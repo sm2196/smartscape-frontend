@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { MdClose } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
 
 export default function EditFieldModal({
   isOpen,

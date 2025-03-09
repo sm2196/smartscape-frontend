@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { MdClose, MdAdd, MdVisibility, MdVisibilityOff } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./ModalStyles.module.css"
 
 export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmitting, successMessage }) {
   const [newAccountData, setNewAccountData] = useState({
@@ -171,3 +171,4 @@ export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmi
     </div>
   )
 }
+

@@ -1,7 +1,7 @@
 "use client"
 
 import { MdOutlineMode, MdAdd } from "react-icons/md"
-import styles from "../ProfileContent.module.css"
+import styles from "./PersonalInfoSection.module.css"
 
 export default function PersonalInfoSection({ personalInfo, onEdit }) {
   return (
