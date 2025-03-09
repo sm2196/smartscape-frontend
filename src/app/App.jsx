@@ -7,6 +7,7 @@ import About from '../components/pages/AboutUsPage/SMAboutUsPage';
 import Services from '../components/pages/Services/SMServices';
 import ContactMe from '../components/pages/ContactMe/SMContactMe';
 import ScrollToTop from '../components/ScrollToTop';
+import FAQ from '../components/pages/FAQ/HomeFAQ';
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
           <Route path="/contact" element={<ContactMe />} />
+          <Route path="/faq" element={<FAQ />} />
         </Routes>
       </Router>
     </ParallaxProvider>

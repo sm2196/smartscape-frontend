@@ -8,6 +8,8 @@ import "../../sections/SMHowItWorks.css";
 import "../../sections/SMParallax.css";
 import { Link } from 'react-router-dom';
 import '../../sections/SMCards.css';
+import '../../sections/SMAmbassador.css';
+
 import {
   FaUserPlus,
   FaFileAlt,
