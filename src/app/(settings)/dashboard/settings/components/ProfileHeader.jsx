@@ -1,14 +1,24 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { MdAccountCircle, MdAddAPhoto } from "react-icons/md"
 import styles from "./ProfileHeader.module.css"
 import { uploadProfileImage } from "@/lib/firebase/storage"
 
-export default function ProfileHeader({ user, profile, handleSignOut }) {
+export default function ProfileHeader({ user, profile, handleSignOut, onProfileUpdate }) {
   const [profileImage, setProfileImage] = useState(profile?.profileImageUrl || null)
   const [isUploading, setIsUploading] = useState(false)
+  const [displayName, setDisplayName] = useState("")
+  const [displayEmail, setDisplayEmail] = useState("")
   const fileInputRef = useRef(null)
+
+  // Update display values when profile changes
+  useEffect(() => {
+    if (profile) {
+      setDisplayName(`${profile.firstName || ""} ${profile.lastName || ""}`.trim())
+      setDisplayEmail(profile.email || "")
+    }
+  }, [profile])
 
   const handleProfileImageClick = () => {
     fileInputRef.current?.click()
@@ -25,6 +35,10 @@ export default function ProfileHeader({ user, profile, handleSignOut }) {
       const result = await uploadProfileImage(user.uid, file)
       if (result.success) {
         setProfileImage(result.imageUrl)
+        // Notify parent component of the update
+        if (onProfileUpdate) {
+          onProfileUpdate({ profileImageUrl: result.imageUrl })
+        }
       } else {
         console.error("Error uploading image:", result.error)
       }
@@ -66,8 +80,8 @@ export default function ProfileHeader({ user, profile, handleSignOut }) {
             {isUploading && <div className={styles.uploadingIndicator}>Uploading...</div>}
           </div>
           <div className={styles.textContainer}>
-            <p className={styles.profileName}>{`${profile?.firstName || ""} ${profile?.lastName || ""}`}</p>
-            <p className={styles.profileEmail}>{profile?.email || ""}</p>
+            <p className={styles.profileName}>{displayName}</p>
+            <p className={styles.profileEmail}>{displayEmail}</p>
           </div>
         </div>
 

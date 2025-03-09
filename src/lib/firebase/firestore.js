@@ -50,34 +50,103 @@ export async function createProfile(userId, profileData) {
   }
 }
 
-// Get a profile by user ID
+// Update a profile with field validation
+export async function updateProfile(userId, profileData) {
+  try {
+    const profileRef = doc(profilesCollection, userId)
+    const profileDoc = await getDoc(profileRef)
+
+    if (!profileDoc.exists()) {
+      return { success: false, error: "Profile not found" }
+    }
+
+    // Validate fields before update
+    const validatedData = {}
+
+    if (profileData.firstName !== undefined || profileData.lastName !== undefined) {
+      // Name validation
+      const firstName = profileData.firstName?.trim() || profileDoc.data().firstName
+      const lastName = profileData.lastName?.trim() || profileDoc.data().lastName
+
+      if (firstName) validatedData.firstName = firstName
+      if (lastName) validatedData.lastName = lastName
+    }
+
+    if (profileData.email !== undefined) {
+      // Email validation
+      const email = profileData.email.trim()
+      if (email && email.includes("@")) {
+        validatedData.email = email
+      } else {
+        return { success: false, error: "Invalid email format" }
+      }
+    }
+
+    if (profileData.phoneNumbers !== undefined) {
+      // Phone validation - basic format check
+      const phone = profileData.phoneNumbers.trim()
+      if (phone && /^[\d\s+()-]+$/.test(phone)) {
+        validatedData.phoneNumbers = phone
+      } else if (phone) {
+        // Allow empty phone but validate if provided
+        return { success: false, error: "Invalid phone number format" }
+      }
+    }
+
+    if (profileData.address !== undefined) {
+      // Address validation - just trim and ensure not empty if provided
+      const address = profileData.address.trim()
+      if (address) {
+        validatedData.address = address
+      }
+    }
+
+    // Add timestamp
+    validatedData.updatedAt = new Date()
+
+    // Update only if we have valid data
+    if (Object.keys(validatedData).length > 0) {
+      await updateDoc(profileRef, validatedData)
+      return { success: true, data: validatedData }
+    }
+
+    return { success: false, error: "No valid fields to update" }
+  } catch (error) {
+    console.error("Error updating profile:", error)
+    return { success: false, error: error.message }
+  }
+}
+
+// Get a profile by user ID with error handling
 export async function getProfileByUserId(userId) {
   try {
     const profileRef = doc(profilesCollection, userId)
     const profileSnap = await getDoc(profileRef)
 
     if (profileSnap.exists()) {
-      return { success: true, profile: { id: profileSnap.id, ...profileSnap.data() } }
+      const profileData = profileSnap.data()
+
+      // Format the data for consistency
+      const formattedProfile = {
+        id: profileSnap.id,
+        firstName: profileData.firstName || "",
+        lastName: profileData.lastName || "",
+        email: profileData.email || "",
+        phoneNumbers: profileData.phoneNumbers || "",
+        address: profileData.address || "",
+        admin: profileData.admin === true,
+        adminId: profileData.adminId || null,
+        profileImageUrl: profileData.profileImageUrl || null,
+        createdAt: profileData.createdAt?.toDate() || null,
+        updatedAt: profileData.updatedAt?.toDate() || null,
+      }
+
+      return { success: true, profile: formattedProfile }
     } else {
       return { success: false, error: "Profile not found" }
     }
   } catch (error) {
     console.error("Error getting profile:", error)
-    return { success: false, error: error.message }
-  }
-}
-
-// Update a profile
-export async function updateProfile(userId, profileData) {
-  try {
-    const profileRef = doc(profilesCollection, userId)
-    await updateDoc(profileRef, {
-      ...profileData,
-      updatedAt: new Date(),
-    })
-    return { success: true }
-  } catch (error) {
-    console.error("Error updating profile:", error)
     return { success: false, error: error.message }
   }
 }
