@@ -10,6 +10,9 @@
   text-decoration: none;
 }
 
+.highlight {
+  background-color: yellow;
+}
 .SMsearch-not-found {
   background-color: #f8d7da;
   color: #721c24;

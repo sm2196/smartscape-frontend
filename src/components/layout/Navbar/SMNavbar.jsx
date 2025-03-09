@@ -24,6 +24,24 @@ function SMNavbar() {
     setSearchNotFound(false); // Reset search not found state on input change
   };
 
+  const highlightAndScrollToSearchTerm = (term) => {
+    const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+    let node;
+    while (node = walk.nextNode()) {
+      const index = node.nodeValue.toLowerCase().indexOf(term.toLowerCase());
+      if (index !== -1) {
+        const span = document.createElement('span');
+        span.className = 'highlight';
+        const highlightedText = node.splitText(index);
+        highlightedText.splitText(term.length);
+        span.appendChild(highlightedText.cloneNode(true));
+        highlightedText.parentNode.replaceChild(span, highlightedText);
+        span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        break;
+      }
+    }
+  };
+
   const handleSearchSubmit = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -31,7 +49,7 @@ function SMNavbar() {
       const content = document.body.innerText.toLowerCase();
       if (content.includes(searchQuery.toLowerCase())) {
         // Highlight and scroll to the first occurrence of the search term
-        window.find(searchQuery, false, false, true, false, true, false);
+        highlightAndScrollToSearchTerm(searchQuery);
       } else {
         setSearchNotFound(true);
         navigate(`/faq?query=${searchQuery}`);
