@@ -34,6 +34,9 @@ function SMNavbar() {
       } else {
         setSearchNotFound(true);
         navigate(`/faq?query=${searchQuery}`);
+        setTimeout(() => {
+          setSearchNotFound(false);
+        }, 3000); // Hide the message after 3 seconds
       }
       setSearchQuery("");
       closeMobileMenu();
@@ -125,7 +128,7 @@ function SMNavbar() {
             </form>
             {searchNotFound && (
               <div className="SMsearch-not-found">
-                <p>Search not found for "{searchQuery}".</p>
+                <p>Search not found</p>
               </div>
             )}
             <SMIcons />
