@@ -30,7 +30,8 @@ function SMNavbar() {
       // Check if the search query matches any content on the current page
       const content = document.body.innerText.toLowerCase();
       if (content.includes(searchQuery.toLowerCase())) {
-        alert("Search term found on this page.");
+        // Highlight and scroll to the first occurrence of the search term
+        window.find(searchQuery, false, false, true, false, true, false);
       } else {
         setSearchNotFound(true);
         navigate(`/faq?query=${searchQuery}`);
