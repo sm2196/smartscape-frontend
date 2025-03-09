@@ -40,6 +40,11 @@ const DeviceManagement = () => {
     }
   };
 
+  const handleRemoveRoom = (roomName) => {
+    setRooms((prevRooms) => prevRooms.filter((room) => room.name !== roomName));
+    closePopup();
+  };
+
   const handleSaveDevice = () => {
     if (newDeviceCategory.trim() !== "" && newDeviceName.trim() !== "") {
       // Save the new device here
@@ -165,20 +170,14 @@ const DeviceManagement = () => {
             )}
 
             {popupType === "room" && (
-              <div className={styles.popupList}>
-                {selectedRoom
-                  ? rooms
-                      .find((room) => room.name === selectedRoom)
-                      ?.content?.map((item, index) => (
-                        <Button key={index} className={styles.popupButton}>
-                          {item}
-                        </Button>
-                      ))
-                  : rooms.map(({ name }) => (
-                      <Button key={name} className={styles.popupButton}>
-                        {name}
-                      </Button>
-                    ))}
+              <div>
+                <h3>Manage {selectedRoom}</h3>
+                <Button
+                  className={styles.popupButton}
+                  onClick={() => handleRemoveRoom(selectedRoom)}
+                >
+                  Remove Room
+                </Button>
               </div>
             )}
 
@@ -204,20 +203,10 @@ const DeviceManagement = () => {
             )}
 
             {/* Add Room Popup */}
+            {/* Add Room Popup */}
             {popupType === "addRoom" && (
               <div>
                 <h3>Add New Room</h3>
-                <select
-                  className={styles.dropdown}
-                  onChange={(e) => setSelectedRoom(e.target.value)}
-                  value={selectedRoom || ""}
-                >
-                  {rooms.map(({ name }) => (
-                    <option key={name} value={name}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
 
                 <input
                   type="text"

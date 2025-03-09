@@ -202,17 +202,17 @@
 .popupButton {
   width: 100%;
   padding: 0.75rem;
-  background-color: #e2e8f0;
+  background-color: #e85651;
   border: none;
   border-radius: 0.5rem;
-  color: #152447;
+  color: #cbd5e1;
   font-size: 1rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
 .popupButton:hover {
-  background-color: #cbd5e1;
+  background-color: #8c0500;
 }
 
 .popupClose {
