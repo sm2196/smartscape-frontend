@@ -83,8 +83,10 @@ const FAQ = () => {
       <div className="RSFaqContainer">
         <div className="RSFaqHeader">
           <br></br>
+          <br></br>
           <h2>Frequently Asked Questions</h2>
-          <p className="faq-subtitle">Here's some answers to the most common questions we get asked</p>
+          <br></br>
+          <br></br>
         </div>
         <div className="RSFaqGrid">
           {faqs.map((faq, index) => (
