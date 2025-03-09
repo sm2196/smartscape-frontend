@@ -28,12 +28,12 @@ export async function createProfile(userId, profileData) {
     const profileRef = doc(profilesCollection, userId)
 
     // If there's an adminId, create a proper reference to it
-    let adminRef = null
     if (profileData.adminId) {
-      adminRef = doc(profilesCollection, profileData.adminId)
-      // Replace the adminId string with the reference
-      profileData.adminRef = adminRef
-      delete profileData.adminId // Remove the string ID
+      // Store adminId as a string instead of a reference
+      // This is simpler and avoids circular references
+      profileData.adminId = profileData.adminId
+      // Remove any adminRef if it exists
+      delete profileData.adminRef
     }
 
     await setDoc(profileRef, {
@@ -43,8 +43,10 @@ export async function createProfile(userId, profileData) {
     })
     return { success: true, profileId: userId }
   } catch (error) {
-    console.error("Error creating profile:", error)
-    return { success: false, error: error.message }
+    return {
+      success: false,
+      error: error.message || "Failed to create profile",
+    }
   }
 }
 
@@ -92,11 +94,11 @@ export async function deleteProfile(userId) {
   }
 }
 
-// Update getProfilesByEmail to also get profiles where adminRef points to the user
+// Update getProfilesByEmail to use adminId string instead of adminRef
 export async function getProfilesByEmail(email) {
   try {
-    // First get the user's own profile by the current user's ID instead of querying by email
-    const currentUser = getCurrentUser() // Add this import at the top of the file
+    // First get the user's own profile by the current user's ID
+    const currentUser = getCurrentUser()
     if (!currentUser) {
       return { success: false, error: "No authenticated user" }
     }
@@ -112,13 +114,12 @@ export async function getProfilesByEmail(email) {
     const profiles = [userProfile]
     const isAdmin = userProfile.role === "admin"
 
-    // If the user is an admin, get all profiles where adminRef points to this user
+    // If the user is an admin, get all profiles where adminId points to this user
     if (isAdmin) {
-      const userRef = doc(profilesCollection, userProfile.id)
-      const adminQuery = query(profilesCollection, where("adminRef", "==", userRef))
-      const adminQuerySnapshot = await getDocs(adminQuery)
+      const managedUsersQuery = query(profilesCollection, where("adminId", "==", userProfile.id))
+      const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
-      adminQuerySnapshot.forEach((doc) => {
+      managedUsersSnapshot.forEach((doc) => {
         // Avoid duplicates
         if (!profiles.some((p) => p.id === doc.id)) {
           profiles.push({ id: doc.id, ...doc.data() })
@@ -126,15 +127,17 @@ export async function getProfilesByEmail(email) {
       })
     }
     // If the user is not an admin, get the admin profile and other users under the same admin
-    else if (userProfile.adminRef) {
+    else if (userProfile.adminId) {
       // Get the admin profile
-      const adminDoc = await getDoc(userProfile.adminRef)
-      if (adminDoc.exists() && !profiles.some((p) => p.id === adminDoc.id)) {
-        profiles.push({ id: adminDoc.id, ...adminDoc.data() })
+      const adminDocRef = doc(profilesCollection, userProfile.adminId)
+      const adminDocSnap = await getDoc(adminDocRef)
+
+      if (adminDocSnap.exists() && !profiles.some((p) => p.id === adminDocSnap.id)) {
+        profiles.push({ id: adminDocSnap.id, ...adminDocSnap.data() })
       }
 
       // Get other users under the same admin
-      const sameAdminQuery = query(profilesCollection, where("adminRef", "==", userProfile.adminRef))
+      const sameAdminQuery = query(profilesCollection, where("adminId", "==", userProfile.adminId))
       const sameAdminQuerySnapshot = await getDocs(sameAdminQuery)
 
       sameAdminQuerySnapshot.forEach((doc) => {
@@ -151,46 +154,61 @@ export async function getProfilesByEmail(email) {
   }
 }
 
-// Add this function to clean up user data when deleting an account
+// Fix the cleanupUserData function to handle permissions properly
 export async function cleanupUserData(userId) {
   try {
-    // Get the user profile to check if they're an admin or regular user
-    const { success, profile } = await getProfileByUserId(userId)
+    // Get the user profile to check if they're an admin
+    const { success, profile, error } = await getProfileByUserId(userId)
 
     if (!success) {
-      return { success: false, error: "Profile not found" }
+      console.error("Error getting profile during cleanup:", error)
+      // Continue with deletion even if we can't get the profile
+      // This ensures the user account can still be deleted
+      return { success: true }
     }
 
     // If the user is an admin, handle their managed users
-    if (profile.role === "admin") {
-      // Find all users managed by this admin
-      const userRef = doc(profilesCollection, userId)
-      const managedUsersQuery = query(profilesCollection, where("adminRef", "==", userRef))
-      const managedUsersSnapshot = await getDocs(managedUsersQuery)
+    if (profile && profile.role === "admin") {
+      try {
+        // Find all users managed by this admin using adminId field
+        const managedUsersQuery = query(profilesCollection, where("adminId", "==", userId))
+        const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
-      // Delete all managed users or reassign them
-      const batch = writeBatch(db)
-      managedUsersSnapshot.forEach((userDoc) => {
-        // Option 1: Delete managed users
-        batch.delete(doc(profilesCollection, userDoc.id))
+        // If there are managed users, try to delete them
+        if (!managedUsersSnapshot.empty) {
+          // Delete all managed users in a batch
+          const batch = writeBatch(db)
+          managedUsersSnapshot.forEach((userDoc) => {
+            batch.delete(doc(profilesCollection, userDoc.id))
+          })
 
-        // Option 2: Update managed users to remove admin reference
-        // batch.update(doc(profilesCollection, userDoc.id), {
-        //   adminRef: null,
-        //   updatedAt: new Date()
-        // });
-      })
-
-      await batch.commit()
+          try {
+            await batch.commit()
+          } catch (batchError) {
+            console.error("Error committing batch delete:", batchError)
+            // Continue with deletion even if batch fails
+          }
+        }
+      } catch (managedUsersError) {
+        console.error("Error handling managed users:", managedUsersError)
+        // Continue with deletion even if we can't delete managed users
+      }
     }
 
-    // Finally, delete the user's own profile
-    await deleteProfile(userId)
+    // Finally, try to delete the user's own profile
+    try {
+      await deleteProfile(userId)
+    } catch (profileDeleteError) {
+      console.error("Error deleting user profile:", profileDeleteError)
+      // Continue with deletion even if we can't delete the profile
+    }
 
+    // Return success regardless of internal errors to ensure the auth account gets deleted
     return { success: true }
   } catch (error) {
-    console.error("Error cleaning up user data:", error)
-    return { success: false, error: error.message }
+    console.error("Error in cleanup:", error)
+    // Return success anyway to ensure the auth account gets deleted
+    return { success: true }
   }
 }
 

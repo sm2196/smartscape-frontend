@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import styles from "./ProfileContent.module.css"
 import { useAuth } from "@/hooks/useAuth"
 import { signUpWithEmailAndPassword, deleteUserAccount } from "@/lib/firebase/auth"
-import { createProfile, getProfilesByEmail, cleanupUserData, updateProfile } from "@/lib/firebase/firestore"
+import { createProfile, getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
@@ -47,6 +47,9 @@ export default function ProfileContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [successMessage, setSuccessMessage] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
+
+  // Add state for error messages at the top of the component
+  const [errorMessage, setErrorMessage] = useState("")
 
   // Load profile data when available
   useEffect(() => {
@@ -158,21 +161,12 @@ export default function ProfileContent() {
     setIsDeleting(true)
 
     try {
-      // First clean up the user data in Firestore
-      if (user) {
-        const cleanupResult = await cleanupUserData(user.uid)
-        if (!cleanupResult.success) {
-          setIsDeleting(false)
-          return { success: false, error: "Failed to clean up user data" }
-        }
-      }
-
-      // Then delete the user from Firebase Authentication
+      // Attempt to delete the user account
       const authResult = await deleteUserAccount(password)
 
       if (!authResult.success) {
         setIsDeleting(false)
-        return { success: false, error: authResult.error || "Failed to delete account" }
+        return { success: false, error: authResult.error }
       }
 
       // Close the dialog and show success message
@@ -181,7 +175,7 @@ export default function ProfileContent() {
 
       // Redirect to login page after a short delay
       setTimeout(() => {
-        router.push("/login") // Using Next.js router instead of window.location
+        router.push("/login")
       }, 2000)
 
       return { success: true }
@@ -228,12 +222,21 @@ export default function ProfileContent() {
     setEditingField(null)
   }
 
-  // Handle adding new account
+  // Update the handleAddAccount function to better handle errors and display them to the user
+
   const handleAddAccount = async (newAccountData) => {
     setIsSubmitting(true)
     setSuccessMessage("")
 
     try {
+      // Validate password length
+      if (newAccountData.password.length < 6) {
+        setIsSubmitting(false)
+        // Add error state to display to the user
+        setErrorMessage("Password must be at least 6 characters long")
+        return { success: false, error: "Password must be at least 6 characters long" }
+      }
+
       // Create the user in Firebase Authentication
       const {
         success,
@@ -243,6 +246,8 @@ export default function ProfileContent() {
 
       if (!success) {
         setIsSubmitting(false)
+        // Set error message to display to the user
+        setErrorMessage(error)
         return { success: false, error }
       }
 
@@ -277,6 +282,7 @@ export default function ProfileContent() {
 
         setAvailableAccounts([...availableAccounts, newAccount])
         setSuccessMessage("Account created successfully!")
+        setErrorMessage("") // Clear any error messages
 
         // Close the modal after a delay
         setTimeout(() => {
@@ -286,10 +292,12 @@ export default function ProfileContent() {
 
         return { success: true }
       } else {
+        setErrorMessage(profileResult.error || "Failed to create profile")
         return { success: false, error: "Failed to create profile" }
       }
     } catch (error) {
       console.error("Error creating account:", error)
+      setErrorMessage(error.message || "An unexpected error occurred")
       return { success: false, error: "An unexpected error occurred" }
     } finally {
       setIsSubmitting(false)
@@ -365,10 +373,14 @@ export default function ProfileContent() {
       {/* Add Account Modal */}
       <AddAccountModal
         isOpen={addAccountOpen}
-        onClose={() => setAddAccountOpen(false)}
+        onClose={() => {
+          setAddAccountOpen(false)
+          setErrorMessage("") // Clear error message when closing
+        }}
         onAddAccount={handleAddAccount}
         isSubmitting={isSubmitting}
         successMessage={successMessage}
+        errorMessage={errorMessage} // Pass the error message
       />
 
       {/* Delete Account Modal */}

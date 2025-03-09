@@ -4,7 +4,7 @@ import { useState } from "react"
 import { MdClose, MdAdd, MdVisibility, MdVisibilityOff } from "react-icons/md"
 import styles from "./ModalStyles.module.css"
 
-export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmitting, successMessage }) {
+export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmitting, successMessage, errorMessage }) {
   const [newAccountData, setNewAccountData] = useState({
     firstName: "",
     lastName: "",
@@ -12,6 +12,7 @@ export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmi
     password: "",
     confirmPassword: "",
   })
+  // Add password validation
   const [passwordError, setPasswordError] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -29,6 +30,13 @@ export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmi
 
   const handleSubmit = (e) => {
     e.preventDefault()
+
+    // Add password length validation
+    if (newAccountData.password.length < 6) {
+      setPasswordError("Password must be at least 6 characters long")
+      return
+    }
+
     if (newAccountData.password !== newAccountData.confirmPassword) {
       setPasswordError("Passwords do not match")
       return
@@ -149,6 +157,7 @@ export default function AddAccountModal({ isOpen, onClose, onAddAccount, isSubmi
               </div>
             </div>
             {passwordError && <div className={styles.errorMessage}>{passwordError}</div>}
+            {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
             {successMessage && <div className={styles.successMessage}>{successMessage}</div>}
           </div>
           <div className={styles.modalFooter}>

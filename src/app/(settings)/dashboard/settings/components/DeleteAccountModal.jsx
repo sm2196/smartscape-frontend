@@ -16,12 +16,37 @@ export default function DeleteAccountModal({ isOpen, onClose, onDelete, isAdmin,
     if (deleteError) setDeleteError("")
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!deletePassword) {
       setDeleteError("Please enter your password to confirm deletion")
       return
     }
-    onDelete(deletePassword)
+
+    try {
+      const result = await onDelete(deletePassword)
+      if (!result.success) {
+        // Handle specific error cases with user-friendly messages
+        switch (result.error) {
+          case "auth/wrong-password":
+            setDeleteError("Incorrect password. Please try again.")
+            break
+          case "auth/too-many-requests":
+            setDeleteError("Too many attempts. Please try again later.")
+            break
+          case "auth/requires-recent-login":
+            setDeleteError("For security, please log out and log in again before deleting your account.")
+            break
+          case "auth/no-user":
+            setDeleteError("Unable to verify your account. Please try logging in again.")
+            break
+          default:
+            // Show the specific error message from the cleanup function
+            setDeleteError(result.error || "Unable to delete account. Please try again.")
+        }
+      }
+    } catch (error) {
+      setDeleteError("An unexpected error occurred. Please try again.")
+    }
   }
 
   return (
@@ -61,7 +86,12 @@ export default function DeleteAccountModal({ isOpen, onClose, onDelete, isAdmin,
                 {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
               </button>
             </div>
-            {deleteError && <div className={styles.errorMessage}>{deleteError}</div>}
+            {deleteError && (
+              <div className={styles.errorMessage}>
+                <MdClose className={styles.errorIcon} />
+                {deleteError}
+              </div>
+            )}
           </div>
         </div>
         <div className={styles.modalFooter}>
