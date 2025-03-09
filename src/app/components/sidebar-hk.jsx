@@ -3,7 +3,7 @@
 import { MdHome, MdInsertChart, MdLocalPolice, MdOutlineDevicesOther, MdSettings, MdChat } from "react-icons/md"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import styles from "./Sidebar.module.css"
+import styles from "./sidebar-hk.module.css"
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: MdHome },
