@@ -37,6 +37,12 @@ function SMNavbar() {
         span.appendChild(highlightedText.cloneNode(true));
         highlightedText.parentNode.replaceChild(span, highlightedText);
         span.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Remove highlight after 2 seconds
+        setTimeout(() => {
+          span.classList.remove('highlight');
+        }, 2000);
+
         break;
       }
     }
