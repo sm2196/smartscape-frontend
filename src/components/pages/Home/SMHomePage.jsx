@@ -338,7 +338,7 @@ const Cards = () => {
                 name="socialMedia"
                 value={formData.socialMedia}
                 onChange={handleChange}
-                placeholder="Social Media Handles (Optional)"
+                placeholder="Instagram Handle (Optional)"
               />
             </div>
             <div className="SMform-group">
