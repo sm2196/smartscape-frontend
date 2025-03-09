@@ -132,7 +132,7 @@
   margin-right: 1rem; /* Adjusted margin to center the icon */
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1300px) {
   .SMmenu-icon {
     display: block;
   }
