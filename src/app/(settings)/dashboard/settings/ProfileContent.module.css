@@ -772,8 +772,10 @@
 
 /* Responsive styles */
 @media (max-width: 1023px) {
+
   .profileMainContent {
     padding: 16px;
+    min-height: auto;
   }
 
   .header {

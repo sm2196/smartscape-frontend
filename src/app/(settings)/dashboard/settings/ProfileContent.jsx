@@ -169,18 +169,23 @@ export default function ProfileContent() {
     setDeleteError("")
 
     try {
-      // First delete the user from Firebase Authentication
+      // First clean up the user data in Firestore
+      if (user) {
+        const cleanupResult = await cleanupUserData(user.uid)
+        if (!cleanupResult.success) {
+          setDeleteError("Failed to clean up user data. Please try again.")
+          setIsDeleting(false)
+          return
+        }
+      }
+
+      // Then delete the user from Firebase Authentication
       const authResult = await deleteUserAccount(deletePassword)
 
       if (!authResult.success) {
         setDeleteError(authResult.error || "Failed to delete account. Please check your password.")
         setIsDeleting(false)
         return
-      }
-
-      // Then clean up the user data in Firestore
-      if (user) {
-        await cleanupUserData(user.uid)
       }
 
       // Close the dialog and show success message
