@@ -221,7 +221,9 @@ const Cards = () => {
       </div>
     </Parallax>
   );
-};const AmbassadorForm = () => {
+};
+
+const AmbassadorForm = () => {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
