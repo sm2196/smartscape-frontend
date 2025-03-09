@@ -61,7 +61,7 @@ const FAQ = () => {
   }, []);
 
   return (
-    <div className="RSFaqContainer">
+    <div className="SMfaq-page">
       {/* Hero Split Section */}
       <div className="SMfaq-hero-split SMreveal">
         <div className="SMfaq-hero-left">
@@ -80,24 +80,26 @@ const FAQ = () => {
         </div>
       </div>
 
-      <div className="RSFaqHeader">
-        <h2>Frequently Asked Questions</h2>
-        <p className="faq-subtitle">Here's some answers to the most common questions we get asked</p>
-      </div>
-      <div className="RSFaqGrid">
-        {faqs.map((faq, index) => (
-          <FAQItem
-            key={index}
-            question={faq.question}
-            answer={faq.answer}
-            isOpen={openIndex === index}
-            onClick={() => setOpenIndex(openIndex === index ? null : index)}
-          />
-        ))}
+      <div className="RSFaqContainer">
+        <div className="RSFaqHeader">
+          <br></br>
+          <h2>Frequently Asked Questions</h2>
+          <p className="faq-subtitle">Here's some answers to the most common questions we get asked</p>
+        </div>
+        <div className="RSFaqGrid">
+          {faqs.map((faq, index) => (
+            <FAQItem
+              key={index}
+              question={faq.question}
+              answer={faq.answer}
+              isOpen={openIndex === index}
+              onClick={() => setOpenIndex(openIndex === index ? null : index)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
 };
-
 
 export default FAQ;
