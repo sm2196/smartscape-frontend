@@ -1,4 +1,4 @@
-.mainContent {
+.hkmainContent {
   flex-grow: 1;
   padding: 2rem;
   background-color: #fffafa;
@@ -6,7 +6,7 @@
   margin-left: 250px; /* Width of the sidebar */
 }
 
-.cctvGrid {
+.hkcctvGrid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
   gap: 1rem;
@@ -14,7 +14,7 @@
   max-width: 1000px;
 }
 
-.cctvMain {
+.hkcctvMain {
   height: 300px;
   background-color: #152447;
   border-radius: 8px;
@@ -23,18 +23,18 @@
   box-shadow: 0 4px 6px rgba(10, 22, 48, 0.1);
 }
 
-.cctvSecondary {
+.hkcctvSecondary {
   display: grid;
   gap: 1rem;
 }
 
-.cctvFeed {
+.hkcctvFeed {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.cctvFeedContainer {
+.hkcctvFeedContainer {
   background-color: #152447;
   border-radius: 8px;
   height: 145px;
@@ -43,14 +43,14 @@
   box-shadow: 0 4px 6px rgba(10, 22, 48, 0.1);
 }
 
-.emergencyTitle {
+.hkemergencyTitle {
   color: #0a1630;
   margin-bottom: 1.75rem;
   font-size: 1.75rem;
   font-weight: 600;
 }
 
-.timestamp {
+.hktimestamp {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -62,26 +62,26 @@
   border: 1px solid #d2dcf5;
 }
 
-.feedContainer {
+.hkfeedContainer {
   position: relative;
   height: 100%;
 }
 
 @media (max-width: 768px) {
-  .mainContent {
+  .hkmainContent {
     margin-left: 0;
     padding-top: 60px; /* Space for mobile sidebar */
   }
 
-  .cctvGrid {
+  .hkcctvGrid {
     grid-template-columns: 1fr;
   }
 
-  .cctvMain {
+  .hkcctvMain {
     height: 250px;
   }
 
-  .cctvFeedContainer {
+  .hkcctvFeedContainer {
     height: 120px;
   }
 }
