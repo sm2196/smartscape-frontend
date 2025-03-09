@@ -13,10 +13,10 @@ function SMIcons() {
 
   // Sample bookmarks data
   const bookmarks = [
-    { id: 1, title: 'Home Renovation Tips', url: '/blog/home-renovation' },
-    { id: 2, title: 'Garden Design Ideas', url: '/blog/garden-design' },
-    { id: 3, title: 'Interior Decoration', url: '/blog/interior' },
-    { id: 4, title: 'Smart Home Solutions', url: '/blog/smart-home' },
+    { id: 1, title: 'Energy saving tips', url: 'https://www.greenmatch.co.uk/blog/2020/03/how-to-save-energy-at-home' },
+    { id: 2, title: 'What is a smarthome?', url: 'https://www.investopedia.com/terms/s/smart-home.asp' },
+    { id: 3, title: 'Save money on energy', url: 'https://www.hsbc.ae/sustainability/how-to-save-money-on-energy/' },
+    { id: 4, title: 'Best Smart home devices in 2025', url: 'https://www.pcmag.com/picks/the-best-smart-home-devices' },
   ];
 
   useEffect(() => {
