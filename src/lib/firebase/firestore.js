@@ -12,6 +12,8 @@ import {
   writeBatch,
 } from "firebase/firestore"
 import firebase_app from "./config"
+// Add this import at the top of the file
+import { getCurrentUser } from "./auth"
 
 // Initialize Firestore
 const db = getFirestore(firebase_app)
@@ -93,24 +95,25 @@ export async function deleteProfile(userId) {
 // Update getProfilesByEmail to also get profiles where adminRef points to the user
 export async function getProfilesByEmail(email) {
   try {
-    // First get the user's own profile
-    const emailQuery = query(profilesCollection, where("email", "==", email))
-    const emailQuerySnapshot = await getDocs(emailQuery)
+    // First get the user's own profile by the current user's ID instead of querying by email
+    const currentUser = getCurrentUser() // Add this import at the top of the file
+    if (!currentUser) {
+      return { success: false, error: "No authenticated user" }
+    }
 
-    const profiles = []
-    let userProfile = null
-    let isAdmin = false
+    const userProfileRef = doc(profilesCollection, currentUser.uid)
+    const userProfileSnap = await getDoc(userProfileRef)
 
-    // Process the user's own profile
-    emailQuerySnapshot.forEach((doc) => {
-      const profile = { id: doc.id, ...doc.data() }
-      profiles.push(profile)
-      userProfile = profile
-      isAdmin = profile.role === "admin"
-    })
+    if (!userProfileSnap.exists()) {
+      return { success: false, error: "Profile not found" }
+    }
+
+    const userProfile = { id: userProfileSnap.id, ...userProfileSnap.data() }
+    const profiles = [userProfile]
+    const isAdmin = userProfile.role === "admin"
 
     // If the user is an admin, get all profiles where adminRef points to this user
-    if (isAdmin && userProfile) {
+    if (isAdmin) {
       const userRef = doc(profilesCollection, userProfile.id)
       const adminQuery = query(profilesCollection, where("adminRef", "==", userRef))
       const adminQuerySnapshot = await getDocs(adminQuery)
@@ -123,7 +126,7 @@ export async function getProfilesByEmail(email) {
       })
     }
     // If the user is not an admin, get the admin profile and other users under the same admin
-    else if (userProfile && userProfile.adminRef) {
+    else if (userProfile.adminRef) {
       // Get the admin profile
       const adminDoc = await getDoc(userProfile.adminRef)
       if (adminDoc.exists() && !profiles.some((p) => p.id === adminDoc.id)) {
