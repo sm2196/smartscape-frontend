@@ -53,7 +53,7 @@ export function DashboardContent() {
 
       <RoomSection title="Garage">
         <DeviceCard icon={MdGarage} title="Garage Door" status="Closed" />
-        <DeviceCard icon={MdThermostat} title="Freezer Temp" status="-6.5°" statusColor="statusBlue" />
+        <DeviceCard icon={MdThermostat} title="Freezer Temp" status="-6.5°C" statusColor="statusBlue" />
         <DeviceCard icon={MdLightbulb} title="Lights" status="Off" />
         <DeviceCard icon={MdRecycling} title="Recycling Day" status="In 5 Days" statusColor="statusGreen" />
         <DeviceCard icon={LuWashingMachine} title="Washing Machine" status="Cycle Complete" isActive />
