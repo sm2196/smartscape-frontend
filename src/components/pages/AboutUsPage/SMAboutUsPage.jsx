@@ -13,6 +13,7 @@ import {
   FaLeaf,
   FaShieldAlt,
   FaHeadset,
+  FaEnvelope
 } from "react-icons/fa";
 
 function AboutUsPage() {
@@ -192,71 +193,71 @@ function AboutUsPage() {
           <div className="SMteam-grid">
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @sm2196@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Swapna Manikandan</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @rs2095@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Rushaan Sahrush</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mainto: @ap2092@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Abhijith Pattali</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @mk2081@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Hamza Khan</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
@@ -266,48 +267,48 @@ function AboutUsPage() {
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @kc2045@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Karan Chawla</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @sv2019@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Sneha Vijayan</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @hs2072@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Hari Govind</h4>
-              <p>Lead Developer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
@@ -317,31 +318,31 @@ function AboutUsPage() {
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @as2241@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Salim</h4>
-              <p>UX Designer</p>
+              <p>Developer</p>
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.jpg" alt="Team Member" />
+                <img src="/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
                       <FaLinkedinIn />
                     </a>
-                    <a href="#">
-                      <FaTwitter />
+                    <a href="mailto: @mh2054@hw.ac.uk">
+                      <FaEnvelope />
                     </a>
                   </div>
                 </div>
               </div>
               <h4>Hamza Food</h4>
-              <p>IoT Specialist</p>
+              <p>Developer</p>
             </div>
           </div>
         </div>
