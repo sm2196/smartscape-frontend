@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./HomeFAQ.css";
 import { Link } from "react-router-dom";
+import SMFooter from "../../layout/Footer/SMFooter"
 
 const faqs = [
   { question: "How do I create a new account on SmartScape?", answer: "To create a new account, visit the sign-up page and provide your full name, email, phone number, and password. After registration, you will need to verify your email or phone through an OTP (One-Time Password) to activate your account" },
@@ -100,6 +101,7 @@ const FAQ = () => {
           ))}
         </div>
       </div>
+      <SMFooter />
     </div>
   );
 };
