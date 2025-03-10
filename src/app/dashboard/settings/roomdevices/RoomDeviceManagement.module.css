@@ -202,17 +202,30 @@
 .popupButton {
   width: 100%;
   padding: 0.75rem;
-  background-color: #e85651;
+  background-color: #e2e8f0;
   border: none;
   border-radius: 0.5rem;
-  color: #cbd5e1;
+  color: #152447;
   font-size: 1rem;
   margin-bottom: 0.5rem;
   cursor: pointer;
 }
 
 .popupButton:hover {
+  background-color: #cbd5e1;
+}
+
+/* Red Remove Room Button */
+.removeRoomButton {
+  background-color: #e85651;
+  /* Red background */
+  color: #fff;
+  /* White text */
+}
+
+.removeRoomButton:hover {
   background-color: #8c0500;
+  /* Darker red on hover */
 }
 
 .popupClose {
