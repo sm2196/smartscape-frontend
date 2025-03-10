@@ -297,12 +297,14 @@
 .SMregister-content {
   max-width: 700px;
   margin: 0 auto;
+  color: white
 }
 
 .SMregister-content h2 {
   font-size: 3rem;
   margin-bottom: 20px;
   font-weight: 700;
+  color: white;
 }
 
 .SMregister-content p {

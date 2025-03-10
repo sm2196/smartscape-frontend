@@ -36,6 +36,8 @@ const MainPicSection = () => {
   return (
     <Parallax translateY={[-20, 20]} className="SMMainPic-container">
       <h1><span>YOUR HOME AT YOUR FINGERTIPS</span></h1>
+      <br></br>
+      <br></br>
       <div className="SM-joinButton-us-wrapper">
         <button><span>Register today</span></button>
       </div>
