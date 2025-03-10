@@ -4,8 +4,8 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./ProfileContent.module.css"
 import { useAuth } from "@/hooks/useAuth"
-import { signUpWithEmailAndPassword, deleteUserAccount } from "@/lib/firebase/auth"
-import { createProfile, getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
+import { deleteUserAccount } from "@/lib/firebase/auth"
+import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
@@ -14,7 +14,7 @@ import PersonalInfoSection from "./components/PersonalInfoSection"
 import EditFieldModal from "./components/EditFieldModal"
 import ManageAccountModal from "./components/ManageAccountModal"
 import SwitchAccountModal from "./components/SwitchAccountModal"
-import AddAccountModal from "./components/AddAccountModal"
+import HomeIdCodeModal from "./components/HomeIdCodeModal"
 import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
 
@@ -38,18 +38,13 @@ export default function ProfileContent() {
   const [editingField, setEditingField] = useState(null)
   const [manageAccountOpen, setManageAccountOpen] = useState(false)
   const [switchAccountOpen, setSwitchAccountOpen] = useState(false)
-  const [addAccountOpen, setAddAccountOpen] = useState(false)
+  const [homeIdCodeOpen, setHomeIdCodeOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false)
 
   // State for account operations
   const [availableAccounts, setAvailableAccounts] = useState([])
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [successMessage, setSuccessMessage] = useState("")
   const [isDeleting, setIsDeleting] = useState(false)
-
-  // Add state for error messages at the top of the component
-  const [errorMessage, setErrorMessage] = useState("")
 
   // Load profile data when available
   useEffect(() => {
@@ -171,7 +166,6 @@ export default function ProfileContent() {
 
       // Close the dialog and show success message
       setDeleteDialogOpen(false)
-      setSuccessMessage("Account successfully deleted")
 
       // Redirect to login page after a short delay
       setTimeout(() => {
@@ -222,87 +216,6 @@ export default function ProfileContent() {
     setEditingField(null)
   }
 
-  // Update the handleAddAccount function to better handle errors and display them to the user
-  const handleAddAccount = async (newAccountData) => {
-    setIsSubmitting(true)
-    setSuccessMessage("")
-
-    try {
-      // Validate password length
-      if (newAccountData.password.length < 6) {
-        setIsSubmitting(false)
-        // Add error state to display to the user
-        setErrorMessage("Password must be at least 6 characters long")
-        return { success: false, error: "Password must be at least 6 characters long" }
-      }
-
-      // Create the user in Firebase Authentication
-      const {
-        success,
-        user: newUser,
-        error,
-      } = await signUpWithEmailAndPassword(newAccountData.email, newAccountData.password)
-
-      if (!success) {
-        setIsSubmitting(false)
-        // Set error message to display to the user
-        setErrorMessage(error)
-        return { success: false, error }
-      }
-
-      // Get admin data to inherit phone and address
-      const adminPhone = fieldValues.phoneNumbers || ""
-      const adminAddress = fieldValues.address || ""
-
-      // Create the profile document in Firestore
-      const profileData = {
-        firstName: newAccountData.firstName,
-        lastName: newAccountData.lastName,
-        email: newAccountData.email,
-        phoneNumbers: adminPhone, // Inherit from admin
-        governmentId: "Verified", // Always verified
-        address: adminAddress, // Inherit from admin
-        profileImageUrl: null,
-        admin: false, // Set admin to false for new users
-        adminId: user?.uid || null, // Reference to the admin user
-      }
-
-      const profileResult = await createProfile(newUser.uid, profileData)
-
-      if (profileResult.success) {
-        // Add the new account to the available accounts list
-        const newAccount = {
-          id: newUser.uid,
-          name: `${newAccountData.firstName} ${newAccountData.lastName}`,
-          email: newAccountData.email,
-          isActive: false,
-          admin: false,
-        }
-
-        setAvailableAccounts([...availableAccounts, newAccount])
-        setSuccessMessage("Account created successfully!")
-        setErrorMessage("") // Clear any error messages
-
-        // Close the modal after a delay
-        setTimeout(() => {
-          setAddAccountOpen(false)
-          setSuccessMessage("")
-        }, 2000)
-
-        return { success: true }
-      } else {
-        setErrorMessage(profileResult.error || "Failed to create profile")
-        return { success: false, error: "Failed to create profile" }
-      }
-    } catch (error) {
-      console.error("Error creating account:", error)
-      setErrorMessage(error.message || "An unexpected error occurred")
-      return { success: false, error: "An unexpected error occurred" }
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
   // Handle switching accounts
   const handleSwitchAccount = (id) => {
     setAvailableAccounts(
@@ -334,7 +247,7 @@ export default function ProfileContent() {
       <AccountActions
         onManageAccount={() => setManageAccountOpen(true)}
         onSwitchAccount={() => setSwitchAccountOpen(true)}
-        onAddAccount={() => setAddAccountOpen(true)}
+        onHomeIdCode={() => setHomeIdCodeOpen(true)}
         isMobile={isMobile}
       />
 
@@ -369,18 +282,8 @@ export default function ProfileContent() {
         onSwitchAccount={handleSwitchAccount}
       />
 
-      {/* Add Account Modal */}
-      <AddAccountModal
-        isOpen={addAccountOpen}
-        onClose={() => {
-          setAddAccountOpen(false)
-          setErrorMessage("") // Clear error message when closing
-        }}
-        onAddAccount={handleAddAccount}
-        isSubmitting={isSubmitting}
-        successMessage={successMessage}
-        errorMessage={errorMessage} // Pass the error message
-      />
+      {/* Home ID Code Modal */}
+      <HomeIdCodeModal isOpen={homeIdCodeOpen} onClose={() => setHomeIdCodeOpen(false)} />
 
       {/* Delete Account Modal */}
       <DeleteAccountModal
@@ -393,9 +296,6 @@ export default function ProfileContent() {
 
       {/* Sign Out Modal */}
       <SignOutModal isOpen={signOutDialogOpen} onClose={() => setSignOutDialogOpen(false)} onSignOut={confirmSignOut} />
-
-      {/* Success Toast Notification */}
-      {successMessage && <div className={styles.toast}>{successMessage}</div>}
     </main>
   )
 }

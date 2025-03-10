@@ -1,0 +1,96 @@
+.homeIdContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .homeIcon {
+    color: var(--oxford-blue);
+    margin-bottom: 16px;
+  }
+
+  .homeIdDescription {
+    margin-bottom: 24px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .codeWrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    background-color: #f0f7ff;
+    border: 2px dashed var(--oxford-blue);
+    padding: 12px 24px;
+    border-radius: 8px;
+    width: 100%;
+  }
+
+  .homeIdCode {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--oxford-blue);
+    text-align: center;
+  }
+
+  .copyButton {
+    background: none;
+    border: none;
+    color: var(--oxford-blue);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .copyButton:hover {
+    background-color: rgba(21, 36, 71, 0.1);
+  }
+
+  .instructionsContainer {
+    background-color: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    width: 100%;
+    text-align: left;
+  }
+
+  .instructionsTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--oxford-blue);
+  }
+
+  .instructionsList {
+    padding-left: 20px;
+    margin: 0;
+  }
+
+  .instructionsList li {
+    margin-bottom: 8px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .instructionsList li:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .codeWrapper {
+      padding: 8px 16px;
+    }
+
+    .homeIdCode {
+      font-size: 20px;
+    }
+  }
+
