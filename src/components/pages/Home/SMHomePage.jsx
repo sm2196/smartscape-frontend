@@ -367,7 +367,6 @@ const AmbassadorForm = () => {
   );
 };
 
-
 function Home() {
   return (
     <ParallaxProvider>
