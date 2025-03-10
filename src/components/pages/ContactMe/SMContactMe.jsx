@@ -13,6 +13,8 @@ import {
 import { Link } from "react-router-dom";
 import "./SMContactMe.css";
 import "../../layout/Footer/SMFooter.css";
+import { db } from "../../../firebase"; // Adjust the import path as needed
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -66,7 +68,6 @@ function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
     if (!formData.name || !formData.email || !formData.message) {
       setSubmitStatus({
         submitted: true,
@@ -76,10 +77,15 @@ function Contact() {
       return;
     }
 
-    // Here you would typically send the form data to your backend
     try {
-      // Simulating API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await addDoc(collection(db, "ContactUs"), {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        subject: formData.subject,
+        message: formData.message,
+        timestamp: serverTimestamp(),
+      });
 
       setSubmitStatus({
         submitted: true,
@@ -87,7 +93,6 @@ function Contact() {
         message: "Thank you for your message. We will get back to you soon!",
       });
 
-      // Clear form
       setFormData({
         name: "",
         email: "",
@@ -101,6 +106,7 @@ function Contact() {
         success: false,
         message: "Something went wrong. Please try again later.",
       });
+      console.error("Error adding document: ", error);
     }
   };
 
