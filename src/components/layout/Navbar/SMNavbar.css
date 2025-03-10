@@ -24,7 +24,7 @@
   font-size: 12px;
 }
 .SMheader {
-  background: #fffafa;
+  background: #ffffff;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   padding: 0.75rem 0;
   position: fixed;
@@ -149,7 +149,7 @@
     top: 80px;
     left: 0;
     width: 100%;
-    background: #fffafa;
+    background: #ffffff;
     padding: 1rem;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   }
