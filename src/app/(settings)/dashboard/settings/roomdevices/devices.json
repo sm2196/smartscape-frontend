@@ -1,0 +1,356 @@
+{
+  "devices": {
+    "all": [
+      {
+        "id": "random_id_1",
+        "name": "Lamp",
+        "category": "Lighting",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_2",
+        "name": "Heater",
+        "category": "HVAC",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_3",
+        "name": "Ceiling Fan",
+        "category": "HVAC",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_4",
+        "name": "Pendant Lights",
+        "category": "Lighting",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_5",
+        "name": "Sony TV",
+        "category": "Entertainment",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_6",
+        "name": "JBL Go 4",
+        "category": "Audio",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_7",
+        "name": "Epson Projector",
+        "category": "Entertainment",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_8",
+        "name": "Garage Door",
+        "category": "Appliances",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_9",
+        "name": "Freezer Temp",
+        "category": "Appliances",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_10",
+        "name": "Lights",
+        "category": "Lighting",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_11",
+        "name": "Washing Machine",
+        "category": "Appliances",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_12",
+        "name": "Blinds",
+        "category": "Lighting",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_13",
+        "name": "Door",
+        "category": "Security",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_14",
+        "name": "Bedside Lamp",
+        "category": "Lighting",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_15",
+        "name": "Main Light",
+        "category": "Lighting",
+        "room": "Guest Room"
+      },
+      {
+        "id": "random_id_16",
+        "name": "AC",
+        "category": "HVAC",
+        "room": "Guest Room"
+      },
+      {
+        "id": "random_id_17",
+        "name": "Night Light",
+        "category": "Lighting",
+        "room": "Kids Room"
+      },
+      {
+        "id": "random_id_18",
+        "name": "Smart Bed",
+        "category": "Furniture",
+        "room": "Kids Room"
+      },
+      {
+        "id": "random_id_19",
+        "name": "Study Lamp",
+        "category": "Lighting",
+        "room": "Kids Room"
+      },
+      {
+        "id": "random_id_20",
+        "name": "Front Door",
+        "category": "Security",
+        "room": "Front Door"
+      }
+    ]
+  },
+  "categories": {
+    "Lighting": [
+      {
+        "id": "random_id_1",
+        "name": "Lamp",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_4",
+        "name": "Pendant Lights",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_10",
+        "name": "Lights",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_12",
+        "name": "Blinds",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_14",
+        "name": "Bedside Lamp",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_15",
+        "name": "Main Light",
+        "room": "Guest Room"
+      },
+      {
+        "id": "random_id_17",
+        "name": "Night Light",
+        "room": "Kids Room"
+      },
+      {
+        "id": "random_id_19",
+        "name": "Study Lamp",
+        "room": "Kids Room"
+      }
+    ],
+    "HVAC": [
+      {
+        "id": "random_id_2",
+        "name": "Heater",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_3",
+        "name": "Ceiling Fan",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_16",
+        "name": "AC",
+        "room": "Guest Room"
+      }
+    ],
+    "Entertainment": [
+      {
+        "id": "random_id_5",
+        "name": "Sony TV",
+        "room": "Living Room"
+      },
+      {
+        "id": "random_id_7",
+        "name": "Epson Projector",
+        "room": "Living Room"
+      }
+    ],
+    "Audio": [
+      {
+        "id": "random_id_6",
+        "name": "JBL Go 4",
+        "room": "Living Room"
+      }
+    ],
+    "Appliances": [
+      {
+        "id": "random_id_8",
+        "name": "Garage Door",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_9",
+        "name": "Freezer Temp",
+        "room": "Garage"
+      },
+      {
+        "id": "random_id_11",
+        "name": "Washing Machine",
+        "room": "Garage"
+      }
+    ],
+    "Security": [
+      {
+        "id": "random_id_13",
+        "name": "Door",
+        "room": "Master Bedroom"
+      },
+      {
+        "id": "random_id_20",
+        "name": "Front Door",
+        "room": "Front Door"
+      }
+    ],
+    "Furniture": [
+      {
+        "id": "random_id_18",
+        "name": "Smart Bed",
+        "room": "Kids Room"
+      }
+    ]
+  },
+  "rooms": {
+    "Living Room": [
+      {
+        "id": "random_id_1",
+        "name": "Lamp",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_2",
+        "name": "Heater",
+        "category": "HVAC"
+      },
+      {
+        "id": "random_id_3",
+        "name": "Ceiling Fan",
+        "category": "HVAC"
+      },
+      {
+        "id": "random_id_4",
+        "name": "Pendant Lights",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_5",
+        "name": "Sony TV",
+        "category": "Entertainment"
+      },
+      {
+        "id": "random_id_6",
+        "name": "JBL Go 4",
+        "category": "Audio"
+      },
+      {
+        "id": "random_id_7",
+        "name": "Epson Projector",
+        "category": "Entertainment"
+      }
+    ],
+    "Garage": [
+      {
+        "id": "random_id_8",
+        "name": "Garage Door",
+        "category": "Appliances"
+      },
+      {
+        "id": "random_id_9",
+        "name": "Freezer Temp",
+        "category": "Appliances"
+      },
+      {
+        "id": "random_id_10",
+        "name": "Lights",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_11",
+        "name": "Washing Machine",
+        "category": "Appliances"
+      }
+    ],
+    "Master Bedroom": [
+      {
+        "id": "random_id_12",
+        "name": "Blinds",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_13",
+        "name": "Door",
+        "category": "Security"
+      },
+      {
+        "id": "random_id_14",
+        "name": "Bedside Lamp",
+        "category": "Lighting"
+      }
+    ],
+    "Guest Room": [
+      {
+        "id": "random_id_15",
+        "name": "Main Light",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_16",
+        "name": "AC",
+        "category": "HVAC"
+      }
+    ],
+    "Kids Room": [
+      {
+        "id": "random_id_17",
+        "name": "Night Light",
+        "category": "Lighting"
+      },
+      {
+        "id": "random_id_18",
+        "name": "Smart Bed",
+        "category": "Furniture"
+      },
+      {
+        "id": "random_id_19",
+        "name": "Study Lamp",
+        "category": "Lighting"
+      }
+    ],
+    "Front Door": [
+      {
+        "id": "random_id_20",
+        "name": "Front Door",
+        "category": "Security"
+      }
+    ]
+  }
+}

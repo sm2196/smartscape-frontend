@@ -1,3 +1,14 @@
 [
-  { "name": "roomName", "content": ["Living Room", "Garage", "Master Bedroom", "Kids Room", "Guest Room", "Front Door"] }
+  {
+    "name": "roomName",
+    "content":
+    [
+      "Living Room",
+      "Garage",
+      "Master Bedroom",
+      "Kids Room",
+      "Guest Room",
+      "Front Door"
+      ]
+    }
 ]

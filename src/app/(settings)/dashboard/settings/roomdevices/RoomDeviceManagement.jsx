@@ -17,16 +17,13 @@ const DeviceManagement = () => {
   const [newDeviceName, setNewDeviceName] = useState(""); // State for storing the new device name
   const [rooms, setRooms] = useState(roomsData[0]?.content || []); // Loads the rooms data from the JSON file into state
   const deviceCategories = [
+    "Lighting",
+    "HVAC ",
+    "Entertainment",
+    "Audio",
     "Appliances",
-    "Bulbs",
-    "Cameras & Video Doorbells",
-    "Garage Door Openers",
-    "Hubs",
-    "Locks",
-    "Plugs",
-    "Sensors",
-    "Thermostats",
-    "TVs",
+    "Security",
+    "Furniture",
   ]; // Array of device categories
 
   // Function to open a popup based on type (e.g., "addRoom", "addDevice")
@@ -77,6 +74,7 @@ const DeviceManagement = () => {
     { name: "Network settings", type: "network", icon: MdWifi },
     { name: "Choose by room", type: "room", icon: MdChevronRight },
     { name: "Choose by category", type: "category", icon: MdChevronRight },
+    { name: "View All", type: "Devices", icon: MdChevronRight },
   ];
 
   return (
@@ -162,7 +160,7 @@ const DeviceManagement = () => {
                 </div>
 
                 {/* Dropdown to choose WiFi network */}
-                <select className={styles.dropdown}>
+                <select className={styles.inputField}>
                   <option>Eduroam</option>
                   <option>HWUD_Temp</option>
                   <option>HWUD_Guest</option>
@@ -183,7 +181,7 @@ const DeviceManagement = () => {
                 </div>
 
                 {/* Dropdown to choose Bluetooth device */}
-                <select className={styles.dropdown}>
+                <select className={styles.inputField}>
                   <option>XYZ Camera</option>
                   <option>XYZ TV</option>
                 </select>
@@ -263,6 +261,15 @@ const DeviceManagement = () => {
               <div>
                 <h3>Add New Device</h3>
 
+                {/* Device Name Input */}
+                <input
+                  type="text"
+                  value={newDeviceName}
+                  onChange={(e) => setNewDeviceName(e.target.value)}
+                  className={styles.inputField}
+                  placeholder="Enter device name"
+                />
+
                 {/* Device Category Dropdown */}
                 <select
                   className={styles.inputField}
@@ -277,14 +284,21 @@ const DeviceManagement = () => {
                   ))}
                 </select>
 
-                {/* Device Name Input */}
-                <input
-                  type="text"
-                  value={newDeviceName}
-                  onChange={(e) => setNewDeviceName(e.target.value)}
+                {/* New Room Dropdown */}
+                <select
                   className={styles.inputField}
-                  placeholder="Enter device name"
-                />
+                  value={selectedRoom}
+                  onChange={(e) => setSelectedRoom(e.target.value)}
+                >
+                  <option value="">Select Room</option>
+                  {rooms.map((roomName, index) => (
+                    <option key={index} value={roomName}>
+                      {roomName}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Save Device */}
                 <div className={styles.popupButtonGroup}>
                   <Button
                     onClick={handleSaveDevice}
