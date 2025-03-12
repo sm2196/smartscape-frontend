@@ -1,455 +1,456 @@
 .overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(10, 22, 48, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 100;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(10, 22, 48, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 
-  .overlay.visible {
-    opacity: 1;
-  }
+.overlay.visible {
+  opacity: 1;
+}
 
-  .popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.9);
-    background-color: var(--surface-dark);
-    border: 1px solid rgba(210, 220, 245, 0.15);
-    border-radius: 16px;
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  background-color: var(--surface-dark);
+  border: 1px solid rgba(210, 220, 245, 0.15);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  z-index: 101;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.popup.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(210, 220, 245, 0.1);
+}
+
+.popupTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.popupIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--lavender);
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.closeButton:hover {
+  background-color: rgba(210, 220, 245, 0.1);
+  color: var(--text-primary);
+}
+
+.popupContent {
+  padding: 20px;
+}
+
+/* Controls styling */
+.controlsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controlTitle {
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+}
+
+.toggleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggleButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+  text-align: center;
+}
+
+.toggleButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.speedControls {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.speedButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speedButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.sliderContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(210, 220, 245, 0.2);
+  outline: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--lavender);
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--lavender);
+  cursor: pointer;
+  border: none;
+}
+
+.slider:disabled {
+  opacity: 0.5;
+}
+
+.temperatureControl {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.tempButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tempButton:hover:not(:disabled) {
+  background-color: rgba(210, 220, 245, 0.2);
+}
+
+.tempButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tempDisplay {
+  display: flex;
+  align-items: baseline;
+}
+
+.tempValue {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--text-primary);
+}
+
+.tempUnit {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-left: 4px;
+}
+
+.sourceControl {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.sourceButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sourceButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 80px;
+}
+
+.sourceButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.sourceButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.doorControlButtons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.doorButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 12px;
+  border:  (220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.doorButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.blindsControls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.blindsButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.blindsButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.batteryInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.batteryLevel {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(210, 220, 245, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.batteryFill {
+  height: 100%;
+  background-color: var(--status-pink);
+  border-radius: 4px;
+}
+
+.notificationOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.notificationButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 1rem;
+}
+
+.notificationButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+/* Washing Machine Controls */
+.cycleSelector {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cycleButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cycleButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 80px;
+}
+
+.cycleButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
+.cycleButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.actionButtons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.actionButton {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover:not(:disabled) {
+  background-color: rgba(210, 220, 245, 0.2);
+}
+
+.actionButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.progressContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background-color: rgba(210, 220, 245, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--lavender);
+  border-radius: 4px;
+  width: 30%;
+  animation: progress 2s infinite alternate;
+}
+
+@keyframes progress {
+  0% {
+    width: 10%;
+  }
+  100% {
     width: 90%;
-    max-width: 400px;
-    z-index: 101;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    overflow: hidden;
   }
-
-  .popup.visible {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
-
-  .popupHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid rgba(210, 220, 245, 0.1);
-  }
-
-  .popupTitle {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 0;
-    font-size: 1.25rem;
-    font-weight: 500;
-  }
-
-  .popupIcon {
-    width: 24px;
-    height: 24px;
-    color: var(--lavender);
-  }
-
-  .closeButton {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-size: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 50%;
-    transition: all 0.2s ease;
-  }
-
-  .closeButton:hover {
-    background-color: rgba(210, 220, 245, 0.1);
-    color: var(--text-primary);
-  }
-
-  .popupContent {
-    padding: 20px;
-  }
-
-  /* Controls styling */
-  .controlsContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  .controlTitle {
-    font-size: 1rem;
-    font-weight: 500;
-    margin: 0 0 8px 0;
-    color: var(--text-primary);
-  }
-
-  .toggleContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .toggleButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 8px 16px;
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 80px;
-    text-align: center;
-  }
-
-  .toggleButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .speedControls {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-  }
-
-  .speedButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .speedButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .sliderContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .slider {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    border-radius: 3px;
-    background: rgba(210, 220, 245, 0.2);
-    outline: none;
-  }
-
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--lavender);
-    cursor: pointer;
-  }
-
-  .slider::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background: var(--lavender);
-    cursor: pointer;
-    border: none;
-  }
-
-  .slider:disabled {
-    opacity: 0.5;
-  }
-
-  .temperatureControl {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-  }
-
-  .tempButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .tempButton:hover:not(:disabled) {
-    background-color: rgba(210, 220, 245, 0.2);
-  }
-
-  .tempButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .tempDisplay {
-    display: flex;
-    align-items: baseline;
-  }
-
-  .tempValue {
-    font-size: 2.5rem;
-    font-weight: 300;
-    color: var(--text-primary);
-  }
-
-  .tempUnit {
-    font-size: 1rem;
-    color: var(--text-secondary);
-    margin-left: 4px;
-  }
-
-  .sourceControl {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .sourceButtons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .sourceButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex: 1;
-    min-width: 80px;
-  }
-
-  .sourceButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .sourceButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .doorControlButtons {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-  }
-
-  .doorButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 12px;
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-  }
-
-  .doorButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .blindsControls {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .blindsButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-  }
-
-  .blindsButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .batteryInfo {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .batteryLevel {
-    width: 100%;
-    height: 8px;
-    background-color: rgba(210, 220, 245, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .batteryFill {
-    height: 100%;
-    background-color: var(--status-pink);
-    border-radius: 4px;
-  }
-
-  .notificationOptions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .notificationButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    font-size: 1rem;
-  }
-
-  .notificationButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  /* Washing Machine Controls */
-  .cycleSelector {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .cycleButtons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .cycleButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    flex: 1;
-    min-width: 80px;
-  }
-
-  .cycleButton.active {
-    background-color: var(--lavender);
-    color: var(--oxford-blue);
-    font-weight: 500;
-  }
-
-  .cycleButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .actionButtons {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-  }
-
-  .actionButton {
-    background-color: rgba(210, 220, 245, 0.1);
-    border: 1px solid rgba(210, 220, 245, 0.2);
-    color: var(--text-primary);
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-
-  .actionButton:hover:not(:disabled) {
-    background-color: rgba(210, 220, 245, 0.2);
-  }
-
-  .actionButton:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  .progressContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 8px;
-  }
-
-  .progressBar {
-    width: 100%;
-    height: 8px;
-    background-color: rgba(210, 220, 245, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .progressFill {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background-color: var(--lavender);
-    border-radius: 4px;
-    width: 30%;
-    animation: progress 2s infinite alternate;
-  }
-
-  @keyframes progress {
-    0% {
-      width: 10%;
-    }
-    100% {
-      width: 90%;
-    }
-  }
+}
