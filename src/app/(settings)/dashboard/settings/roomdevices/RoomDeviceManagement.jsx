@@ -15,7 +15,7 @@ const DeviceManagement = () => {
   const [newRoomName, setNewRoomName] = useState(""); // State for storing the new room name
   const [newDeviceCategory, setNewDeviceCategory] = useState(""); // State for storing the new device category
   const [newDeviceName, setNewDeviceName] = useState(""); // State for storing the new device name
-  const [rooms, setRooms] = useState(roomsData); // Loads the rooms data from the JSON file into state
+  const [rooms, setRooms] = useState(roomsData[0]?.content || []); // Loads the rooms data from the JSON file into state
 
   // Function to open a popup based on type (e.g., "addRoom", "addDevice")
   const openPopup = (type, room = null) => {
@@ -35,18 +35,19 @@ const DeviceManagement = () => {
   // Function to save the new room after it is entered
   const handleSaveRoom = () => {
     if (newRoomName.trim() !== "") {
-      // If room name is not empty, add it to the rooms array
-      setRooms((prevRooms) => [
-        ...prevRooms,
-        { name: newRoomName, content: [] }, // Add a new room with an empty content list
-      ]);
+      // If room name is not empty, add it to the content array of roomName object
+      setRooms((prevRooms) => {
+        const updatedRooms = [...prevRooms]; // Copy previous state to avoid direct mutation
+        updatedRooms[0].content.push(newRoomName); // Add the new room to the end of the content array
+        return updatedRooms; // Return the updated state
+      });
       closePopup(); // Close the popup after saving
     }
   };
 
   // Function to remove a room from the rooms list
   const handleRemoveRoom = (roomName) => {
-    setRooms((prevRooms) => prevRooms.filter((room) => room.name !== roomName)); // Filter out the room with the given name
+    setRooms((prevRooms) => prevRooms.filter((room) => room !== roomName)); // Filter by string
     closePopup(); // Close the popup after removing the room
   };
 
@@ -73,13 +74,13 @@ const DeviceManagement = () => {
         <h2 className={styles.sectionHeader}>Rooms</h2>
         <div className={styles.buttonList}>
           {/* Map through the rooms array and display buttons for each room */}
-          {rooms.map(({ name, content }) => (
+          {rooms.map((roomName) => (
             <Button
-              key={name}
+              key={roomName}
               className={styles.buttonItem}
-              onClick={() => (content ? openPopup("room", name) : null)} // Open the room management popup if there is content
+              onClick={() => openPopup("room", roomName)}
             >
-              {name}
+              {roomName}
               <MdChevronRight className={styles.chevronIcon} />
             </Button>
           ))}
@@ -193,13 +194,14 @@ const DeviceManagement = () => {
                 {/* If no room is selected, show all room buttons */}
                 {!selectedRoom ? (
                   <div className={styles.popupList}>
-                    {rooms.map(({ name }) => (
+                    {rooms.map((roomName) => (
                       <Button
-                        key={name}
-                        className={styles.popupButton}
-                        onClick={() => openPopup("room", name)} // Clicking selects the room
+                        key={roomName}
+                        className={styles.buttonItem}
+                        onClick={() => openPopup("room", roomName)}
                       >
-                        {name}
+                        {roomName}
+                        <MdChevronRight className={styles.chevronIcon} />
                       </Button>
                     ))}
                   </div>
