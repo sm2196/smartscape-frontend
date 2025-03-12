@@ -71,6 +71,18 @@
 }
 
 /* Popup Styles */
+
+.popupGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  /* Create 5 columns */
+  gap: 10px;
+  /* Add space between grid items */
+  padding: 10px;
+  max-height: 100%;
+  /* Adjust the height of the popup to fit content */
+}
+
 .popupOverlay {
   position: fixed;
   top: 0;
@@ -89,7 +101,7 @@
   padding: 1.5rem;
   border-radius: 0.5rem;
   width: 90%;
-  max-width: 500px;
+  max-width: 40%;
 }
 
 .popupContent h3 {
@@ -214,12 +226,27 @@
   background-color: #cbd5e1;
 }
 
+.popupButtonDevice {
+  background-color: #152447;
+  color: #f1f1f1;
+  padding: 10px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.popupButtonDevice:hover {
+  background-color: #e0e0e0;
+}
+
 /* Red Remove Room Button */
 .removeRoomButton {
   background-color: #e85651;
   /* Red background */
   color: #fff;
   /* White text */
+  margin-top: 2vh;
 }
 
 .removeRoomButton:hover {

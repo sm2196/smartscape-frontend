@@ -5,6 +5,7 @@ import { MdChevronRight, MdAdd, MdRemove, MdWifi } from "react-icons/md";
 import Button from "./RoomDeviceButton";
 import styles from "./RoomDeviceManagement.module.css";
 import roomsData from "./rooms.json"; // Import the rooms data from the JSON file
+import devicesData from "./devices.json";
 
 const DeviceManagement = () => {
   // State hooks for managing the app's data
@@ -76,6 +77,24 @@ const DeviceManagement = () => {
     { name: "Choose by category", type: "category", icon: MdChevronRight },
     { name: "View All", type: "Devices", icon: MdChevronRight },
   ];
+
+  const allDevices = devicesData.devices.all; // Renamed variable to allDevices
+
+  const DevicesList = () => {
+    return (
+      <div>
+        {allDevices.map(({ id, name, category, room }) => (
+          <Button
+            key={id}
+            className={styles.buttonItem}
+            onClick={() => openPopup(name)}
+          >
+            {name} - {category} - {room}
+          </Button>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className={styles.deviceManagementContainer}>
@@ -228,6 +247,24 @@ const DeviceManagement = () => {
                     {item}
                   </Button>
                 ))}
+              </div>
+            )}
+
+            {/* View All Devices Popup */}
+            {popupType === "Devices" && (
+              <div>
+                <h3>All Devices</h3>
+                <div className={styles.popupGrid}>
+                  {devicesData?.devices?.all?.length > 0 ? (
+                    devicesData.devices.all.map((device, index) => (
+                      <Button key={index} className={styles.popupButton}>
+                        {device.name}
+                      </Button>
+                    ))
+                  ) : (
+                    <p>No devices found.</p>
+                  )}
+                </div>
               </div>
             )}
 
