@@ -16,6 +16,18 @@ const DeviceManagement = () => {
   const [newDeviceCategory, setNewDeviceCategory] = useState(""); // State for storing the new device category
   const [newDeviceName, setNewDeviceName] = useState(""); // State for storing the new device name
   const [rooms, setRooms] = useState(roomsData[0]?.content || []); // Loads the rooms data from the JSON file into state
+  const deviceCategories = [
+    "Appliances",
+    "Bulbs",
+    "Cameras & Video Doorbells",
+    "Garage Door Openers",
+    "Hubs",
+    "Locks",
+    "Plugs",
+    "Sensors",
+    "Thermostats",
+    "TVs",
+  ]; // Array of device categories
 
   // Function to open a popup based on type (e.g., "addRoom", "addDevice")
   const openPopup = (type, room = null) => {
@@ -93,10 +105,6 @@ const DeviceManagement = () => {
           >
             <MdAdd /> Add Room
           </Button>
-          {/* Button for removing rooms (functionality not implemented here) */}
-          <Button className={styles.buttonItem}>
-            <MdRemove /> Remove Room
-          </Button>
         </div>
       </div>
 
@@ -123,10 +131,6 @@ const DeviceManagement = () => {
             onClick={() => openPopup("addDevice")}
           >
             <MdAdd /> Add Device
-          </Button>
-          {/* Button for removing devices (functionality not implemented here) */}
-          <Button className={styles.buttonItem}>
-            <MdRemove /> Remove Device
           </Button>
         </div>
       </div>
@@ -221,18 +225,7 @@ const DeviceManagement = () => {
             {popupType === "category" && (
               <div className={styles.popupList}>
                 {/* List of device categories */}
-                {[
-                  "Appliances",
-                  "Bulbs",
-                  "Cameras & Video Doorbells",
-                  "Garage Door Openers",
-                  "Hubs",
-                  "Locks",
-                  "Plugs",
-                  "Sensors",
-                  "Thermostats",
-                  "TVs",
-                ].map((item, index) => (
+                {deviceCategories.map((item, index) => (
                   <Button key={index} className={styles.popupButton}>
                     {item}
                   </Button>
@@ -270,16 +263,18 @@ const DeviceManagement = () => {
               <div>
                 <h3>Add New Device</h3>
 
-                {/* Device Category Selection */}
+                {/* Device Category Dropdown */}
                 <select
                   className={styles.inputField}
                   value={newDeviceCategory}
                   onChange={(e) => setNewDeviceCategory(e.target.value)}
                 >
                   <option value="">Select Category</option>
-                  <option value="Light">Light</option>
-                  <option value="Thermostat">Thermostat</option>
-                  <option value="Plug">Plug</option>
+                  {deviceCategories.map((category, index) => (
+                    <option key={index} value={category}>
+                      {category}
+                    </option>
+                  ))}
                 </select>
 
                 {/* Device Name Input */}

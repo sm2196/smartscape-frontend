@@ -21,7 +21,6 @@
 }
 
 .buttonList {
-  flex-direction: column;
   margin-bottom: 1rem;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -48,9 +47,9 @@
 }
 
 .buttonGroup {
-  display: grid;
-  margin-top: 0.5rem;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
+  justify-content: center;
+  /* Center buttons within the container */
   gap: 1rem;
 }
 
