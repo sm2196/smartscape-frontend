@@ -1,11 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { getAuth, onAuthStateChanged } from "firebase/auth"
-import firebase_app from "@/lib/firebase/config"
-import { getProfileByUserId } from "@/lib/firebase/firestore"
-
-const auth = getAuth(firebase_app)
+import { onAuthStateChanged } from "firebase/auth"
+import { auth, db } from "@/lib/firebase/config"
+import { doc, getDoc } from "firebase/firestore"
 
 export function useAuth() {
   const [user, setUser] = useState(null)
@@ -17,10 +15,31 @@ export function useAuth() {
       if (user) {
         setUser(user)
 
-        // Fetch the user's profile
-        const { success, profile } = await getProfileByUserId(user.uid)
-        if (success) {
-          setProfile(profile)
+        // Fetch the user's profile using DocumentReference
+        try {
+          const userDocRef = doc(db, "Users", user.uid)
+          const userDocSnap = await getDoc(userDocRef)
+
+          if (userDocSnap.exists()) {
+            // Format dates and add the id to the profile data
+            const profileData = userDocSnap.data()
+
+            // Convert Firestore timestamps to JS Dates if they exist
+            const formattedProfile = {
+              ...profileData,
+              id: user.uid,
+              createdAt: profileData.createdAt?.toDate() || null,
+              updatedAt: profileData.updatedAt?.toDate() || null,
+            }
+
+            setProfile(formattedProfile)
+          } else {
+            console.log("No profile data found for this user")
+            setProfile(null)
+          }
+        } catch (error) {
+          console.error("Error fetching user profile:", error)
+          setProfile(null)
         }
       } else {
         setUser(null)

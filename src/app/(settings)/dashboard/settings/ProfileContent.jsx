@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./ProfileContent.module.css"
 import { useAuth } from "@/hooks/useAuth"
-import { deleteUserAccount } from "@/lib/firebase/auth"
+import { deleteUserAccount, signOutUser } from "@/lib/firebase/auth"
 import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
+import { isValidPhoneNumber } from "react-phone-number-input"
 
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
@@ -14,7 +15,6 @@ import PersonalInfoSection from "./components/PersonalInfoSection"
 import EditFieldModal from "./components/EditFieldModal"
 import ManageAccountModal from "./components/ManageAccountModal"
 import SwitchAccountModal from "./components/SwitchAccountModal"
-import HomeIdCodeModal from "./components/HomeIdCodeModal"
 import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
 
@@ -28,17 +28,14 @@ export default function ProfileContent() {
     firstName: "",
     lastName: "",
     email: "",
-    phoneNumbers: "",
+    phone: "",
     governmentId: "Verified", // Always set to "Verified"
-    address: "",
-    admin: true, // Use boolean instead of role string
   })
 
   // State for modals
   const [editingField, setEditingField] = useState(null)
   const [manageAccountOpen, setManageAccountOpen] = useState(false)
   const [switchAccountOpen, setSwitchAccountOpen] = useState(false)
-  const [homeIdCodeOpen, setHomeIdCodeOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false)
 
@@ -53,10 +50,8 @@ export default function ProfileContent() {
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
         email: profile.email || "",
-        phoneNumbers: profile.phoneNumbers || "",
+        phone: profile.phone || "",
         governmentId: "Verified", // Always set to "Verified"
-        address: profile.address || "",
-        admin: profile.admin === true, // Convert to boolean if needed
       })
     }
   }, [profile])
@@ -72,7 +67,6 @@ export default function ProfileContent() {
             name: `${profile.firstName} ${profile.lastName}`,
             email: profile.email,
             isActive: profile.id === user.uid,
-            admin: profile.admin === true,
           }))
           setAvailableAccounts(formattedAccounts)
         } else {
@@ -96,9 +90,8 @@ export default function ProfileContent() {
   const displayMapping = {
     name: "Legal name",
     email: "Email address",
-    phoneNumbers: "Phone numbers",
+    phone: "Phone number",
     governmentId: "Government ID",
-    address: "Address",
   }
 
   // Personal info sections data
@@ -116,22 +109,16 @@ export default function ProfileContent() {
       field: "email",
     },
     {
-      title: displayMapping.phoneNumbers,
-      value: fieldValues.phoneNumbers.length ? fieldValues.phoneNumbers : "Add a number to get in touch with you.",
+      title: displayMapping.phone,
+      value: fieldValues.phone ? fieldValues.phone : "Add a number to get in touch with you.",
       action: "Edit",
-      field: "phoneNumbers",
+      field: "phone",
     },
     {
       title: displayMapping.governmentId,
       value: fieldValues.governmentId,
       action: null,
       field: "governmentId",
-    },
-    {
-      title: displayMapping.address,
-      value: fieldValues.address.length ? fieldValues.address : "Add your address so we can reach you.",
-      action: "Edit",
-      field: "address",
     },
   ]
 
@@ -140,10 +127,24 @@ export default function ProfileContent() {
     setSignOutDialogOpen(true)
   }
 
-  const confirmSignOut = () => {
-    console.log("Signing out...")
+  const confirmSignOut = async () => {
+    try {
+      const result = await signOutUser()
+      if (result.success) {
+        console.log("Signed out successfully")
+
+        // Clear any additional app state if needed
+        // For example, if you're using any global state management
+
+        // Redirect to login page with replace to prevent going back
+        router.replace("/auth")
+      } else {
+        console.error("Error signing out:", result.error)
+      }
+    } catch (error) {
+      console.error("Unexpected error during sign out:", error)
+    }
     setSignOutDialogOpen(false)
-    // In a real app, you would redirect to login page or clear auth state
   }
 
   // Handle account deletion
@@ -200,6 +201,22 @@ export default function ProfileContent() {
           lastName: value.lastName,
         })
       }
+    } else if (editingField === "phone") {
+      // Validate phone number before saving
+      if (value && !isValidPhoneNumber(value)) {
+        throw new Error("Please enter a valid phone number")
+      }
+
+      setFieldValues((prev) => ({
+        ...prev,
+        phone: value,
+      }))
+
+      if (user) {
+        await updateProfile(user.uid, {
+          phone: value,
+        })
+      }
     } else {
       setFieldValues((prev) => ({
         ...prev,
@@ -247,7 +264,6 @@ export default function ProfileContent() {
       <AccountActions
         onManageAccount={() => setManageAccountOpen(true)}
         onSwitchAccount={() => setSwitchAccountOpen(true)}
-        onHomeIdCode={() => setHomeIdCodeOpen(true)}
         isMobile={isMobile}
       />
 
@@ -281,9 +297,6 @@ export default function ProfileContent() {
         accounts={availableAccounts}
         onSwitchAccount={handleSwitchAccount}
       />
-
-      {/* Home ID Code Modal */}
-      <HomeIdCodeModal isOpen={homeIdCodeOpen} onClose={() => setHomeIdCodeOpen(false)} />
 
       {/* Delete Account Modal */}
       <DeleteAccountModal

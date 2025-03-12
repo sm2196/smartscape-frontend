@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { MdClose, MdContentCopy, MdHome, MdCheck } from "react-icons/md"
+import { MdClose, MdContentCopy, MdCheck } from "react-icons/md"
+import { MdPersonAdd } from "react-icons/md" // Import MdPersonAdd
 import styles from "./ModalStyles.module.css"
 import homeIdStyles from "./HomeIdCodeModal.module.css"
 
-export default function HomeIdCodeModal({ isOpen, onClose }) {
+const HomeIdModal = ({ isOpen, onClose }) => {
   const [copied, setCopied] = useState(false)
-  // Generate a random Home ID code
   const homeId = "SMART-" + Math.random().toString(36).substring(2, 8).toUpperCase()
 
   if (!isOpen) return null
@@ -22,14 +22,14 @@ export default function HomeIdCodeModal({ isOpen, onClose }) {
     <div className={styles.modalOverlay}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>Home ID Code</h2>
+          <h2 className={styles.modalTitle}>Add Family Member</h2>
           <button className={styles.modalCloseButton} onClick={onClose}>
             <MdClose size={20} />
           </button>
         </div>
         <div className={styles.modalContent}>
           <div className={homeIdStyles.homeIdContainer}>
-            <MdHome className={homeIdStyles.homeIcon} size={48} />
+            <MdPersonAdd className={homeIdStyles.homeIcon} size={24} />
             <p className={homeIdStyles.homeIdDescription}>
               Share this code with family members to let them join your Smart Home. They'll need to enter this code
               during account registration.
@@ -45,9 +45,9 @@ export default function HomeIdCodeModal({ isOpen, onClose }) {
               </button>
             </div>
             <div className={homeIdStyles.instructionsContainer}>
-              <h3 className={homeIdStyles.instructionsTitle}>How to join:</h3>
+              <h3 className={homeIdStyles.instructionsTitle}>How to add a family member:</h3>
               <ol className={homeIdStyles.instructionsList}>
-                <li>Share this code with family members</li>
+                <li>Share this code with the family member you want to add</li>
                 <li>Ask them to create a new SmartScape account</li>
                 <li>During registration, they should enter this Home ID code</li>
                 <li>Once registered, they'll have access to your smart home devices</li>
@@ -64,4 +64,6 @@ export default function HomeIdCodeModal({ isOpen, onClose }) {
     </div>
   )
 }
+
+export default HomeIdModal
 

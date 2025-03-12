@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react"
 import { MdClose, MdCheck } from "react-icons/md"
 import styles from "./ModalStyles.module.css"
+import PhoneInput from "react-phone-number-input"
+import "react-phone-number-input/style.css"
 
 export default function EditFieldModal({
   isOpen,
@@ -116,6 +118,25 @@ export default function EditFieldModal({
                 />
               </div>
             </div>
+          ) : field === "phone" ? (
+            <div className={styles.formGroup}>
+              <label htmlFor="phone" className={styles.modalLabel}>
+                {fieldDisplayName}
+              </label>
+              <div className={`${styles.phoneInputWrapper} ${fieldError ? styles.inputError : ""}`}>
+                <PhoneInput
+                  international
+                  defaultCountry="AE"
+                  value={tempValue}
+                  onChange={(value) => {
+                    setTempValue(value)
+                    setFieldError("")
+                  }}
+                  placeholder="Enter your phone number"
+                  disabled={isSaving}
+                />
+              </div>
+            </div>
           ) : (
             <div className={styles.formGroup}>
               <label htmlFor="value" className={styles.modalLabel}>
@@ -130,7 +151,7 @@ export default function EditFieldModal({
                   setFieldError("")
                 }}
                 placeholder={`Enter your ${fieldDisplayName.toLowerCase()}`}
-                type={field === "email" ? "email" : field === "phoneNumbers" ? "tel" : "text"}
+                type={field === "email" ? "email" : "text"}
                 autoFocus
                 disabled={isSaving}
               />

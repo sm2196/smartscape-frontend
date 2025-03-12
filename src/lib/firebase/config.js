@@ -1,5 +1,8 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp, getApps } from "firebase/app";
+import { initializeApp, getApps } from "firebase/app"
+import { getFirestore } from "firebase/firestore"
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth"
+import { getStorage } from "firebase/storage"
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -8,12 +11,20 @@ const firebaseConfig = {
   storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-};
+}
 
 // Initialize Firebase
-const firebase_app = !getApps().length
-  ? initializeApp(firebaseConfig)
-  : getApps();
+const firebase_app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig)
 
-export default firebase_app;
+// Initialize Firebase services
+const auth = getAuth(firebase_app)
+const db = getFirestore(firebase_app)
+const storage = getStorage(firebase_app)
+
+// Set persistence for auth
+setPersistence(auth, browserLocalPersistence)
+  .then(() => console.log("Persistence set"))
+  .catch((error) => console.error("Error setting persistence:", error))
+
+export { firebase_app as default, auth, db, storage }
+

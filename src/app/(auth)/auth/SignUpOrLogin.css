@@ -1,0 +1,1077 @@
+* {
+  box-sizing: border-box;
+}
+
+.RSUserSignUpLogIn {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #FFFAFA;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.RSForms {
+  background-color: #FFFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
+}
+
+.RSHeader {
+  font-weight: bold;
+  margin: 0;
+}
+
+.RSUserInput {
+  border: none;
+  background-color: #eeeeee;
+  padding: 11px 10px;
+  margin: 8px 0;
+  width: 60%;
+}
+
+.RSTermsAndConditions {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.RSCheckbox {
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.RSTermsText {
+  font-size: 11px;
+  color: #0A1630;
+}
+
+.RSLinks {
+  color: #4A5F96;
+  font-size: 11px;
+  text-decoration: none;
+  margin: 15px 0;
+  font-weight: 500;
+}
+
+.RSLinks:hover {
+  color: #0A1630;
+  font-weight: bold;
+}
+
+.RSSliderText {
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 20px;
+  letter-spacing: 0.5px;
+  margin: 20px 0 30px;
+}
+
+.RSButton {
+  border-radius: 20px;
+  border: 1px solid #4a5f96;
+  background-color: #4a5f96;
+  color: #fffafa;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  transition: transform 80ms ease-in, background-color 0.3s ease-in-out;
+}
+
+.RSButton:hover {
+  background-color: #0a1630;
+  font-weight: bold;
+}
+
+.RSButton:active {
+  transform: scale(0.95);
+}
+
+.RSButton:focus {
+  outline: none;
+}
+
+.RSButtonCover {
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  background-color: transparent;
+  border: 3px solid #fffafa;
+  --color: #fffafa;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: .5s;
+  color: var(--color);
+
+}
+
+.RSButtonCover::before,
+.RSButtonCover::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: var(--color);
+  transition: 1s ease;
+}
+
+.RSButtonCover::before {
+  top: -1em;
+  left: -1em;
+}
+
+.RSButtonCover::after {
+  left: calc(100% + 1em);
+  top: calc(100% + 1em);
+}
+
+.RSButtonCover:hover::before,
+.RSButtonCover:hover::after {
+  height: 410px;
+  width: 410px;
+}
+
+.RSButtonCover:hover {
+  color: #0a1630;
+}
+
+.RSButtonCover:active {
+  filter: brightness(.8);
+}
+.RSErrorMessage {
+  color: rgb(141, 0, 0);
+  background: transparent;
+
+  padding: 5px 15px;
+  font-size: 11px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-bottom: 6px;
+
+  text-align: left; /* Align text to the left */
+
+}
+
+
+.HeaderPhone {
+  display: none;
+
+}
+
+@media (max-width: 768px) {
+
+  .RSUserSignUpLogIn {
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFFAFA;
+    position: relative;
+    border-radius: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .HeaderPhone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 120px;
+    background: linear-gradient(135deg, #0a1630, rgb(36, 75, 161));
+    z-index: 10;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .HeaderPhoneLogo {
+    position: fixed;
+    top: 30px;
+    left: 15px;
+    width: 140px;
+    height: auto;
+  }
+
+  .RSForms {
+    background-color: #FFFAFA;
+    display: flex;
+    position: relative;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    padding: 0 50px;
+    height: 100%;
+    width: 120%;
+    margin-top: 150px;
+    margin-left: -20px;
+    text-align: center;
+  }
+
+  .RSUserInput {
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 15px;
+  }
+
+  .RSHeader {
+    font-size: 25px;
+    margin-bottom: 15px;
+  }
+
+  .RSButton {
+    width: 35%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .RSButtonCover {
+    width: 45%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+    background-color: #152447;
+    border-radius: 20px;
+    align-items: center;
+    justify-content: center;
+    color: #fffafa;
+    font-weight: bold;
+    letter-spacing: 1px;
+    --color: #fffafa;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: .5s;
+    color: var(--color);
+
+  }
+
+
+  .RSButtonCover::before,
+  .RSButtonCover::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 50px;
+    transform: translate(-50%, -50%);
+    position: absolute;
+    border-radius: 50%;
+    z-index: -1;
+    background-color: #4a5f96;
+    transition: 1s ease;
+  }
+
+  .RSButtonCover:hover {
+    color: #ffffff;
+  }
+
+  .RSLogoImage {
+    display: none;
+  }
+
+  .RSTermsAndConditions {
+    margin-top: 50x;
+  }
+}
+
+/************ Marketing FAQ *****************/
+.RSFaqContainer {
+  max-width: 900px;
+  margin: auto;
+  text-align: left;
+}
+
+.RSFaqHeader {
+  text-align: center;
+}
+
+h2 {
+  font-size: 24px;
+  color: #152447;
+}
+
+.RSFaqSubtitle {
+  color: #1b346fd8;
+  margin-bottom: 20px;
+}
+
+.RSFaqGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  align-items: start;
+  margin-bottom: 20px;
+}
+
+.RSFaqItem {
+  background: white;
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px #d2dcf56b;
+  transition: background 0.3s ease-in-out;
+  min-height: 60px;
+  /* Consistent height when collapsed */
+  height: 70px;
+  /* Allow content to fit */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.RSFaqItem:hover {
+  background: #f1f1f1c7;
+}
+
+.RSFaqQuestion {
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  color: #1c3160;
+  gap: 5px;
+}
+
+.RSFaqAnswer {
+  font-size: 13px;
+  color: #000000d3;
+  margin-top: 0px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  /* Smooth transition */
+}
+
+.RSFaqItem.open {
+  min-height: 160px;
+  /* Keeps FAQ items the same height */
+}
+
+.RSFaqItem.open .RSFaqAnswer {
+  max-height: 200px;
+  /* Large enough for content */
+
+  padding-top: 10px;
+}
+
+.RSFaqDivider {
+  border: none;
+  border-top: 1px solid #d2dcf5;
+  margin: 10px 0;
+}
+
+
+
+.RSLogoImage {
+  position: absolute;
+  /* Keep it positioned relative to the cover box */
+  top: 10px;
+  /* Adjust as needed */
+  right: 20px;
+  /* Adjust as needed */
+  width: 120px;
+  /* Set the desired width */
+  height: auto;
+  /* Maintain aspect ratio */
+  max-width: 100%;
+  /* Ensure it doesn’t exceed the container */
+  max-height: 100%;
+  /* Prevent it from stretching beyond bounds */
+  object-fit: contain;
+  /* Ensure the image fits within its dimensions */
+  z-index: 101;
+  /* Ensure it stays above other elements */
+}
+
+.RSLogoImagee {
+  position: absolute;
+  /* Keep it positioned relative to the cover box */
+  top: 10px;
+  /* Adjust as needed */
+  left: 20px;
+  /* Adjust as needed */
+  width: 120px;
+  /* Set the desired width */
+  height: auto;
+  /* Maintain aspect ratio */
+  max-width: 100%;
+  /* Ensure it doesn’t exceed the container */
+  max-height: 100%;
+  /* Prevent it from stretching beyond bounds */
+  object-fit: contain;
+  /* Ensure the image fits within its dimensions */
+  z-index: 101;
+  /* Ensure it stays above other elements */
+}
+
+
+
+/************ FileUploading *****************/
+.RSUserSignUpLogInFU {
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  /* Changed to row for side-by-side layout */
+  height: 100vh;
+  background: linear-gradient(to right, #0a1630, rgb(36, 75, 161));
+  position: relative;
+  overflow: hidden;
+
+}
+
+.left-section-file {
+  width: 100%;
+  /* Right side takes up 50% of the page */
+  display: flex;
+  background: #FFFAFA;
+  flex-direction: column;
+  align-items: center;
+margin-top: 5rem;
+  padding: 10px;
+  height: 100%;
+}
+.right-section-file {
+  width: 100%;
+  /* Right side takes up 50% of the page */
+  display: flex;
+  background: #FFFAFA;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 20px;
+  height: 100%;
+}
+.FileHeader{
+  margin-top: 40px;
+margin-bottom: 50px;
+  text-align: center;
+
+
+}
+
+.file-upload-header{
+  font-size: 15px;
+  color: #152447;
+}
+/* .main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+  border-radius: 20px;
+  width: 400px;
+  height: 150px;
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+} */
+
+/* Initial Upload Button */
+.file-btn {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.upload-icon {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 15px;
+  border-radius: 50%;
+}
+
+/* File Selected Display */
+.file-card {
+  --folder-H: 30px;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 40px; /* Increase padding for a longer height */
+  display: flex;
+  align-items: center;
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  width: 480px;
+  justify-content: space-between;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  height: calc(var(--folder-H) * 2);
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.file-info h6 {
+  margin: 0;
+  font-size: 14px;
+  color: #000;
+  flex-grow: 1;
+}
+
+.file-icon {
+  font-size: 20px;
+  color: #000;
+  margin-right: 10px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #a00;
+  margin-left: 10px;
+}
+
+/* Upload Button */
+.upload-btn {
+  background: #1c3160;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  width: 80%;
+  margin-top: 10px;
+}
+
+.upload-btn:hover {
+  background: #3459a7;
+
+}
+
+/* Progress Bar Container */
+.progress-container {
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  width: 490px;
+  margin-top: -30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.progress-bar {
+  height: 5px;
+  width: 100%;
+  background: #e0e0e0;
+  border-radius: 5px;
+  position: relative;
+  margin-right: 10px;
+}
+
+.progress {
+  height: 100%;
+  background: #38b869a9;
+  width: 0;
+  border-radius: 5px;
+  transition: width 0.5s ease-in-out;
+}
+
+/* Done State */
+.done-icon {
+  font-size: 20px;
+  color: #5b42f3;
+}
+
+
+
+.input-group {
+  position: relative;
+  margin: 1em 0;
+}
+
+.input {
+  border: solid 1.5px #9e9e9e;
+  border-radius: 1rem;
+  background: none;
+  padding: 1rem;
+  font-size: 1rem;
+  color: #333;
+  width: 20rem;
+  height: 3rem;
+  transition: border 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  margin-bottom: -15px;
+}
+
+.user-label {
+  position: absolute;
+  left: 15px;
+  margin-top: 0px;
+  padding-left: 10px;
+  color: #535353;
+  pointer-events: none;
+  transform: translateY(1rem);
+  transition: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input:focus,
+.input:valid {
+  outline: none;
+  border: 1.5px solid #113a93be;
+}
+
+.input:focus~.user-label,
+.input:valid~.user-label {
+  transform: translateY(-50%) scale(0.8);
+  background-color: #ffffff;
+  padding: 0 .2em;
+  color: #113a93da;
+  font-weight: bold;
+}
+
+
+
+.container {
+  --transition: 350ms;
+  --folder-W: 55px;
+  --folder-H: 30px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+
+  align-items: center;
+  justify-content: center;
+  padding: 10px 40px; /* Increase padding for a longer height */
+padding-left: 120px;
+  border-radius: 15px;
+  box-shadow: 0 15px 30px rgba(97, 97, 97, 0.2);
+  height: calc(var(--folder-H) * 2);
+  position: relative;
+}
+
+.folder {
+  position: absolute;
+  top: 10px;
+  left: calc(20% - 60px);
+  animation: float 2.5s infinite ease-in-out;
+  transition: transform var(--transition) ease;
+}
+
+.folder:hover {
+  transform: scale(1.05);
+}
+
+.folder .front-side,
+.folder .back-side {
+  position: absolute;
+  transition: transform var(--transition);
+  transform-origin: bottom center;
+}
+
+.folder .back-side::before,
+.folder .back-side::after {
+  content: "";
+  display: block;
+  background-color: white;
+  opacity: 0.5;
+  z-index: 0;
+  width: var(--folder-W);
+  height: var(--folder-H);
+  position: absolute;
+  transform-origin: bottom center;
+  border-radius: 15px;
+  transition: transform 350ms;
+  z-index: 0;
+}
+
+.container:hover .back-side::before {
+  transform: rotateX(-5deg) skewX(5deg);
+}
+
+.container:hover .back-side::after {
+  transform: rotateX(-15deg) skewX(12deg);
+}
+
+.folder .front-side {
+  z-index: 1;
+}
+
+.container:hover .front-side {
+  transform: rotateX(-40deg) skewX(15deg);
+}
+
+.folder .tip {
+  background: linear-gradient(135deg, #1b346f, rgb(36, 75, 161));
+  width: 35px;
+  height: 10px;
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  position: absolute;
+  top: -5px;
+  z-index: 2;
+}
+
+.folder .cover {
+  background: linear-gradient(135deg, #ffe563, #ffc663);
+  width: var(--folder-W);
+  height: var(--folder-H);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+}
+
+.custom-file-upload {
+  font-size: 1.1em;
+  color: #ffffff;
+  text-align: center;
+  background: #4a5f96;
+  border: none;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(123, 123, 123, 0.575);
+  cursor: pointer;
+  transition: background var(--transition) ease;
+  display: inline-block;
+  width: 100%;
+  height: 90%;
+
+  padding: 8px 100px;
+  margin-left: 20px;
+  position: relative;
+  text-transform: none;
+}
+
+.custom-file-upload:hover {
+  background: rgba(194, 194, 194, 0.559);
+  color: #0A1630;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+
+.RSButtonFile {
+  border-radius: 20px;
+  border: 1px solid #4a5f96;
+margin-top:15px ;
+  background-color: #4a5f96;
+  color: #fffafa;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  transition: transform 80ms ease-in, background-color 0.3s ease-in-out;
+}
+
+.RSButtonFile:hover {
+  background-color: #0a1630;
+  font-weight: bold;
+}
+
+.RSButtonFile:active {
+  transform: scale(0.95);
+}
+
+.RSButtonFile:focus {
+  outline: none;
+}
+
+.success-message{
+margin-top: 4rem;
+padding: 20px;
+padding-right: 5px;
+text-align: center;
+font-size: 15px;
+color: #0A1630;
+
+}
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+
+@media (max-width: 768px) {
+.custom-file-upload {
+  padding: 8px 20px;
+
+}
+.right-section-file {
+margin-left: 20px;
+margin-top: 100px;
+}
+.left-section-file {
+
+  margin-left: 20px;
+margin-top: 100px;
+}
+.file-card {
+    width: 310px;
+}
+
+.progress-container{
+  width: 350px;
+}
+
+.RSButton {
+  width: 35%;
+  padding: 12px;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+}
+/************ OTP *****************/
+.otp-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5;
+  width: 100%;
+}
+
+.left-section {
+  padding: 20px;
+  width: 50%;
+}
+
+
+.right-section {
+  width: 50%;
+  /* Right side takes up 50% of the page */
+  display: flex;
+  background: #FFFAFA;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 100%;
+}
+.otp-logo {
+  max-width: 150px;
+}
+
+
+
+
+.Changebutton {
+  background-color: transparent;
+  color: hwb(0 100% 0%);
+  width: 17.5rem;
+  height: 3.5em;
+  border: white 0.2em solid;
+  display: flex; /* Align text and icon in a row */
+  align-items: center; /* Center vertically */
+  justify-content: center; /* Center horizontally */
+  gap: 10px; /* Space between text and arrow */
+  transition: all 0.6s ease;
+  padding: 5px 5px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  cursor: pointer;
+  margin-top: 490px;
+  margin-left: 260px;
+}
+
+.Changebutton:hover {
+  background-color: white;
+  color: #0A1630;
+  transform: translateX(-5px);
+}
+
+.changearrow {
+  font-size: 1.5em; /* Make arrow bigger */
+  line-height: 1; /* Align with text */
+}
+
+
+.title {
+  font-size: 24px;
+  color: #0A1630;
+  text-align: center;
+}
+
+.subtitle {
+  text-align: center;
+  color: #1b346fd8;
+  margin-bottom: 30px;
+  font-size: 12px;
+}
+
+.otp-expiry {
+  margin-top: 0px;
+  color: #4e4e4e;
+  font-size: 12px;
+}
+
+.otp-inputs {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.otp-box {
+  width: 60px;
+  height: 70px;
+  margin: 8px;
+  margin-top: -10px;
+  font-size: 22px;
+  text-align: center;
+  border: 1px solid #969696;
+  border-radius: 5px;
+}
+
+
+
+
+.RSButtonCoverOTP {
+  border-radius: 20px;
+  margin-top: 15px;
+  font-size: 13px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  background-color: transparent;
+  border: 3px solid #1b346fd8; /* Blue border */
+  --color: #1b346fd8; /* Default blue */
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: .5s;
+  color: var(--color);
+  z-index: 1;
+}
+
+.RSButtonCoverOTP::before,
+.RSButtonCoverOTP::after {
+  content: '';
+  display: block;
+  width: 50px;
+  height: 50px;
+  transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  z-index: -1;
+  background-color: var(--color);
+  transition: 1s ease;
+}
+
+.RSButtonCoverOTP::before {
+  top: -1em;
+  left: -1em;
+}
+
+.RSButtonCoverOTP::after {
+  left: calc(100% + 1em);
+  top: calc(100% + 1em);
+}
+
+.RSButtonCoverOTP:hover::before,
+.RSButtonCoverOTP:hover::after {
+  width: 410px;
+  height: 410px;
+  background-color: #1b346fd8; /* Green */
+}
+
+.RSButtonCoverOTP:hover {
+  color: #fff;
+
+}
+
+.RSButtonCoverOTP:active {
+  filter: brightness(0.8);
+}
+
+
+.OTPicon{
+  font-size: 6em;
+  vertical-align: middle;
+  color:#152447 ;
+ margin-bottom: 20px;
+}
+
+
+
+.ChangebuttonPhone {
+display: none;
+}
+
+@media (max-width: 768px) {
+
+  .RSUserSignUpLogInFU{
+    background: white;
+    overflow-y: auto;
+
+  }
+  .left-section{
+    display: none;
+  }
+
+  .right-section {
+width: 100%;
+
+  }
+
+  .ChangebuttonPhone{
+    background-color: #a4bffe2b;
+    color: #1b346fd8;
+    margin-top: 15px;
+    width: 20em;
+    height: 3em;
+    border: #1b346fd8 0.2em solid;
+    display: flex; /* Align text and icon in a row */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    gap: 10px; /* Space between text and arrow */
+    transition: all 0.6s ease;
+    padding: 5px 5px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+
+  .ChangebuttonPhone:hover {
+    background-color: #1b346fd8;
+    color: white;
+    transform: translateX(-5px);
+  }
+
+}

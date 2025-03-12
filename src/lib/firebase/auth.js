@@ -1,15 +1,12 @@
 import {
-  getAuth,
   createUserWithEmailAndPassword,
   signOut,
   deleteUser,
   reauthenticateWithCredential,
   EmailAuthProvider,
+  signInWithEmailAndPassword as firebaseSignIn,
 } from "firebase/auth"
-import firebase_app from "./config"
-
-// Initialize Firebase Authentication
-const auth = getAuth(firebase_app)
+import { auth } from "./config" // Updated import
 
 // Sign up with email and password
 export async function signUpWithEmailAndPassword(email, password) {
@@ -42,8 +39,6 @@ export async function signUpWithEmailAndPassword(email, password) {
 // Sign in with email and password
 export async function signInWithEmailAndPassword(email, password) {
   try {
-    // Import the function from firebase/auth to avoid name collision
-    const { signInWithEmailAndPassword: firebaseSignIn } = require("firebase/auth")
     const userCredential = await firebaseSignIn(auth, email, password)
     return { success: true, user: userCredential.user }
   } catch (error) {
@@ -54,9 +49,20 @@ export async function signInWithEmailAndPassword(email, password) {
 // Sign out
 export async function signOutUser() {
   try {
+    // Clear any local storage items related to the app
+    localStorage.removeItem("notifications")
+    localStorage.removeItem("linkedThirdPartyApp")
+
+    // Clear any session storage items
+    sessionStorage.clear()
+
+    // Sign out from Firebase Auth
+    // This will clear the auth state and remove the user from local persistence
     await signOut(auth)
+
     return { success: true }
   } catch (error) {
+    console.error("Error during sign out:", error)
     return { success: false, error: error.message }
   }
 }
@@ -66,7 +72,7 @@ export function getCurrentUser() {
   return auth.currentUser
 }
 
-// Delete user account
+// Delete user account - this is used in ProfileContent.jsx
 export async function deleteUserAccount(password) {
   try {
     const user = auth.currentUser

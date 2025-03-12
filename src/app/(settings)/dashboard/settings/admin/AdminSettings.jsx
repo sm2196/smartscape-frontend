@@ -1,36 +1,49 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { MdAdd, MdClose, MdCheck, MdPhone, MdDescription, MdPeople, MdShield, MdHome, MdSavings } from "react-icons/md"
+import {
+  MdDescription,
+  MdPhone,
+  MdPeople,
+  MdShield,
+  MdHome,
+  MdSavings,
+  MdCheck,
+  MdPersonAdd,
+  MdContentCopy,
+  MdClose,
+} from "react-icons/md"
 import styles from "./AdminSettings.module.css"
+import homeIdStyles from "../components/HomeIdCodeModal.module.css"
 
 const AdminSettings = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [pinDigits, setPinDigits] = useState(["", "", "", ""])
   const [errorMessage, setErrorMessage] = useState("")
-  const [familyMembers, setFamilyMembers] = useState([
+  const [familyMembers] = useState([
     { name: "Chang", email: "chang@example.com", lastOnline: "2 hours ago", online: true },
     { name: "Claire", email: "claire@example.com", lastOnline: "1 day ago", online: false },
     { name: "Lovisa", email: "lovisa@example.com", lastOnline: "30 minutes ago", online: true },
     { name: "Max", email: "max@example.com", lastOnline: "5 hours ago", online: false },
     { name: "Mom", email: "mom@example.com", lastOnline: "3 days ago", online: true },
   ])
-  const [newMemberName, setNewMemberName] = useState("")
-  const [newMemberEmail, setNewMemberEmail] = useState("")
   const [permissions, setPermissions] = useState({
     "read electricity consumption levels": false,
     "read daily water consumption levels": false,
     "read device temperature levels": false,
     "control household devices": false,
   })
-  const [selectedMember, setSelectedMember] = useState(null)
   const [isMobile, setIsMobile] = useState(false)
   const [activeTab, setActiveTab] = useState("family")
-  const [showAddMember, setShowAddMember] = useState(false)
+  const [showHomeIdModal, setShowHomeIdModal] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  // Generate a random Home ID code
+  const homeId = "SMART-" + Math.random().toString(36).substring(2, 8).toUpperCase()
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 768)
+      setIsMobile(window.innerWidth <= 1023)
     }
 
     checkMobile()
@@ -58,6 +71,12 @@ const AdminSettings = () => {
     if (value && index < 3) {
       document.getElementById(`pin-input-${index + 1}`).focus()
     }
+  }
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(homeId)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
   }
 
   if (!authenticated) {
@@ -96,33 +115,6 @@ const AdminSettings = () => {
     )
   }
 
-  const handleAddMember = () => {
-    if (newMemberName && newMemberEmail) {
-      const newMember = {
-        name: newMemberName,
-        email: newMemberEmail,
-        lastOnline: "Just now",
-        online: true,
-      }
-      setFamilyMembers([...familyMembers, newMember])
-      setNewMemberName("")
-      setNewMemberEmail("")
-      setShowAddMember(false)
-    }
-  }
-
-  const handleRemoveMember = (name) => {
-    setFamilyMembers(familyMembers.filter((member) => member.name !== name))
-  }
-
-  const toggleStatus = (name) => {
-    setFamilyMembers(
-      familyMembers.map((member) =>
-        member.name === name ? { ...member, online: !member.online, lastOnline: "Just now" } : member,
-      ),
-    )
-  }
-
   const togglePermission = (perm) => {
     setPermissions((prev) => ({ ...prev, [perm]: !prev[perm] }))
   }
@@ -136,6 +128,57 @@ const AdminSettings = () => {
       {children}
     </div>
   )
+
+  // Home ID Modal
+  const HomeIdModal = () => {
+    if (!showHomeIdModal) return null
+
+    return (
+      <div className={styles.modalOverlay} onClick={() => setShowHomeIdModal(false)}>
+        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalHeader}>
+            <h2 className={styles.modalTitle}>Add Family Member</h2>
+            <button className={styles.modalCloseButton} onClick={() => setShowHomeIdModal(false)}>
+              <MdClose size={20} />
+            </button>
+          </div>
+          <div className={styles.modalContent}>
+            <div className={homeIdStyles.homeIdContainer}>
+              <MdPersonAdd className={homeIdStyles.homeIcon} size={48} />
+              <p className={homeIdStyles.homeIdDescription}>
+                Share this code with family members to let them join your Smart Home. They'll need to enter this code
+                during account registration.
+              </p>
+              <div className={homeIdStyles.codeWrapper}>
+                <span className={homeIdStyles.homeIdCode}>{homeId}</span>
+                <button
+                  className={homeIdStyles.copyButton}
+                  onClick={handleCopy}
+                  aria-label={copied ? "Copied to clipboard" : "Copy to clipboard"}
+                >
+                  {copied ? <MdCheck size={20} /> : <MdContentCopy size={20} />}
+                </button>
+              </div>
+              <div className={homeIdStyles.instructionsContainer}>
+                <h3 className={homeIdStyles.instructionsTitle}>How to add a family member:</h3>
+                <ol className={homeIdStyles.instructionsList}>
+                  <li>Share this code with the family member you want to add</li>
+                  <li>Ask them to create a new SmartScape account</li>
+                  <li>During registration, they should enter this Home ID code</li>
+                  <li>Once registered, they'll have access to your smart home devices</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <div className={styles.modalFooter}>
+            <button className={styles.modalButtonSecondary} onClick={() => setShowHomeIdModal(false)}>
+              Close
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className={styles.container}>
@@ -192,34 +235,28 @@ const AdminSettings = () => {
                 <div className={styles.familySection}>
                   <div className={styles.sectionHeader}>
                     <h2>Family Members</h2>
-                    <button className={styles.mobileAddButton} onClick={() => setShowAddMember(true)}>
-                      <MdAdd size={20} />
-                      <span>Add Member</span>
+                    <button className={styles.addMemberButton} onClick={() => setShowHomeIdModal(true)}>
+                      <MdPersonAdd size={20} />
+                      Add Member
                     </button>
                   </div>
                   <div className={styles.memberList}>
                     {familyMembers.map((member) => (
-                      <div key={member.name} className={styles.memberCard} onClick={() => setSelectedMember(member)}>
+                      <div key={member.name} className={styles.memberCard}>
+                        <div className={styles.memberAvatar}>
+                          <span>{member.name.charAt(0)}</span>
+                        </div>
                         <div className={styles.memberInfo}>
                           <span className={styles.memberName}>{member.name}</span>
                           <span className={styles.memberEmail}>{member.email}</span>
-                        </div>
-                        <div className={styles.memberStatus}>
-                          <span className={`${styles.statusDot} ${member.online ? styles.online : styles.offline}`} />
-                          {member.online ? "Online" : "Offline"}
+                          <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
+                            <span className={styles.statusDot} />
+                            {member.online ? "Online" : "Offline"}
+                          </div>
                         </div>
                       </div>
                     ))}
                   </div>
-                  {familyMembers.length === 0 && (
-                    <div className={styles.emptyState}>
-                      <p>No family members added yet.</p>
-                      <button className={styles.addButton} onClick={() => setShowAddMember(true)}>
-                        <MdAdd size={20} />
-                        Add Member
-                      </button>
-                    </div>
-                  )}
                 </div>
               ) : (
                 <div className={styles.permissionsSection}>
@@ -238,20 +275,22 @@ const AdminSettings = () => {
                     ))}
                   </div>
 
-                  <div className={styles.documentsSection}>
+                  <div className={styles.mobileDocumentsSection}>
                     <h2>Verified Documents</h2>
-                    {[
-                      "Property Ownership",
-                      "ID Verification",
-                      "Utility Bills",
-                      "Insurance Documents",
-                      "Smart Device Registration",
-                    ].map((doc) => (
-                      <div key={doc} className={styles.documentItem}>
-                        <span>{doc}</span>
-                        <MdCheck className={styles.verifiedIcon} size={20} />
-                      </div>
-                    ))}
+                    <div className={styles.documentGrid}>
+                      {[
+                        "Property Ownership",
+                        "ID Verification",
+                        "Utility Bills",
+                        "Insurance Documents",
+                        "Smart Device Registration",
+                      ].map((doc) => (
+                        <div key={doc} className={styles.documentCard}>
+                          <MdCheck className={styles.verifiedIcon} size={20} />
+                          <span>{doc}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className={styles.supportSection}>
@@ -268,13 +307,14 @@ const AdminSettings = () => {
             </div>
           </div>
         ) : (
+          // Desktop view
           <div className={styles.desktopContent}>
             <div className={styles.mainSection}>
               <div className={styles.familySection}>
                 <div className={styles.sectionHeader}>
                   <h2>Family Members</h2>
-                  <button className={styles.addButton} onClick={() => setShowAddMember(true)}>
-                    <MdAdd size={20} />
+                  <button className={styles.addMemberButton} onClick={() => setShowHomeIdModal(true)}>
+                    <MdPersonAdd size={20} />
                     Add Member
                   </button>
                 </div>
@@ -286,17 +326,10 @@ const AdminSettings = () => {
                         <span className={styles.memberEmail}>{member.email}</span>
                       </div>
                       <div className={styles.memberActions}>
-                        <button
-                          className={`${styles.statusButton} ${member.online ? styles.online : styles.offline}`}
-                          onClick={() => toggleStatus(member.name)}
-                        >
+                        <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
                           <span className={styles.statusDot} />
                           {member.online ? "Online" : "Offline"}
-                        </button>
-                        <button className={styles.removeButton} onClick={() => handleRemoveMember(member.name)}>
-                          <MdClose size={16} />
-                          Remove
-                        </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -352,86 +385,8 @@ const AdminSettings = () => {
         )}
       </div>
 
-      {showAddMember && (
-        <div className={styles.modal} onClick={() => setShowAddMember(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>Add Family Member</h2>
-              <button className={styles.closeButton} onClick={() => setShowAddMember(false)}>
-                <MdClose size={20} />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="name">Full Name</label>
-                <input
-                  id="name"
-                  type="text"
-                  value={newMemberName}
-                  onChange={(e) => setNewMemberName(e.target.value)}
-                  placeholder="Enter full name"
-                />
-              </div>
-              <div className={styles.inputGroup}>
-                <label htmlFor="email">Email Address</label>
-                <input
-                  id="email"
-                  type="email"
-                  value={newMemberEmail}
-                  onChange={(e) => setNewMemberEmail(e.target.value)}
-                  placeholder="Enter email address"
-                />
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
-              <button className={styles.cancelButton} onClick={() => setShowAddMember(false)}>
-                Cancel
-              </button>
-              <button
-                className={styles.addButton}
-                onClick={handleAddMember}
-                disabled={!newMemberName || !newMemberEmail}
-              >
-                Add Member
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {selectedMember && (
-        <div className={styles.modal} onClick={() => setSelectedMember(null)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>{selectedMember.name}'s Status</h2>
-              <button className={styles.closeButton} onClick={() => setSelectedMember(null)}>
-                <MdClose size={20} />
-              </button>
-            </div>
-            <div className={styles.modalBody}>
-              <div className={styles.statusDetail}>
-                <strong>Email:</strong>
-                <span>{selectedMember.email}</span>
-              </div>
-              <div className={styles.statusDetail}>
-                <strong>Status:</strong>
-                <span className={selectedMember.online ? styles.statusOnline : styles.statusOffline}>
-                  {selectedMember.online ? "Online" : "Offline"}
-                </span>
-              </div>
-              <div className={styles.statusDetail}>
-                <strong>Last Online:</strong>
-                <span>{selectedMember.lastOnline}</span>
-              </div>
-            </div>
-            <div className={styles.modalFooter}>
-              <button className={styles.actionButton} onClick={() => setSelectedMember(null)}>
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Home ID Modal */}
+      <HomeIdModal />
     </div>
   )
 }

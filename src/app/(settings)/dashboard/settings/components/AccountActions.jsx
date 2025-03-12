@@ -1,21 +1,15 @@
 "use client"
 
-import { MdManageAccounts, MdSwitchAccount, MdHome } from "react-icons/md"
+import { MdManageAccounts, MdSwitchAccount } from "react-icons/md"
 import styles from "./AccountActions.module.css"
 
-export default function AccountActions({ onManageAccount, onSwitchAccount, onHomeIdCode, isMobile = false }) {
+export default function AccountActions({ onManageAccount, onSwitchAccount, isMobile = false }) {
   const accountActions = [
     {
       icon: MdManageAccounts,
       text: "Manage your account",
       mobileText: "Manage",
       onClick: onManageAccount,
-    },
-        {
-      icon: MdHome,
-      text: "Home ID code",
-      mobileText: "Home ID",
-      onClick: onHomeIdCode,
     },
     {
       icon: MdSwitchAccount,

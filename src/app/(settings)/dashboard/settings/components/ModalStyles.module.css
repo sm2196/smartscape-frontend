@@ -11,6 +11,7 @@
   align-items: center;
   z-index: 1000;
   animation: fadeIn 0.2s ease-out;
+  padding: 1rem; /* Add padding to prevent modals from touching screen edges */
 }
 
 @keyframes fadeIn {
@@ -26,10 +27,13 @@
   background-color: white;
   border-radius: 12px;
   width: 90%;
-  max-width: 1023px;
+  max-width: 500px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   animation: slideUp 0.3s ease-out;
   overflow: hidden;
+  max-height: 90vh; /* Limit height on small screens */
+  display: flex;
+  flex-direction: column; /* Ensure proper layout of header, content, footer */
 }
 
 @keyframes slideUp {
@@ -87,6 +91,8 @@
 
 .modalContent {
   padding: 24px;
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  flex: 1; /* Take available space */
 }
 
 .modalLabel {
@@ -165,6 +171,46 @@
   box-shadow: 0 0 0 2px rgba(21, 36, 71, 0.1);
 }
 
+/* Add styles for the phone input component */
+.phoneInputWrapper {
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.phoneInputWrapper .PhoneInput {
+  width: 100%;
+}
+
+.phoneInputWrapper .PhoneInputInput {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  flex: 1;
+}
+
+.phoneInputWrapper .PhoneInputInput:focus {
+  outline: none;
+  border-color: var(--oxford-blue);
+  box-shadow: 0 0 0 2px rgba(21, 36, 71, 0.1);
+}
+
+.phoneInputWrapper.inputError .PhoneInputInput {
+  border-color: #dc2626;
+}
+
+.phoneInputWrapper.inputError .PhoneInputInput:focus {
+  box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1) !important;
+}
+
+/* Ensure the country select button has proper styling */
+.phoneInputWrapper .PhoneInputCountry {
+  margin-right: 8px;
+}
+
 .inputError {
   border-color: #dc2626;
 }
@@ -212,6 +258,7 @@
   gap: 12px;
   padding: 16px 24px;
   border-top: 1px solid #eee;
+  background-color: white; /* Ensure footer has background */
 }
 
 .modalButtonPrimary,
@@ -298,6 +345,25 @@
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .modal {
+    width: 95%;
+    max-height: 85vh;
+  }
+
+  .modalHeader {
+    padding: 16px;
+  }
+
+  .modalContent {
+    padding: 16px;
+  }
+
+  .modalFooter {
+    padding: 16px;
   }
 }
 

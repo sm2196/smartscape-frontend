@@ -1,96 +1,132 @@
 .homeIdContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
 
-  .homeIcon {
-    color: var(--oxford-blue);
-    margin-bottom: 16px;
+.homeIcon {
+  color: var(--oxford-blue);
+  margin-bottom: 1.5rem;
+  width: 48px;
+  height: 48px;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #f0f7ff;
+}
+
+.homeIdDescription {
+  margin-bottom: 2rem;
+  color: #4b5563;
+  line-height: 1.5;
+  font-size: 0.95rem;
+  max-width: 400px;
+  width: 100%;
+}
+
+.codeWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+  background-color: #f8fafc;
+  border: 2px dashed #e2e8f0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 300px;
+  box-sizing: border-box;
+}
+
+.homeIdCode {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--oxford-blue);
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.copyButton {
+  background: none;
+  border: none;
+  color: var(--oxford-blue);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.copyButton:hover {
+  background-color: rgba(21, 36, 71, 0.1);
+}
+
+.instructionsContainer {
+  background-color: #f8fafc;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+  text-align: left;
+  box-sizing: border-box;
+}
+
+.instructionsTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--oxford-blue);
+}
+
+.instructionsList {
+  padding-left: 1.5rem;
+  margin: 0;
+  color: #4b5563;
+}
+
+.instructionsList li {
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.instructionsList li:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 640px) {
+  .homeIdContainer {
+    padding: 0.5rem;
   }
 
   .homeIdDescription {
-    margin-bottom: 24px;
-    color: #555;
-    line-height: 1.5;
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
   }
 
   .codeWrapper {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: 24px;
-    background-color: #f0f7ff;
-    border: 2px dashed var(--oxford-blue);
-    padding: 12px 24px;
-    border-radius: 8px;
-    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.5rem;
   }
 
   .homeIdCode {
-    font-size: 24px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: var(--oxford-blue);
-    text-align: center;
-  }
-
-  .copyButton {
-    background: none;
-    border: none;
-    color: var(--oxford-blue);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
-
-  .copyButton:hover {
-    background-color: rgba(21, 36, 71, 0.1);
+    font-size: 1.1rem;
   }
 
   .instructionsContainer {
-    background-color: #f8f9fa;
-    padding: 16px;
-    border-radius: 8px;
-    width: 100%;
-    text-align: left;
-  }
-
-  .instructionsTitle {
-    font-size: 16px;
-    font-weight: 600;
-    margin-bottom: 12px;
-    color: var(--oxford-blue);
-  }
-
-  .instructionsList {
-    padding-left: 20px;
-    margin: 0;
+    padding: 1rem;
   }
 
   .instructionsList li {
-    margin-bottom: 8px;
-    color: #555;
-    line-height: 1.5;
+    font-size: 0.85rem;
   }
-
-  .instructionsList li:last-child {
-    margin-bottom: 0;
-  }
-
-  @media (max-width: 1023px) {
-    .codeWrapper {
-      padding: 8px 16px;
-    }
-
-    .homeIdCode {
-      font-size: 20px;
-    }
-  }
+}
 

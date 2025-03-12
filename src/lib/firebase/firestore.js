@@ -1,62 +1,18 @@
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  deleteDoc,
-  query,
-  where,
-  writeBatch,
-} from "firebase/firestore"
-import firebase_app from "./config"
-// Add this import at the top of the file
-import { getCurrentUser } from "./auth"
-
-// Initialize Firestore
-const db = getFirestore(firebase_app)
+import { doc, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch } from "firebase/firestore"
+import { db } from "./config"
+import { auth } from "./config"
+import { collection } from "firebase/firestore"
 
 // Profile collection reference
-export const profilesCollection = collection(db, "profiles")
+const profilesCollection = "profiles"
 
-// Update the createProfile function to use DocumentReference
-export async function createProfile(userId, profileData) {
-  try {
-    // Use the userId as the document ID for easy reference
-    const profileRef = doc(profilesCollection, userId)
-
-    // If there's an adminId, create a proper reference to it
-    if (profileData.adminId) {
-      // Store adminId as a string instead of a reference
-      // This is simpler and avoids circular references
-      profileData.adminId = profileData.adminId
-      // Remove any adminRef if it exists
-      delete profileData.adminRef
-    }
-
-    await setDoc(profileRef, {
-      ...profileData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })
-    return { success: true, profileId: userId }
-  } catch (error) {
-    return {
-      success: false,
-      error: error.message || "Failed to create profile",
-    }
-  }
-}
-
-// Update a profile with field validation
+// Update a profile with field validation - used in ProfileContent.jsx
 export async function updateProfile(userId, profileData) {
   try {
-    const profileRef = doc(profilesCollection, userId)
-    const profileDoc = await getDoc(profileRef)
+    const userDocRef = doc(db, "Users", userId)
+    const userDocSnap = await getDoc(userDocRef)
 
-    if (!profileDoc.exists()) {
+    if (!userDocSnap.exists()) {
       return { success: false, error: "Profile not found" }
     }
 
@@ -65,8 +21,8 @@ export async function updateProfile(userId, profileData) {
 
     if (profileData.firstName !== undefined || profileData.lastName !== undefined) {
       // Name validation
-      const firstName = profileData.firstName?.trim() || profileDoc.data().firstName
-      const lastName = profileData.lastName?.trim() || profileDoc.data().lastName
+      const firstName = profileData.firstName?.trim() || userDocSnap.data().firstName
+      const lastName = profileData.lastName?.trim() || userDocSnap.data().lastName
 
       if (firstName) validatedData.firstName = firstName
       if (lastName) validatedData.lastName = lastName
@@ -82,22 +38,14 @@ export async function updateProfile(userId, profileData) {
       }
     }
 
-    if (profileData.phoneNumbers !== undefined) {
+    if (profileData.phone !== undefined) {
       // Phone validation - basic format check
-      const phone = profileData.phoneNumbers.trim()
+      const phone = profileData.phone.trim()
       if (phone && /^[\d\s+()-]+$/.test(phone)) {
-        validatedData.phoneNumbers = phone
+        validatedData.phone = phone
       } else if (phone) {
         // Allow empty phone but validate if provided
         return { success: false, error: "Invalid phone number format" }
-      }
-    }
-
-    if (profileData.address !== undefined) {
-      // Address validation - just trim and ensure not empty if provided
-      const address = profileData.address.trim()
-      if (address) {
-        validatedData.address = address
       }
     }
 
@@ -106,7 +54,7 @@ export async function updateProfile(userId, profileData) {
 
     // Update only if we have valid data
     if (Object.keys(validatedData).length > 0) {
-      await updateDoc(profileRef, validatedData)
+      await updateDoc(userDocRef, validatedData)
       return { success: true, data: validatedData }
     }
 
@@ -117,25 +65,25 @@ export async function updateProfile(userId, profileData) {
   }
 }
 
-// Get a profile by user ID with error handling
+// Get a profile by user ID with error handling - used in useAuth.js
 export async function getProfileByUserId(userId) {
   try {
-    const profileRef = doc(profilesCollection, userId)
-    const profileSnap = await getDoc(profileRef)
+    // Create a document reference directly
+    const userDocRef = doc(db, "Users", userId)
+    const userDocSnap = await getDoc(userDocRef)
 
-    if (profileSnap.exists()) {
-      const profileData = profileSnap.data()
+    if (userDocSnap.exists()) {
+      const profileData = userDocSnap.data()
 
       // Format the data for consistency
       const formattedProfile = {
-        id: profileSnap.id,
+        id: userDocSnap.id,
         firstName: profileData.firstName || "",
         lastName: profileData.lastName || "",
         email: profileData.email || "",
-        phoneNumbers: profileData.phoneNumbers || "",
-        address: profileData.address || "",
+        phone: profileData.phone || "",
+        verified: profileData.verified || false,
         admin: profileData.admin === true,
-        adminId: profileData.adminId || null,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
         updatedAt: profileData.updatedAt?.toDate() || null,
@@ -151,10 +99,10 @@ export async function getProfileByUserId(userId) {
   }
 }
 
-// Delete a profile
+// Delete a profile - used in cleanupUserData
 export async function deleteProfile(userId) {
   try {
-    const profileRef = doc(profilesCollection, userId)
+    const profileRef = doc(db, profilesCollection, userId)
     await deleteDoc(profileRef)
     return { success: true }
   } catch (error) {
@@ -163,29 +111,29 @@ export async function deleteProfile(userId) {
   }
 }
 
-// Update getProfilesByEmail to use adminId string instead of adminRef
+// Get profiles by email - used in ProfileContent.jsx
 export async function getProfilesByEmail(email) {
   try {
     // First get the user's own profile by the current user's ID
-    const currentUser = getCurrentUser()
+    const currentUser = auth.currentUser
     if (!currentUser) {
       return { success: false, error: "No authenticated user" }
     }
 
-    const userProfileRef = doc(profilesCollection, currentUser.uid)
-    const userProfileSnap = await getDoc(userProfileRef)
+    const userDocRef = doc(db, "Users", currentUser.uid)
+    const userDocSnap = await getDoc(userDocRef)
 
-    if (!userProfileSnap.exists()) {
+    if (!userDocSnap.exists()) {
       return { success: false, error: "Profile not found" }
     }
 
-    const userProfile = { id: userProfileSnap.id, ...userProfileSnap.data() }
+    const userProfile = { id: userDocSnap.id, ...userDocSnap.data() }
     const profiles = [userProfile]
     const isAdmin = userProfile.admin === true
 
     // If the user is an admin, get all profiles where adminId points to this user
     if (isAdmin) {
-      const managedUsersQuery = query(profilesCollection, where("adminId", "==", userProfile.id))
+      const managedUsersQuery = query(collection(db, "Users"), where("adminId", "==", userProfile.id))
       const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
       managedUsersSnapshot.forEach((doc) => {
@@ -197,8 +145,8 @@ export async function getProfilesByEmail(email) {
     }
     // If the user is not an admin, get the admin profile and other users under the same admin
     else if (userProfile.adminId) {
-      // Get the admin profile
-      const adminDocRef = doc(profilesCollection, userProfile.adminId)
+      // Get the admin profile using DocumentReference
+      const adminDocRef = doc(db, "Users", userProfile.adminId)
       const adminDocSnap = await getDoc(adminDocRef)
 
       if (adminDocSnap.exists() && !profiles.some((p) => p.id === adminDocSnap.id)) {
@@ -206,7 +154,7 @@ export async function getProfilesByEmail(email) {
       }
 
       // Get other users under the same admin
-      const sameAdminQuery = query(profilesCollection, where("adminId", "==", userProfile.adminId))
+      const sameAdminQuery = query(collection(db, "Users"), where("adminId", "==", userProfile.adminId))
       const sameAdminQuerySnapshot = await getDocs(sameAdminQuery)
 
       sameAdminQuerySnapshot.forEach((doc) => {
@@ -223,7 +171,7 @@ export async function getProfilesByEmail(email) {
   }
 }
 
-// Fix the cleanupUserData function to handle permissions properly
+// Cleanup user data - used in deleteUserAccount
 export async function cleanupUserData(userId) {
   try {
     // Get the user profile to check if they're an admin
@@ -240,7 +188,7 @@ export async function cleanupUserData(userId) {
     if (profile && profile.admin === true) {
       try {
         // Find all users managed by this admin using adminId field
-        const managedUsersQuery = query(profilesCollection, where("adminId", "==", userId))
+        const managedUsersQuery = query(collection(db, profilesCollection), where("adminId", "==", userId))
         const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
         // If there are managed users, try to delete them
@@ -248,7 +196,7 @@ export async function cleanupUserData(userId) {
           // Delete all managed users in a batch
           const batch = writeBatch(db)
           managedUsersSnapshot.forEach((userDoc) => {
-            batch.delete(doc(profilesCollection, userDoc.id))
+            batch.delete(doc(db, profilesCollection, userDoc.id))
           })
 
           try {

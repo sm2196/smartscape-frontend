@@ -23,7 +23,7 @@ const navigation = [
   { name: "Settings", href: "/dashboard/settings", icon: MdSettings },
 ];
 
-export default function SettingsNavbar() {
+export default function DashboardNavbar() {
   const pathname = usePathname();
   const [time, setTime] = useState(new Date());
   const [isMenuOpen, setIsMenuOpen] = useState(false);

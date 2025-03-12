@@ -1,10 +1,7 @@
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import firebase_app from "./config"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
+import { storage } from "./config"
 
-// Initialize Firebase Storage with CORS configuration
-const storage = getStorage(firebase_app)
-
-// Upload profile image with CORS handling
+// Upload profile image with CORS handling - used in ProfileHeader.jsx
 export async function uploadProfileImage(userId, file) {
   try {
     // Create storage reference
