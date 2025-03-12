@@ -38,7 +38,7 @@ const DeviceManagement = () => {
       // If room name is not empty, add it to the content array of roomName object
       setRooms((prevRooms) => {
         const updatedRooms = [...prevRooms]; // Copy previous state to avoid direct mutation
-        updatedRooms[0].content.push(newRoomName); // Add the new room to the end of the content array
+        updatedRooms.push(newRoomName); // Add the new room to the end of the rooms array
         return updatedRooms; // Return the updated state
       });
       closePopup(); // Close the popup after saving
@@ -91,11 +91,11 @@ const DeviceManagement = () => {
             className={styles.buttonItem}
             onClick={() => openPopup("addRoom")}
           >
-            <MdAdd /> Add Rooms
+            <MdAdd /> Add Room
           </Button>
           {/* Button for removing rooms (functionality not implemented here) */}
           <Button className={styles.buttonItem}>
-            <MdRemove /> Remove Rooms
+            <MdRemove /> Remove Room
           </Button>
         </div>
       </div>
@@ -248,17 +248,20 @@ const DeviceManagement = () => {
                 {/* Input field for room name */}
                 <input
                   type="text"
+                  value={newRoomName}
+                  onChange={(e) => setNewRoomName(e.target.value)} // Update room name state
+                  onKeyPress={(e) => e.key === "Enter" && handleSaveRoom()} // Pressing Enter saves the room
                   className={styles.inputField}
                   placeholder="Enter room name"
-                  value={newRoomName}
-                  onChange={(e) => setNewRoomName(e.target.value)} // Update room name on input change
-                  onKeyPress={(e) => e.key === "Enter" && handleSaveRoom()} // Pressing Enter saves the room
                 />
-
-                {/* Button to save the new room */}
-                <Button className={styles.popupButton} onClick={handleSaveRoom}>
-                  Save Room
-                </Button>
+                <div className={styles.popupButtonGroup}>
+                  <Button
+                    onClick={handleSaveRoom}
+                    className={styles.popupButton}
+                  >
+                    Save Room
+                  </Button>
+                </div>
               </div>
             )}
 
@@ -267,29 +270,34 @@ const DeviceManagement = () => {
               <div>
                 <h3>Add New Device</h3>
 
-                {/* Input fields for device category and name */}
-                <input
-                  type="text"
+                {/* Device Category Selection */}
+                <select
                   className={styles.inputField}
-                  placeholder="Device category"
                   value={newDeviceCategory}
-                  onChange={(e) => setNewDeviceCategory(e.target.value)} // Update category on input change
-                />
+                  onChange={(e) => setNewDeviceCategory(e.target.value)}
+                >
+                  <option value="">Select Category</option>
+                  <option value="Light">Light</option>
+                  <option value="Thermostat">Thermostat</option>
+                  <option value="Plug">Plug</option>
+                </select>
+
+                {/* Device Name Input */}
                 <input
                   type="text"
-                  className={styles.inputField}
-                  placeholder="Device name"
                   value={newDeviceName}
-                  onChange={(e) => setNewDeviceName(e.target.value)} // Update device name on input change
+                  onChange={(e) => setNewDeviceName(e.target.value)}
+                  className={styles.inputField}
+                  placeholder="Enter device name"
                 />
-
-                {/* Button to save the new device */}
-                <Button
-                  className={styles.popupButton}
-                  onClick={handleSaveDevice}
-                >
-                  Save Device
-                </Button>
+                <div className={styles.popupButtonGroup}>
+                  <Button
+                    onClick={handleSaveDevice}
+                    className={styles.popupButton}
+                  >
+                    Save Device
+                  </Button>
+                </div>
               </div>
             )}
             <Button className={styles.popupClose} onClick={closePopup}>
