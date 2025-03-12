@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./ProfileContent.module.css"
 import { useAuth } from "@/hooks/useAuth"
-import { deleteUserAccount, signOutUser } from "@/lib/firebase/auth"
+import { deleteUserAccount, signOutUser, changeUserPassword } from "@/lib/firebase/auth"
 import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 import { isValidPhoneNumber } from "react-phone-number-input"
 
@@ -17,11 +17,12 @@ import ManageAccountModal from "./components/ManageAccountModal"
 import SwitchAccountModal from "./components/SwitchAccountModal"
 import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
+import ChangePasswordModal from "./components/ChangePasswordModal"
 
 export default function ProfileContent() {
   const router = useRouter()
-  const { user, profile, loading } = useAuth()
-  const [isMobile] = useState(false)
+  const { user, profile, loading, error, refreshProfile } = useAuth()
+  const [isMobile, setIsMobile] = useState(false)
 
   // State for field values
   const [fieldValues, setFieldValues] = useState({
@@ -38,45 +39,113 @@ export default function ProfileContent() {
   const [switchAccountOpen, setSwitchAccountOpen] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [signOutDialogOpen, setSignOutDialogOpen] = useState(false)
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false)
 
   // State for account operations
   const [availableAccounts, setAvailableAccounts] = useState([])
   const [isDeleting, setIsDeleting] = useState(false)
+  const [toast, setToast] = useState({ visible: false, message: "", type: "" })
+
+  // Add this code near the top of the component, after the useState declarations
+  // This will handle the email verification completion when the user returns from the verification link
+  useEffect(() => {
+    const handleEmailVerificationCompletion = async () => {
+      // Check if we have a newEmail query parameter (from the verification link)
+      const params = new URLSearchParams(window.location.search)
+      const newEmail = params.get("newEmail")
+
+      if (user && newEmail) {
+        try {
+          // When the user returns after clicking the verification link,
+          // the email in Firebase Auth should already be updated
+          // We just need to update Firestore to match
+          const { completeEmailUpdate } = require("@/lib/firebase/auth")
+          const result = await completeEmailUpdate(user)
+
+          if (result.success) {
+            showToast("Email updated successfully!", "success")
+            // Clear the query parameter
+            window.history.replaceState({}, document.title, window.location.pathname)
+            // Refresh the profile to show the updated email
+            await refreshProfile()
+          } else {
+            showToast(result.error || "Failed to complete email update", "error")
+          }
+        } catch (error) {
+          console.error("Error handling email verification:", error)
+          showToast("Failed to complete email update", "error")
+        }
+      }
+    }
+
+    if (!loading) {
+      handleEmailVerificationCompletion()
+    }
+  }, [user, loading, refreshProfile])
+
+  // Check for mobile view
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 1023)
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   // Load profile data when available
   useEffect(() => {
-    if (profile) {
+    if (profile && user) {
       setFieldValues({
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
-        email: profile.email || "",
+        email: user.email || "", // Use user.email from Firebase Auth
         phone: profile.phone || "",
-        governmentId: "Verified", // Always set to "Verified"
+        governmentId: "Verified",
       })
     }
-  }, [profile])
+  }, [profile, user])
 
   // Load available accounts
   useEffect(() => {
     const loadAccounts = async () => {
       if (user) {
-        const { success, profiles } = await getProfilesByEmail(user.email)
-        if (success && profiles.length > 0) {
-          const formattedAccounts = profiles.map((profile) => ({
-            id: profile.id,
-            name: `${profile.firstName} ${profile.lastName}`,
-            email: profile.email,
-            isActive: profile.id === user.uid,
-          }))
-          setAvailableAccounts(formattedAccounts)
-        } else {
+        try {
+          const { success, profiles, error: accountsError } = await getProfilesByEmail(user.email)
+
+          if (success && profiles.length > 0) {
+            const formattedAccounts = profiles.map((profile) => ({
+              id: profile.id,
+              name: `${profile.firstName} ${profile.lastName}`,
+              email: user?.email,
+              isActive: profile.id === user.uid,
+              admin: profile.admin === true,
+            }))
+            setAvailableAccounts(formattedAccounts)
+          } else {
+            console.error("Error loading accounts:", accountsError)
+            setAvailableAccounts([
+              {
+                id: user.uid,
+                name: `${fieldValues.firstName} ${fieldValues.lastName}`,
+                email: fieldValues.email,
+                isActive: true,
+                admin: profile?.admin === true,
+              },
+            ])
+          }
+        } catch (error) {
+          console.error("Error in loadAccounts:", error)
+          // Fallback to current user only
           setAvailableAccounts([
             {
               id: user.uid,
               name: `${fieldValues.firstName} ${fieldValues.lastName}`,
               email: fieldValues.email,
               isActive: true,
-              admin: fieldValues.admin,
+              admin: profile?.admin === true,
             },
           ])
         }
@@ -84,7 +153,7 @@ export default function ProfileContent() {
     }
 
     loadAccounts()
-  }, [user, fieldValues.firstName, fieldValues.lastName, fieldValues.email, fieldValues.admin])
+  }, [user, fieldValues.firstName, fieldValues.lastName, fieldValues.email, profile])
 
   // Display mapping for field names
   const displayMapping = {
@@ -94,7 +163,7 @@ export default function ProfileContent() {
     governmentId: "Government ID",
   }
 
-  // Personal info sections data
+  // Update the personalInfoSections array to use user.email directly
   const personalInfoSections = [
     {
       title: displayMapping.name,
@@ -104,14 +173,14 @@ export default function ProfileContent() {
     },
     {
       title: displayMapping.email,
-      value: fieldValues.email,
+      value: user?.email || fieldValues.email, // Prioritize user.email
       action: "Edit",
       field: "email",
     },
     {
       title: displayMapping.phone,
       value: fieldValues.phone ? fieldValues.phone : "Add a number to get in touch with you.",
-      action: "Edit",
+      action: fieldValues.phone ? "Edit" : "Add",
       field: "phone",
     },
     {
@@ -140,9 +209,11 @@ export default function ProfileContent() {
         router.replace("/auth")
       } else {
         console.error("Error signing out:", result.error)
+        showToast("Failed to sign out. Please try again.", "error")
       }
     } catch (error) {
       console.error("Unexpected error during sign out:", error)
+      showToast("An unexpected error occurred. Please try again.", "error")
     }
     setSignOutDialogOpen(false)
   }
@@ -167,10 +238,11 @@ export default function ProfileContent() {
 
       // Close the dialog and show success message
       setDeleteDialogOpen(false)
+      showToast("Account deleted successfully", "success")
 
       // Redirect to login page after a short delay
       setTimeout(() => {
-        router.push("/login")
+        router.push("/auth")
       }, 2000)
 
       return { success: true }
@@ -188,49 +260,102 @@ export default function ProfileContent() {
   }
 
   const handleSaveField = async (value) => {
-    if (editingField === "name") {
-      setFieldValues((prev) => ({
-        ...prev,
-        firstName: value.firstName,
-        lastName: value.lastName,
-      }))
+    if (!user) {
+      showToast("You must be logged in to update your profile", "error")
+      return
+    }
 
-      if (user) {
-        await updateProfile(user.uid, {
+    try {
+      if (editingField === "name") {
+        const result = await updateProfile(user.uid, {
           firstName: value.firstName,
           lastName: value.lastName,
         })
-      }
-    } else if (editingField === "phone") {
-      // Validate phone number before saving
-      if (value && !isValidPhoneNumber(value)) {
-        throw new Error("Please enter a valid phone number")
-      }
 
-      setFieldValues((prev) => ({
-        ...prev,
-        phone: value,
-      }))
+        if (result.success) {
+          setFieldValues((prev) => ({
+            ...prev,
+            firstName: value.firstName,
+            lastName: value.lastName,
+          }))
+          showToast("Name updated successfully", "success")
+          await refreshProfile()
+        } else {
+          throw new Error(result.error || "Failed to update name")
+        }
+      } else if (editingField === "phone") {
+        // Validate phone number before saving
+        if (value && !isValidPhoneNumber(value)) {
+          throw new Error("Please enter a valid phone number")
+        }
 
-      if (user) {
-        await updateProfile(user.uid, {
+        const result = await updateProfile(user.uid, {
           phone: value,
         })
-      }
-    } else {
-      setFieldValues((prev) => ({
-        ...prev,
-        [editingField]: value,
-      }))
 
-      if (user) {
-        await updateProfile(user.uid, {
-          [editingField]: value,
+        if (result.success) {
+          setFieldValues((prev) => ({
+            ...prev,
+            phone: value,
+          }))
+          showToast("Phone number updated successfully", "success")
+          await refreshProfile()
+        } else {
+          throw new Error(result.error || "Failed to update phone number")
+        }
+      } else if (editingField === "email") {
+        const result = await updateProfile(user.uid, {
+          email: value,
         })
-      }
-    }
 
-    setEditingField(null)
+        if (result.success) {
+          if (result.verificationRequired) {
+            showToast(result.message, "info")
+          } else {
+            setFieldValues((prev) => ({
+              ...prev,
+              email: value,
+            }))
+            showToast("Email updated successfully", "success")
+          }
+          await refreshProfile()
+        } else {
+          if (result.error?.includes("please log out and log back in")) {
+            showToast("For security reasons, please log out and log back in before changing your email.", "error")
+            setEditingField(null)
+            return
+          }
+          throw new Error(result.error || "Failed to update email")
+        }
+      }
+    } catch (error) {
+      console.error(`Error updating ${editingField}:`, error)
+      showToast(error.message || `Failed to update ${editingField}`, "error")
+    } finally {
+      setEditingField(null)
+    }
+  }
+
+  // Handle password change
+  const handleChangePassword = () => {
+    setManageAccountOpen(false)
+    setChangePasswordOpen(true)
+  }
+
+  const confirmChangePassword = async (currentPassword, newPassword) => {
+    try {
+      const result = await changeUserPassword(currentPassword, newPassword)
+
+      if (result.success) {
+        showToast("Password changed successfully", "success")
+        return { success: true }
+      } else {
+        return { success: false, error: result.error || "Failed to change password" }
+      }
+    } catch (error) {
+      console.error("Error changing password:", error)
+      return { success: false, error: "An unexpected error occurred" }
+    }
   }
 
   // Handle switching accounts
@@ -242,6 +367,16 @@ export default function ProfileContent() {
       })),
     )
     setSwitchAccountOpen(false)
+    // In a real app, you would implement the actual account switching logic here
+    showToast("Account switching is not implemented in this demo", "info")
+  }
+
+  // Toast notification helper
+  const showToast = (message, type = "success") => {
+    setToast({ visible: true, message, type })
+    setTimeout(() => {
+      setToast({ visible: false, message: "", type: "" })
+    }, 3000)
   }
 
   if (loading) {
@@ -253,12 +388,39 @@ export default function ProfileContent() {
     )
   }
 
+  if (error && !profile) {
+    return (
+      <div className={styles.errorContainer}>
+        <p className={styles.errorMessage}>{error}</p>
+        <button className={styles.retryButton} onClick={refreshProfile}>
+          Retry
+        </button>
+      </div>
+    )
+  }
+
   return (
     <main className={styles.profileMainContent}>
       <h1 className={styles.header}>Your Profile</h1>
 
       {/* Profile Header */}
-      <ProfileHeader user={user} profile={profile} handleSignOut={handleSignOut} />
+      <ProfileHeader
+        user={user}
+        profile={profile}
+        handleSignOut={handleSignOut}
+        onProfileUpdate={async (data) => {
+          if (user) {
+            try {
+              await updateProfile(user.uid, data)
+              await refreshProfile()
+              showToast("Profile updated successfully", "success")
+            } catch (error) {
+              console.error("Error updating profile:", error)
+              showToast("Failed to update profile", "error")
+            }
+          }
+        }}
+      />
 
       {/* Account Actions */}
       <AccountActions
@@ -276,7 +438,13 @@ export default function ProfileContent() {
         onClose={() => setEditingField(null)}
         field={editingField}
         fieldDisplayName={editingField ? displayMapping[editingField] : ""}
-        initialValue={editingField && editingField !== "name" ? fieldValues[editingField] : ""}
+        initialValue={
+          editingField === "email"
+            ? user?.email
+            : editingField && editingField !== "name"
+              ? fieldValues[editingField]
+              : ""
+        }
         initialFirstName={fieldValues.firstName}
         initialLastName={fieldValues.lastName}
         onSave={handleSaveField}
@@ -288,6 +456,14 @@ export default function ProfileContent() {
         onClose={() => setManageAccountOpen(false)}
         onEdit={handleEdit}
         onDelete={handleDelete}
+        onChangePassword={handleChangePassword}
+      />
+
+      {/* Change Password Modal */}
+      <ChangePasswordModal
+        isOpen={changePasswordOpen}
+        onClose={() => setChangePasswordOpen(false)}
+        onChangePassword={confirmChangePassword}
       />
 
       {/* Switch Account Modal */}
@@ -303,12 +479,21 @@ export default function ProfileContent() {
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onDelete={confirmDelete}
-        isAdmin={fieldValues.admin === true}
+        isAdmin={profile?.admin === true}
         isDeleting={isDeleting}
       />
 
       {/* Sign Out Modal */}
       <SignOutModal isOpen={signOutDialogOpen} onClose={() => setSignOutDialogOpen(false)} onSignOut={confirmSignOut} />
+
+      {/* Toast Notification */}
+      {toast.visible && (
+        <div
+          className={`${styles.toast} ${toast.type === "error" ? styles.toastError : toast.type === "info" ? styles.toastInfo : ""}`}
+        >
+          {toast.message}
+        </div>
+      )}
     </main>
   )
 }

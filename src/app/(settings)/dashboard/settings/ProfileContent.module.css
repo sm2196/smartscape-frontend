@@ -45,10 +45,53 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 1100;
   animation: slideIn 0.3s ease-out, fadeOut 0.3s ease-out 2.7s forwards;
+  max-width: 350px;
+  word-wrap: break-word;
 }
 
 .toastError {
   background-color: #dc2626;
+}
+
+.toastInfo {
+  background-color: #3b82f6;
+}
+
+/* Add styles for error container and toast types */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  min-height: 600px;
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+}
+
+.errorMessage {
+  color: #dc2626;
+  background-color: #fee2e2;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  max-width: 500px;
+}
+
+.retryButton {
+  padding: 10px 20px;
+  background-color: var(--oxford-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background-color: #152a5a;
 }
 
 @keyframes spin {
@@ -57,9 +100,28 @@
   }
 }
 
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 /* Responsive styles */
 @media (max-width: 1023px) {
-
   .profileMainContent {
     padding: 16px;
     min-height: auto;
@@ -68,5 +130,5 @@
   .header {
     font-size: 1.5rem;
   }
-
 }
+

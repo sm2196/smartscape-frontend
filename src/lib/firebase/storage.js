@@ -1,11 +1,11 @@
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage"
-import { storage } from "./config"
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "./config";
 
 // Upload profile image with CORS handling - used in ProfileHeader.jsx
 export async function uploadProfileImage(userId, file) {
   try {
     // Create storage reference
-    const storageRef = ref(storage, `profile-images/${userId}`)
+    const storageRef = ref(storage, `profile-images/${userId}`);
 
     // Create file metadata including CORS settings
     const metadata = {
@@ -13,40 +13,39 @@ export async function uploadProfileImage(userId, file) {
       customMetadata: {
         "Access-Control-Allow-Origin": "*",
       },
-    }
+    };
 
     // Upload the file with metadata
-    const snapshot = await uploadBytes(storageRef, file, metadata)
-    const downloadURL = await getDownloadURL(snapshot.ref)
+    const snapshot = await uploadBytes(storageRef, file, metadata);
+    const downloadURL = await getDownloadURL(snapshot.ref);
 
-    return { success: true, imageUrl: downloadURL }
+    return { success: true, imageUrl: downloadURL };
   } catch (error) {
-    console.error("Error uploading profile image:", error)
+    console.error("Error uploading profile image:", error);
     return {
       success: false,
       error: error.message || "Failed to upload profile image",
-    }
+    };
   }
 }
 
 // Get profile image URL
 export async function getProfileImageUrl(userId) {
   try {
-    const storageRef = ref(storage, `profile-images/${userId}`)
-    const downloadURL = await getDownloadURL(storageRef)
+    const storageRef = ref(storage, `profile-images/${userId}`);
+    const downloadURL = await getDownloadURL(storageRef);
 
-    return { success: true, imageUrl: downloadURL }
+    return { success: true, imageUrl: downloadURL };
   } catch (error) {
     // If the image doesn't exist, return null without error
     if (error.code === "storage/object-not-found") {
-      return { success: true, imageUrl: null }
+      return { success: true, imageUrl: null };
     }
 
-    console.error("Error getting profile image:", error)
+    console.error("Error getting profile image:", error);
     return {
       success: false,
       error: error.message || "Failed to get profile image",
-    }
+    };
   }
 }
-

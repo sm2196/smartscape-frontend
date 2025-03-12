@@ -1,57 +1,183 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/config"
-import { doc, getDoc } from "firebase/firestore"
+import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore"
 
 export function useAuth() {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUser(user)
+  // Function to fetch profile data
+  const fetchProfile = useCallback(async (userId) => {
+    try {
+      const userDocRef = doc(db, "Users", userId)
+      const userDocSnap = await getDoc(userDocRef)
 
-        // Fetch the user's profile using DocumentReference
-        try {
-          const userDocRef = doc(db, "Users", user.uid)
-          const userDocSnap = await getDoc(userDocRef)
+      if (userDocSnap.exists()) {
+        // Format dates and add the id to the profile data
+        const profileData = userDocSnap.data()
+        const currentUser = auth.currentUser
 
-          if (userDocSnap.exists()) {
-            // Format dates and add the id to the profile data
-            const profileData = userDocSnap.data()
-
-            // Convert Firestore timestamps to JS Dates if they exist
-            const formattedProfile = {
-              ...profileData,
-              id: user.uid,
-              createdAt: profileData.createdAt?.toDate() || null,
-              updatedAt: profileData.updatedAt?.toDate() || null,
-            }
-
-            setProfile(formattedProfile)
-          } else {
-            console.log("No profile data found for this user")
-            setProfile(null)
-          }
-        } catch (error) {
-          console.error("Error fetching user profile:", error)
-          setProfile(null)
+        // Convert Firestore timestamps to JS Dates if they exist
+        const formattedProfile = {
+          ...profileData,
+          id: userId,
+          email: currentUser ? currentUser.email : "", // Get email directly from Auth
+          createdAt: profileData.createdAt?.toDate() || null,
+          updatedAt: profileData.updatedAt?.toDate() || null,
+          passwordLastChanged: profileData.passwordLastChanged?.toDate() || null,
         }
+
+        setProfile(formattedProfile)
+        setError(null)
       } else {
-        setUser(null)
+        console.log("No profile data found for this user")
         setProfile(null)
+        setError("Profile data not found")
       }
-
-      setLoading(false)
-    })
-
-    return () => unsubscribe()
+    } catch (err) {
+      console.error("Error fetching user profile:", err)
+      setProfile(null)
+      setError(`Failed to load profile: ${err.message}`)
+    }
   }, [])
 
-  return { user, profile, loading }
+  // Set up auth state listener
+  useEffect(() => {
+    setLoading(true)
+
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      async (currentUser) => {
+        if (currentUser) {
+          setUser(currentUser)
+          await fetchProfile(currentUser.uid)
+        } else {
+          setUser(null)
+          setProfile(null)
+          setError(null)
+        }
+
+        setLoading(false)
+      },
+      (authError) => {
+        console.error("Auth state change error:", authError)
+        setError(`Authentication error: ${authError.message}`)
+        setLoading(false)
+      },
+    )
+
+    return () => unsubscribe()
+  }, [fetchProfile])
+
+  // Set up real-time listener for profile updates
+  useEffect(() => {
+    if (!user) return
+
+    const userDocRef = doc(db, "Users", user.uid)
+
+    const unsubscribe = onSnapshot(
+      userDocRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const profileData = docSnapshot.data()
+
+          // Convert Firestore timestamps to JS Dates if they exist
+          const formattedProfile = {
+            ...profileData,
+            id: user.uid,
+            email: user.email, // Get email directly from Auth
+            createdAt: profileData.createdAt?.toDate() || null,
+            updatedAt: profileData.updatedAt?.toDate() || null,
+            passwordLastChanged: profileData.passwordLastChanged?.toDate() || null,
+          }
+
+          setProfile(formattedProfile)
+          setError(null)
+        } else {
+          setProfile(null)
+          setError("Profile data not found")
+        }
+      },
+      (err) => {
+        console.error("Error in profile snapshot listener:", err)
+        setError(`Failed to sync profile updates: ${err.message}`)
+      },
+    )
+
+    return () => unsubscribe()
+  }, [user])
+
+  // Add a presence system to track online status
+  useEffect(() => {
+    if (user) {
+      // Create a reference to the user's document
+      const userStatusRef = doc(db, "Users", user.uid)
+
+      // Create a reference to the Realtime Database for connection status
+      const isOfflineForDatabase = {
+        isOnline: false,
+        lastSeen: new Date(),
+      }
+
+      const isOnlineForDatabase = {
+        isOnline: true,
+        lastSeen: new Date(),
+      }
+
+      // When the page is closed or the user navigates away
+      const handleBeforeUnload = async () => {
+        // Update the Firestore document to show user is offline
+        try {
+          await updateDoc(userStatusRef, isOfflineForDatabase)
+        } catch (error) {
+          console.error("Error updating offline status:", error)
+        }
+      }
+
+      window.addEventListener("beforeunload", handleBeforeUnload)
+
+      // Update online status when the component mounts
+      updateDoc(userStatusRef, isOnlineForDatabase).catch((error) =>
+        console.error("Error updating online status:", error),
+      )
+
+      // Set up a ping interval to keep the online status updated
+      const pingInterval = setInterval(
+        () => {
+          if (user) {
+            updateDoc(userStatusRef, {
+              lastPing: new Date(),
+            }).catch((error) => console.error("Error updating ping status:", error))
+          }
+        },
+        5 * 60 * 1000,
+      ) // Every 5 minutes
+
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload)
+        clearInterval(pingInterval)
+        // Update offline status when component unmounts
+        updateDoc(userStatusRef, isOfflineForDatabase).catch((error) =>
+          console.error("Error updating offline status on unmount:", error),
+        )
+      }
+    }
+  }, [user])
+
+  // Function to refresh profile data manually
+  const refreshProfile = useCallback(async () => {
+    if (user) {
+      setLoading(true)
+      await fetchProfile(user.uid)
+      setLoading(false)
+    }
+  }, [user, fetchProfile])
+
+  return { user, profile, loading, error, refreshProfile }
 }
 

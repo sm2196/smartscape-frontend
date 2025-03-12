@@ -1,10 +1,10 @@
 "use client"
 
-import { MdClose, MdOutlineMode, MdSwitchAccount, MdPersonAddAlt1, MdDeleteOutline } from "react-icons/md"
+import { MdClose, MdOutlineMode, MdSwitchAccount, MdPersonAddAlt1, MdDeleteOutline, MdLock } from "react-icons/md"
 import styles from "./ModalStyles.module.css"
 import accountStyles from "./ManageAccountModal.module.css"
 
-export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete }) {
+export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete, onChangePassword }) {
   if (!isOpen) return null
 
   return (
@@ -22,8 +22,8 @@ export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete }
               <MdOutlineMode size={20} />
               <span>Edit Profile Information</span>
             </button>
-            <button className={accountStyles.accountOption} onClick={onClose}>
-              <MdSwitchAccount size={20} />
+            <button className={accountStyles.accountOption} onClick={onChangePassword}>
+              <MdLock size={20} />
               <span>Change Password</span>
             </button>
             <button className={accountStyles.accountOption} onClick={onClose}>

@@ -81,7 +81,7 @@ export default function ProfileHeader({ user, profile, handleSignOut, onProfileU
           </div>
           <div className={styles.textContainer}>
             <p className={styles.profileName}>{displayName}</p>
-            <p className={styles.profileEmail}>{displayEmail}</p>
+            <p className={styles.profileEmail}>{user?.email || ""}</p>
           </div>
         </div>
 

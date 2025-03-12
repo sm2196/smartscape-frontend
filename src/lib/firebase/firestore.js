@@ -6,7 +6,7 @@ import { collection } from "firebase/firestore"
 // Profile collection reference
 const profilesCollection = "profiles"
 
-// Update a profile with field validation - used in ProfileContent.jsx
+// Enhance the updateProfile function to be more robust
 export async function updateProfile(userId, profileData) {
   try {
     const userDocRef = doc(db, "Users", userId)
@@ -18,34 +18,110 @@ export async function updateProfile(userId, profileData) {
 
     // Validate fields before update
     const validatedData = {}
+    const currentData = userDocSnap.data()
 
     if (profileData.firstName !== undefined || profileData.lastName !== undefined) {
       // Name validation
-      const firstName = profileData.firstName?.trim() || userDocSnap.data().firstName
-      const lastName = profileData.lastName?.trim() || userDocSnap.data().lastName
+      const firstName = profileData.firstName?.trim() || currentData.firstName
+      const lastName = profileData.lastName?.trim() || currentData.lastName
 
-      if (firstName) validatedData.firstName = firstName
-      if (lastName) validatedData.lastName = lastName
+      if (!firstName) {
+        return { success: false, error: "First name cannot be empty" }
+      }
+
+      if (!lastName) {
+        return { success: false, error: "Last name cannot be empty" }
+      }
+
+      validatedData.firstName = firstName
+      validatedData.lastName = lastName
     }
 
     if (profileData.email !== undefined) {
       // Email validation
       const email = profileData.email.trim()
-      if (email && email.includes("@")) {
-        validatedData.email = email
-      } else {
-        return { success: false, error: "Invalid email format" }
+      const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+      if (!email) {
+        return { success: false, error: "Email cannot be empty" }
+      }
+
+      if (!emailPattern.test(email)) {
+        return { success: false, error: "Please enter a valid email address" }
+      }
+
+      // Get current user's email from Firebase Auth
+      const currentUser = auth.currentUser
+      const currentEmail = currentUser ? currentUser.email : currentData.email
+
+      // Check if email is different from current email
+      if (email !== currentEmail) {
+        // If we get here, we need to handle the email update through Firebase Auth only
+        const { updateUserEmail } = require("./auth")
+        try {
+          const emailUpdateResult = await updateUserEmail(email)
+
+          if (emailUpdateResult.verificationRequired) {
+            // Return the verification message to the UI
+            return {
+              success: true,
+              verificationRequired: true,
+              message: emailUpdateResult.message,
+            }
+          } else if (!emailUpdateResult.success) {
+            // If there was an error in the email update process
+            return {
+              success: false,
+              error: emailUpdateResult.error,
+            }
+          }
+        } catch (error) {
+          console.error("Error in email verification process:", error)
+          return {
+            success: false,
+            error: "Failed to update email: " + (error.message || "Unknown error"),
+          }
+        }
       }
     }
 
     if (profileData.phone !== undefined) {
-      // Phone validation - basic format check
+      // Phone validation - using more comprehensive validation
       const phone = profileData.phone.trim()
-      if (phone && /^[\d\s+()-]+$/.test(phone)) {
-        validatedData.phone = phone
-      } else if (phone) {
-        // Allow empty phone but validate if provided
-        return { success: false, error: "Invalid phone number format" }
+
+      // Allow empty phone but validate if provided
+      if (phone) {
+        // Check if the phone number is valid using a more comprehensive regex
+        // This regex allows for international format with country code
+        const phonePattern = /^\+?[1-9]\d{1,14}$/
+
+        if (!phonePattern.test(phone.replace(/\s+/g, ""))) {
+          return { success: false, error: "Please enter a valid phone number" }
+        }
+
+        // Check if phone is different from current phone
+        if (phone !== currentData.phone) {
+          // Check if phone is already in use by another user
+          try {
+            const phoneQuery = query(collection(db, "Users"), where("phone", "==", phone))
+            const querySnapshot = await getDocs(phoneQuery)
+
+            if (!querySnapshot.empty) {
+              // Check if the found document is not the current user
+              const existingUser = querySnapshot.docs[0]
+              if (existingUser.id !== userId) {
+                return { success: false, error: "This phone number is already in use by another account" }
+              }
+            }
+
+            validatedData.phone = phone
+          } catch (error) {
+            console.error("Error checking phone uniqueness:", error)
+            return { success: false, error: "Failed to validate phone uniqueness" }
+          }
+        }
+      } else {
+        validatedData.phone = ""
       }
     }
 
@@ -55,6 +131,7 @@ export async function updateProfile(userId, profileData) {
     // Update only if we have valid data
     if (Object.keys(validatedData).length > 0) {
       await updateDoc(userDocRef, validatedData)
+
       return { success: true, data: validatedData }
     }
 
@@ -74,13 +151,14 @@ export async function getProfileByUserId(userId) {
 
     if (userDocSnap.exists()) {
       const profileData = userDocSnap.data()
+      const currentUser = auth.currentUser
 
       // Format the data for consistency
       const formattedProfile = {
         id: userDocSnap.id,
         firstName: profileData.firstName || "",
         lastName: profileData.lastName || "",
-        email: profileData.email || "",
+        email: currentUser ? currentUser.email : "",
         phone: profileData.phone || "",
         verified: profileData.verified || false,
         admin: profileData.admin === true,

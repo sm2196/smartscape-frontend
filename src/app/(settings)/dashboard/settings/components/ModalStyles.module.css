@@ -171,6 +171,38 @@
   box-shadow: 0 0 0 2px rgba(21, 36, 71, 0.1);
 }
 
+/* Add styles for password requirements */
+.passwordRequirements {
+  background-color: #f8fafc;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-left: 4px solid var(--oxford-blue);
+}
+
+.passwordRequirements p {
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #334155;
+}
+
+.passwordRequirements ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.passwordRequirements li {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-bottom: 4px;
+}
+
+.lockIcon {
+  font-size: 24px;
+  color: var(--oxford-blue);
+  margin-bottom: 8px;
+}
+
 /* Add styles for the phone input component */
 .phoneInputWrapper {
   width: 100%;
@@ -238,18 +270,25 @@
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.1) !important;
 }
 
+.fieldError {
+  color: #dc2626;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  margin-left: 2px;
+}
+
 .successMessage {
   display: flex;
   align-items: center;
   gap: 8px;
   color: #16a34a;
   font-size: 0.875rem;
-  margin-top: 8px;
-  padding: 8px 12px;
+  padding: 12px 16px;
   background-color: #f0fdf4;
-  border-radius: 4px;
+  border-radius: 6px;
   border-left: 3px solid #16a34a;
   animation: slideIn 0.3s ease-out;
+  margin: 16px 0;
 }
 
 .modalFooter {

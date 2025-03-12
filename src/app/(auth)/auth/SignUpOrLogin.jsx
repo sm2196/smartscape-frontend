@@ -138,6 +138,7 @@ function SignupOrLogin() {
           phone: phoneValue || "",
           verified: false, // User is not verified yet
           admin: false,
+          isOnline: true,
         }
 
         console.log("Writing to Firestore:", userData) // Debugging step

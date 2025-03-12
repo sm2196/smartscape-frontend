@@ -1,75 +1,86 @@
 /* Personal information styles */
 .personalInfoSection {
-    margin-top: 16px;
-  }
+  margin-top: 16px;
+}
 
-  .personalInfo {
-    font-size: 24px;
-    color: var(--oxford-blue);
-    margin-bottom: 16px;
-    font-weight: 600;
-  }
+.personalInfo {
+  font-size: 24px;
+  color: var(--oxford-blue);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
 
-  .infoList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    background-color: #f9f9f9;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  }
+.infoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
 
-  .infoItem {
-    padding: 16px 20px;
-    position: relative;
-    transition: background-color 0.2s ease;
-    border-bottom: 1px solid #ebebeb;
-  }
+.infoItem {
+  padding: 16px 20px;
+  position: relative;
+  transition: background-color 0.2s ease;
+  border-bottom: 1px solid #ebebeb;
+}
 
-  .infoItem:last-child {
-    border-bottom: none;
-  }
+.infoItem:last-child {
+  border-bottom: none;
+}
 
-  .infoItem:hover {
-    background-color: #f0f0f0;
-  }
+.infoItem:hover {
+  background-color: #f0f0f0;
+}
 
-  .infoHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-  }
+.infoHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
 
-  .infoTitle {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
-  }
+.infoTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+}
 
-  .editButton {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    font-weight: bold;
-    color: var(--oxford-blue);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 6px 12px;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-  }
+.editButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--oxford-blue);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
 
-  .editButton:hover {
-    background-color: rgba(21, 36, 71, 0.1);
-  }
+.editButton:hover {
+  background-color: rgba(21, 36, 71, 0.1);
+}
 
-  .infoValue {
-    font-size: 14px;
-    color: #555;
-    margin: 0;
-  }
+.infoValue {
+  font-size: 14px;
+  color: #555;
+  margin: 0;
+}
+
+/* Add styles for pending verification */
+.pendingValue {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #f59e0b;
+  background-color: #fffbeb;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
 
