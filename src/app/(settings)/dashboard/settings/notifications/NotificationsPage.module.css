@@ -1,0 +1,100 @@
+.notificationMainContent {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .header {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  .description {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  .notificationContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .notificationCategory {
+    background: #f8f9fa;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .categoryHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  .subcategoryList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .notificationItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .notificationItem:last-child {
+    border-bottom: none;
+  }
+
+  .toggleButton {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+
+  .toggleButton.on {
+    background: #28a745;
+    color: white;
+  }
+
+  .toggleButton.off {
+    background: #dc3545;
+    color: white;
+  }
+
+  @media (max-width: 1023px) {
+    .notificationMainContent {
+      width: auto;
+      padding: 10px;
+    }
+
+    .notificationCategory {
+      padding: 12px;
+    }
+
+    .categoryHeader {
+      font-size: 18px;
+    }
+
+    .notificationItem {
+      font-size: 14px;
+    }
+  }

@@ -1,0 +1,87 @@
+.roomSection {
+  margin-bottom: 40px;
+}
+
+.roomTitleWrapper {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.roomTitle {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.roomTitle::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  background: linear-gradient(180deg, var(--lavender) 0%, transparent 100%);
+  border-radius: 2px;
+}
+
+.roomDropdown {
+  position: relative;
+}
+
+.dropdownToggle {
+  background: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdownToggle:hover {
+  background-color: rgba(210, 220, 245, 0.2);
+}
+
+.dropdownMenu {
+  position: absolute;
+  left: 0;
+  top: 100%;
+  background-color: var(--surface-dark);
+  border: 1px solid rgba(210, 220, 245, 0.1);
+  border-radius: 8px;
+  padding: 8px 0;
+  min-width: 160px;
+  z-index: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 4px;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.dropdownItem:hover {
+  background-color: rgba(210, 220, 245, 0.1);
+}
+
+.deviceGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+}

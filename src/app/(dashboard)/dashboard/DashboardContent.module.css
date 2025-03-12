@@ -1,0 +1,39 @@
+.dashboardMainContent {
+  padding: 32px;
+}
+
+.actionBar {
+  position: fixed;
+  bottom: 32px;
+  left: 32px;
+  right: 32px;
+  display: flex;
+  gap: 16px;
+}
+
+.actionButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: rgba(210, 220, 245, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(210, 220, 245, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--text-primary);
+  font-size: 0.925rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.actionButton:hover {
+  background-color: rgba(210, 220, 245, 0.15);
+  transform: translateY(-1px);
+}
+
+.actionButton:active {
+  transform: translateY(0);
+}
