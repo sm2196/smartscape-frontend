@@ -28,8 +28,6 @@ export function useAuth() {
           id: userId,
           email: currentUser ? currentUser.email : "", // Get email directly from Auth
           createdAt: profileData.createdAt?.toDate() || null,
-          updatedAt: profileData.updatedAt?.toDate() || null,
-          passwordLastChanged: profileData.passwordLastChanged?.toDate() || null,
         }
 
         setProfile(formattedProfile)
@@ -92,8 +90,6 @@ export function useAuth() {
             id: user.uid,
             email: user.email, // Get email directly from Auth
             createdAt: profileData.createdAt?.toDate() || null,
-            updatedAt: profileData.updatedAt?.toDate() || null,
-            passwordLastChanged: profileData.passwordLastChanged?.toDate() || null,
           }
 
           setProfile(formattedProfile)
@@ -121,12 +117,10 @@ export function useAuth() {
       // Create a reference to the Realtime Database for connection status
       const isOfflineForDatabase = {
         isOnline: false,
-        lastSeen: new Date(),
       }
 
       const isOnlineForDatabase = {
         isOnline: true,
-        lastSeen: new Date(),
       }
 
       // When the page is closed or the user navigates away
@@ -146,21 +140,8 @@ export function useAuth() {
         console.error("Error updating online status:", error),
       )
 
-      // Set up a ping interval to keep the online status updated
-      const pingInterval = setInterval(
-        () => {
-          if (user) {
-            updateDoc(userStatusRef, {
-              lastPing: new Date(),
-            }).catch((error) => console.error("Error updating ping status:", error))
-          }
-        },
-        5 * 60 * 1000,
-      ) // Every 5 minutes
-
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload)
-        clearInterval(pingInterval)
         // Update offline status when component unmounts
         updateDoc(userStatusRef, isOfflineForDatabase).catch((error) =>
           console.error("Error updating offline status on unmount:", error),

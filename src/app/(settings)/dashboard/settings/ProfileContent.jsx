@@ -132,7 +132,7 @@ export default function ProfileContent() {
                 name: `${fieldValues.firstName} ${fieldValues.lastName}`,
                 email: fieldValues.email,
                 isActive: true,
-                admin: profile?.admin === true,
+                isAdmin: profile?.isAdmin === true,
               },
             ])
           }
@@ -145,7 +145,7 @@ export default function ProfileContent() {
               name: `${fieldValues.firstName} ${fieldValues.lastName}`,
               email: fieldValues.email,
               isActive: true,
-              admin: profile?.admin === true,
+              isAdmin: profile?.isAdmin === true,
             },
           ])
         }
@@ -479,7 +479,7 @@ export default function ProfileContent() {
         isOpen={deleteDialogOpen}
         onClose={() => setDeleteDialogOpen(false)}
         onDelete={confirmDelete}
-        isAdmin={profile?.admin === true}
+        isAdmin={profile?.isAdmin === true}
         isDeleting={isDeleting}
       />
 

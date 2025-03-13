@@ -126,7 +126,7 @@ export async function updateProfile(userId, profileData) {
     }
 
     // Add timestamp
-    validatedData.updatedAt = new Date()
+    // validatedData.updatedAt = new Date() // Remove this line
 
     // Update only if we have valid data
     if (Object.keys(validatedData).length > 0) {
@@ -161,10 +161,9 @@ export async function getProfileByUserId(userId) {
         email: currentUser ? currentUser.email : "",
         phone: profileData.phone || "",
         verified: profileData.verified || false,
-        admin: profileData.admin === true,
+        isAdmin: profileData.admin === true,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
-        updatedAt: profileData.updatedAt?.toDate() || null,
       }
 
       return { success: true, profile: formattedProfile }
@@ -207,7 +206,7 @@ export async function getProfilesByEmail(email) {
 
     const userProfile = { id: userDocSnap.id, ...userDocSnap.data() }
     const profiles = [userProfile]
-    const isAdmin = userProfile.admin === true
+    const isAdmin = userProfile.admin === true // Changed from admin to isAdmin
 
     // If the user is an admin, get all profiles where adminId points to this user
     if (isAdmin) {
@@ -263,7 +262,8 @@ export async function cleanupUserData(userId) {
     }
 
     // If the user is an admin, handle their managed users
-    if (profile && profile.admin === true) {
+    if (profile && profile.isAdmin === true) {
+      // Changed from admin to isAdmin
       try {
         // Find all users managed by this admin using adminId field
         const managedUsersQuery = query(collection(db, profilesCollection), where("adminId", "==", userId))
