@@ -125,7 +125,7 @@ export default function ProfileContent() {
             }))
             setAvailableAccounts(formattedAccounts)
           } else {
-            console.error("Error loading accounts:", accountsError)
+            // Fallback to current user if no profiles were found
             setAvailableAccounts([
               {
                 id: user.uid,

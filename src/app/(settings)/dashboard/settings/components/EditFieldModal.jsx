@@ -137,6 +137,38 @@ export default function EditFieldModal({
                 />
               </div>
             </div>
+          ) : field === "email" ? (
+            <div className={styles.formGroup}>
+              <label htmlFor="value" className={styles.modalLabel}>
+                {fieldDisplayName}
+              </label>
+              <input
+                id="value"
+                className={`${styles.modalInput} ${fieldError || (tempValue && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(tempValue)) ? styles.inputError : ""}`}
+                value={tempValue}
+                onChange={(e) => {
+                  const newValue = e.target.value
+                  setTempValue(newValue)
+                  // Clear validation error when field is cleared or valid
+                  if (!newValue || /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(newValue)) {
+                    setFieldError("")
+                  }
+                }}
+                onBlur={() => {
+                  // Validate on blur for better UX
+                  if (tempValue && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(tempValue)) {
+                    setFieldError("Please enter a valid email address")
+                  }
+                }}
+                placeholder={`Enter your ${fieldDisplayName.toLowerCase()}`}
+                type="email"
+                autoFocus
+                disabled={isSaving}
+              />
+              {tempValue && !/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(tempValue) && !fieldError && (
+                <div className={styles.fieldError}>Please enter a valid email address</div>
+              )}
+            </div>
           ) : (
             <div className={styles.formGroup}>
               <label htmlFor="value" className={styles.modalLabel}>
