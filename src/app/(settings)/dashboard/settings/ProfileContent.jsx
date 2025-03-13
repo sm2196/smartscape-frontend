@@ -8,6 +8,9 @@ import { deleteUserAccount, signOutUser, changeUserPassword } from "@/lib/fireba
 import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 import { isValidPhoneNumber } from "react-phone-number-input"
 
+// Import the getUserId function at the top of the file with other imports
+import { getUserId } from "@/lib/userCache"
+
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
 import AccountActions from "./components/AccountActions"
@@ -53,6 +56,7 @@ export default function ProfileContent() {
       // Check if we have a newEmail query parameter (from the verification link)
       const params = new URLSearchParams(window.location.search)
       const newEmail = params.get("newEmail")
+      const emailChanged = params.get("emailChanged")
 
       if (user && newEmail) {
         try {
@@ -64,10 +68,50 @@ export default function ProfileContent() {
 
           if (result.success) {
             showToast("Email updated successfully!", "success")
+
             // Clear the query parameter
             window.history.replaceState({}, document.title, window.location.pathname)
+
             // Refresh the profile to show the updated email
             await refreshProfile()
+
+            // If this was a redirect from email verification, sign out and redirect to auth
+            if (emailChanged === "true") {
+              // Clear all cache before redirecting
+              try {
+                // Import and use clearAllCache from useFirestoreData
+                const { clearAllCache } = require("@/hooks/useFirestoreData")
+                clearAllCache()
+
+                // Clear user cache
+                const { clearCachedUserInfo } = require("@/lib/userCache")
+                clearCachedUserInfo()
+
+                // Clear any localStorage items related to the app
+                localStorage.removeItem("notifications")
+                localStorage.removeItem("linkedThirdPartyApp")
+
+                // Clear any session storage items
+                sessionStorage.clear()
+
+                // Clear cookies
+                document.cookie.split(";").forEach((c) => {
+                  document.cookie = c
+                    .replace(/^ +/, "")
+                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
+                })
+
+                // Sign out the user
+                const { signOutUser } = require("@/lib/firebase/auth")
+                await signOutUser()
+
+                // Redirect to auth page
+                router.replace("/auth")
+              } catch (clearError) {
+                console.error("Error during email change cleanup:", clearError)
+                // Continue with normal operation if cleanup fails
+              }
+            }
           } else {
             showToast(result.error || "Failed to complete email update", "error")
           }
@@ -81,7 +125,7 @@ export default function ProfileContent() {
     if (!loading) {
       handleEmailVerificationCompletion()
     }
-  }, [user, loading, refreshProfile])
+  }, [user, loading, refreshProfile, router])
 
   // Check for mobile view
   useEffect(() => {
@@ -236,8 +280,34 @@ export default function ProfileContent() {
         return { success: false, error: authResult.error }
       }
 
-      // Immediately redirect to login page without waiting
-      router.push("/auth")
+      // Clear all cache before redirecting
+      try {
+        // Import and use clearAllCache from useFirestoreData
+        const { clearAllCache } = require("@/hooks/useFirestoreData")
+        clearAllCache()
+
+        // Clear user cache
+        const { clearCachedUserInfo } = require("@/lib/userCache")
+        clearCachedUserInfo()
+
+        // Clear any localStorage items related to the app
+        localStorage.removeItem("notifications")
+        localStorage.removeItem("linkedThirdPartyApp")
+
+        // Clear any session storage items
+        sessionStorage.clear()
+
+        // Clear cookies
+        document.cookie.split(";").forEach((c) => {
+          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
+        })
+      } catch (clearError) {
+        console.error("Error clearing cache:", clearError)
+        // Continue with redirection even if cache clearing fails
+      }
+
+      // Immediately redirect to login page
+      router.replace("/auth")
 
       return { success: true }
     } catch (error) {
@@ -253,6 +323,8 @@ export default function ProfileContent() {
     setEditingField(field)
   }
 
+  // Replace instances where we directly access user.uid with getUserId(user)
+  // For example, in the handleSaveField function:
   const handleSaveField = async (value) => {
     if (!user) {
       showToast("You must be logged in to update your profile", "error")
@@ -266,8 +338,9 @@ export default function ProfileContent() {
           lastName: value.lastName,
         }
 
-        // Update profile using our caching hook
-        const result = await updateProfile(user.uid, updateData)
+        // Use getUserId instead of directly accessing user.uid
+        const userId = getUserId(user)
+        const result = await updateProfile(userId, updateData)
 
         if (result.success) {
           setFieldValues((prev) => ({
@@ -286,7 +359,9 @@ export default function ProfileContent() {
           throw new Error("Please enter a valid phone number")
         }
 
-        const result = await updateProfile(user.uid, {
+        // Use getUserId instead of directly accessing user.uid
+        const userId = getUserId(user)
+        const result = await updateProfile(userId, {
           phone: value,
         })
 
@@ -301,7 +376,9 @@ export default function ProfileContent() {
           throw new Error(result.error || "Failed to update phone number")
         }
       } else if (editingField === "email") {
-        const result = await updateProfile(user.uid, {
+        // Use getUserId instead of directly accessing user.uid
+        const userId = getUserId(user)
+        const result = await updateProfile(userId, {
           email: value,
         })
 
@@ -408,7 +485,8 @@ export default function ProfileContent() {
         onProfileUpdate={async (data) => {
           if (user) {
             try {
-              await updateProfile(user.uid, data)
+              const userId = getUserId(user)
+              await updateProfile(userId, data)
               await refreshProfile()
               showToast("Profile updated successfully", "success")
             } catch (error) {

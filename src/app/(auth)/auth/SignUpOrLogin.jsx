@@ -175,17 +175,21 @@ function SignupOrLogin() {
     e.preventDefault()
     setLoading(true)
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      toast.success("Login successful")
-      console.log("User Login Successfully!!")
-      // Add a delay before navigating to the OTP page
+      const result = await signInWithEmailAndPassword(auth, email, password)
+      if (result.user) {
+        toast.success("Login successful")
+        console.log("User Login Successfully!!")
 
-      // Use Next.js router to navigate to dashboard after login
-      setTimeout(() => {
-        router.push("/dashboard")
-      }, 1500)
+        // Set auth cookie
+        document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
+          window.location.protocol === "https:" ? "Secure;" : ""
+        }`
+
+        // Use replace instead of push to prevent going back to login
+        router.replace("/dashboard")
+      }
     } catch (error) {
-      console.error("Error registering user:", error)
+      console.error("Error logging in:", error)
       toast.error(error.message)
     } finally {
       setLoading(false)

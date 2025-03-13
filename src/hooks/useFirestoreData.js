@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/config"
+import { getUserId } from "@/lib/userCache"
 
 // In-memory cache to store data between component renders and navigation
 const cache = new Map()
@@ -15,6 +16,7 @@ const cache = new Map()
  * @param {boolean} options.localStorageCache - Whether to also cache in localStorage
  * @param {number} options.cacheDuration - How long to cache data in milliseconds (default: 5 minutes)
  * @param {Object} options.defaultData - Default data to use if no data is found
+ * @param {boolean} options.useCurrentUser - Whether to use the current user's ID if documentId is not provided
  * @returns {Object} - { data, loading, error, refetch, updateData }
  */
 export function useFirestoreData(
@@ -24,14 +26,31 @@ export function useFirestoreData(
     localStorageCache = false,
     cacheDuration = 5 * 60 * 1000, // 5 minutes
     defaultData = null,
+    useCurrentUser = false,
   } = {},
 ) {
+  // If useCurrentUser is true and no documentId is provided, try to get the current user ID
+  const resolvedDocumentId = useCallback(() => {
+    if (documentId) return documentId
+    if (useCurrentUser) return getUserId()
+    return null
+  }, [documentId, useCurrentUser])
+
+  const [actualDocumentId, setActualDocumentId] = useState(resolvedDocumentId())
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
+  // Update the document ID if it changes
+  useEffect(() => {
+    const newDocId = resolvedDocumentId()
+    if (newDocId !== actualDocumentId) {
+      setActualDocumentId(newDocId)
+    }
+  }, [resolvedDocumentId, actualDocumentId])
+
   // Create a cache key based on collection and document ID
-  const cacheKey = `${collectionName}/${documentId}`
+  const cacheKey = `${collectionName}/${actualDocumentId}`
 
   // Function to get data from cache
   const getFromCache = useCallback(() => {
@@ -91,6 +110,13 @@ export function useFirestoreData(
       setLoading(true)
 
       try {
+        // Check if documentId is undefined or null
+        if (!actualDocumentId) {
+          setLoading(false)
+          setError("Document ID is undefined")
+          return null
+        }
+
         // Check cache first if not skipping cache
         if (!skipCache) {
           const cachedData = getFromCache()
@@ -102,7 +128,7 @@ export function useFirestoreData(
         }
 
         // If no cached data or skipping cache, fetch from Firestore
-        const docRef = doc(db, collectionName, documentId)
+        const docRef = doc(db, collectionName, actualDocumentId)
         const docSnap = await getDoc(docRef)
 
         if (docSnap.exists()) {
@@ -124,21 +150,25 @@ export function useFirestoreData(
           return null
         }
       } catch (err) {
-        console.error(`Error fetching ${collectionName}/${documentId}:`, err)
+        console.error(`Error fetching ${collectionName}/${actualDocumentId}:`, err)
         setError(err.message || "Failed to fetch data")
         return null
       } finally {
         setLoading(false)
       }
     },
-    [collectionName, documentId, defaultData, getFromCache, saveToCache],
+    [collectionName, actualDocumentId, defaultData, getFromCache, saveToCache],
   )
 
   // Function to update data in Firestore and cache
   const updateData = useCallback(
     async (newData, merge = true) => {
       try {
-        const docRef = doc(db, collectionName, documentId)
+        if (!actualDocumentId) {
+          return { success: false, error: "Document ID is required" }
+        }
+
+        const docRef = doc(db, collectionName, actualDocumentId)
 
         // Update Firestore
         await setDoc(docRef, newData, { merge })
@@ -157,12 +187,12 @@ export function useFirestoreData(
 
         return { success: true, data: updatedData }
       } catch (err) {
-        console.error(`Error updating ${collectionName}/${documentId}:`, err)
+        console.error(`Error updating ${collectionName}/${actualDocumentId}:`, err)
         setError(err.message || "Failed to update data")
         return { success: false, error: err.message }
       }
     },
-    [collectionName, documentId, data, saveToCache],
+    [collectionName, actualDocumentId, data, saveToCache],
   )
 
   // Function to manually refetch data
@@ -184,13 +214,20 @@ export function useFirestoreData(
 
   // Fetch data on mount and when dependencies change
   useEffect(() => {
-    fetchData()
+    if (actualDocumentId) {
+      fetchData()
+    } else {
+      // Reset state when documentId is not available
+      setData(null)
+      setLoading(false)
+      setError("Document ID is required")
+    }
 
     // Cleanup function to handle component unmount
     return () => {
       // No cleanup needed for cache as we want to keep it
     }
-  }, [fetchData])
+  }, [fetchData, actualDocumentId])
 
   return { data, loading, error, refetch, updateData, clearCache }
 }

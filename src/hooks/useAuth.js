@@ -4,6 +4,8 @@ import { useState, useEffect, useCallback } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/config"
 import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore"
+// Update the imports to include getUserId
+import { cacheUserInfo, getUserId } from "@/lib/userCache"
 
 export function useAuth() {
   const [user, setUser] = useState(null)
@@ -32,6 +34,14 @@ export function useAuth() {
 
         setProfile(formattedProfile)
         setError(null)
+
+        // Cache user information including admin status
+        if (currentUser) {
+          cacheUserInfo({
+            ...currentUser,
+            isAdmin: profileData.isAdmin === true,
+          })
+        }
       } else {
         console.log("No profile data found for this user")
         setProfile(null)
@@ -43,6 +53,22 @@ export function useAuth() {
       setError(`Failed to load profile: ${err.message}`)
     }
   }, [])
+
+  // Replace the useEffect that checks for cached user ID with this improved version
+  // Check for cached user ID on initial load
+  useEffect(() => {
+    // Get user ID with priority from cache
+    const userId = getUserId(user)
+
+    if (userId && !user) {
+      // If we have a user ID but no user object yet,
+      // fetch the profile data using the ID and set loading to true
+      setLoading(true)
+      fetchProfile(userId)
+        .then(() => setLoading(false))
+        .catch(() => setLoading(false))
+    }
+  }, [fetchProfile, user])
 
   // Set up auth state listener
   useEffect(() => {
@@ -95,6 +121,12 @@ export function useAuth() {
 
           setProfile(formattedProfile)
           setError(null)
+
+          // Update cached user information
+          cacheUserInfo({
+            ...user,
+            isAdmin: profileData.isAdmin === true,
+          })
         } else {
           setProfile(null)
           setError("Profile data not found")

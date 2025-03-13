@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/useAuth"
-import { useFirestoreData } from "@/hooks/useFirestoreData" // Import our new hook
+import { useFirestoreData } from "@/hooks/useFirestoreData"
+import { getUserId } from "@/lib/userCache"
 import {
   MdPower,
   MdWaterDrop,
@@ -20,6 +21,9 @@ import styles from "./NotificationsPage.module.css"
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useAuth()
   const [error, setError] = useState(null)
+
+  // Get user ID with priority from cache first, then from auth object
+  const userId = getUserId(user)
 
   // Default notification settings for new users
   const defaultNotifications = {
@@ -45,34 +49,24 @@ export default function NotificationsPage() {
     error: dataError,
     updateData,
     refetch,
-  } = useFirestoreData(
-    "Notifications",
-    user?.uid || "placeholder", // Use a placeholder if user is not loaded yet
-    {
-      localStorageCache: true, // Enable localStorage caching for persistence
-      cacheDuration: 30 * 60 * 1000, // Cache for 30 minutes
-      defaultData: defaultNotifications, // Default data for new users
-    },
-  )
+  } = useFirestoreData("Notifications", userId, {
+    localStorageCache: true, // Enable localStorage caching for persistence
+    cacheDuration: 30 * 60 * 1000, // Cache for 30 minutes
+    defaultData: defaultNotifications, // Default data for new users
+  })
 
   // Set error state if there's an error from the hook
   useEffect(() => {
-    if (dataError) {
+    if (dataError && dataError !== "Document ID is required") {
       setError(dataError)
     }
   }, [dataError])
 
   // Toggle notification and update Firestore
   const toggleNotification = async (type) => {
-    if (!user) return
+    if (!userId) return
 
     const updatedValue = !notifications[type]
-
-    // Update the UI immediately for better UX
-    const updatedNotifications = {
-      ...notifications,
-      [type]: updatedValue,
-    }
 
     try {
       // Use our updateData function to update both Firestore and cache
@@ -127,7 +121,7 @@ export default function NotificationsPage() {
   ]
 
   // Determine if we're in a loading state
-  const isLoading = authLoading || (dataLoading && !notifications)
+  const isLoading = (authLoading && !userId) || (userId && dataLoading)
 
   if (isLoading) {
     return (
@@ -138,6 +132,20 @@ export default function NotificationsPage() {
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner}></div>
           <p className={styles.loadingText}>Loading notification settings...</p>
+        </div>
+      </main>
+    )
+  }
+
+  // If no user ID is available, show authentication required message
+  if (!userId) {
+    return (
+      <main className={styles.mainContent}>
+        <div className={styles.pageHeader}>
+          <h1 className={styles.header}>Notifications</h1>
+        </div>
+        <div className={styles.errorContainer}>
+          <p className={styles.errorMessage}>Authentication required. Please log in to view your notifications.</p>
         </div>
       </main>
     )
@@ -182,14 +190,14 @@ export default function NotificationsPage() {
                     <span>{name}</span>
                   </div>
                   <button
-                    className={`${styles.toggleButton} ${notifications[key] ? styles.on : styles.off}`}
+                    className={`${styles.toggleButton} ${notifications && notifications[key] ? styles.on : styles.off}`}
                     onClick={() => toggleNotification(key)}
-                    aria-label={`${notifications[key] ? "Disable" : "Enable"} ${name}`}
+                    aria-label={`${notifications && notifications[key] ? "Disable" : "Enable"} ${name}`}
                   >
                     <span className={styles.toggleTrack}>
                       <span className={styles.toggleThumb} />
                     </span>
-                    <span className={styles.toggleStatus}>{notifications[key] ? "On" : "Off"}</span>
+                    <span className={styles.toggleStatus}>{notifications && notifications[key] ? "On" : "Off"}</span>
                   </button>
                 </div>
               ))}

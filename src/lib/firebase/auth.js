@@ -10,16 +10,16 @@ import {
 } from "firebase/auth"
 import { auth, db } from "./config"
 import { doc, updateDoc } from "firebase/firestore"
+import { cacheUserInfo, clearCachedUserInfo } from "../userCache"
 
-// Add these functions to your existing auth.js file
-
-// Set auth cookie when user logs in
+// Add this helper function at the top of the file
 function setAuthCookie() {
-  // Create a secure, HTTP-only cookie that expires in 7 days
   document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
     window.location.protocol === "https:" ? "Secure;" : ""
   }`
 }
+
+// Add these functions to your existing auth.js file
 
 // Clear auth cookie when user logs out
 function clearAuthCookie() {
@@ -47,6 +47,9 @@ export async function signUpWithEmailAndPassword(email, password) {
       isOnline: true,
     })
 
+    // Cache user information
+    cacheUserInfo(userCredential.user)
+
     return { success: true, user: userCredential.user }
   } catch (error) {
     // Return a more user-friendly error message based on Firebase error codes
@@ -72,11 +75,17 @@ export async function signUpWithEmailAndPassword(email, password) {
   }
 }
 
-// Sign in with email and password
+// Update the signInWithEmailAndPassword function
 export async function signInWithEmailAndPassword(email, password) {
   try {
     const userCredential = await firebaseSignIn(auth, email, password)
-    setAuthCookie() // Set the auth cookie
+
+    // Set auth cookie on successful login
+    setAuthCookie()
+
+    // Cache user information
+    cacheUserInfo(userCredential.user)
+
     return { success: true, user: userCredential.user }
   } catch (error) {
     return { success: false, error: error.message }
@@ -106,6 +115,9 @@ export async function signOutUser() {
 
     // Clear the auth cookie
     clearAuthCookie()
+
+    // Clear cached user information
+    clearCachedUserInfo()
 
     // Sign out from Firebase Auth
     await signOut(auth)
@@ -155,10 +167,24 @@ export async function deleteUserAccount(password) {
       // Continue with account deletion even if cleanup fails
     }
 
-    // Clear any local storage items related to the app before deleting the user
-    localStorage.removeItem("notifications")
-    localStorage.removeItem("linkedThirdPartyApp")
+    // Clear all local storage and session storage
+    localStorage.clear()
     sessionStorage.clear()
+
+    // Clear cached user information
+    const { clearCachedUserInfo } = require("../userCache")
+    clearCachedUserInfo()
+
+    // Clear all Firestore data cache
+    try {
+      const { clearAllCache } = require("@/hooks/useFirestoreData")
+      clearAllCache()
+    } catch (cacheError) {
+      console.error("Error clearing Firestore cache:", cacheError)
+    }
+
+    // Clear auth cookie
+    document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
 
     // Proceed with user deletion regardless of cleanup success
     await deleteUser(user)
@@ -233,9 +259,9 @@ export async function updateUserEmail(newEmail) {
     }
 
     try {
-      // Configure action code settings
+      // Configure action code settings - redirect to auth page after verification
       const actionCodeSettings = {
-        url: `${window.location.origin}/auth`,
+        url: `${window.location.origin}/auth?newEmail=${encodeURIComponent(newEmail)}&emailChanged=true`,
         handleCodeInApp: true,
       }
 
@@ -246,7 +272,7 @@ export async function updateUserEmail(newEmail) {
         success: true,
         verificationRequired: true,
         message:
-          "A verification email has been sent to your new address. Please check your email and verify before the change takes effect.",
+          "A verification email has been sent to your new address. Please check your email and verify before the change takes effect. You'll be redirected to the login page after verification.",
       }
     } catch (error) {
       if (error.code === "auth/requires-recent-login") {
@@ -303,6 +329,20 @@ export async function completeEmailUpdate(user, newEmail) {
     await updateDoc(userDocRef, {
       email: user.email, // Use the email from Auth
       // Remove updatedAt: new Date(),
+    })
+
+    // Clear all Firestore data cache
+    try {
+      const { clearAllCache } = require("@/hooks/useFirestoreData")
+      clearAllCache()
+    } catch (cacheError) {
+      console.error("Error clearing Firestore cache:", cacheError)
+    }
+
+    // Update cached user information with new email
+    cacheUserInfo({
+      ...user,
+      email: user.email,
     })
 
     return { success: true }

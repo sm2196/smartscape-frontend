@@ -7,6 +7,17 @@ export function middleware(request) {
   // Define public paths that don't require authentication
   const isPublicPath = path === "/auth" || path === "/"
 
+  // Check for email verification redirect
+  const url = new URL(request.url)
+  const emailChanged = url.searchParams.get("emailChanged")
+  const newEmail = url.searchParams.get("newEmail")
+  const isEmailVerification = emailChanged === "true" && newEmail
+
+  // If this is an email verification redirect, allow access to the dashboard
+  if (isEmailVerification) {
+    return NextResponse.next()
+  }
+
   // Check if the user is authenticated by looking for the auth cookie
   const authCookie = request.cookies.get("auth-session")?.value
   const isAuthenticated = !!authCookie
@@ -17,7 +28,7 @@ export function middleware(request) {
   }
 
   // If the user is authenticated and trying to access login page, redirect to dashboard
-  if (isAuthenticated && path === "/auth") {
+  if (isAuthenticated && isPublicPath) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
