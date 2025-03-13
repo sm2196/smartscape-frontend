@@ -121,7 +121,7 @@ export default function ProfileContent() {
               name: `${profile.firstName} ${profile.lastName}`,
               email: user?.email,
               isActive: profile.id === user.uid,
-              admin: profile.admin === true,
+              isAdmin: profile.isAdmin === true,
             }))
             setAvailableAccounts(formattedAccounts)
           } else {

@@ -132,12 +132,11 @@ function SignupOrLogin() {
       if (user) {
         // Validate that Firestore gets correct data
         const userData = {
-          email: user.email || "",
           firstName: fname || "",
           lastName: lname || "",
           phone: phoneValue || "",
           verified: false, // User is not verified yet
-          admin: false,
+          isAdmin: false,
           isOnline: true,
         }
 

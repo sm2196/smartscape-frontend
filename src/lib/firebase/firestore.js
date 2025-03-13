@@ -161,7 +161,7 @@ export async function getProfileByUserId(userId) {
         email: currentUser ? currentUser.email : "",
         phone: profileData.phone || "",
         verified: profileData.verified || false,
-        isAdmin: profileData.admin === true,
+        isAdmin: profileData.isAdmin === true,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
       }
@@ -206,7 +206,7 @@ export async function getProfilesByEmail(email) {
 
     const userProfile = { id: userDocSnap.id, ...userDocSnap.data() }
     const profiles = [userProfile]
-    const isAdmin = userProfile.admin === true // Changed from admin to isAdmin
+    const isAdmin = userProfile.isAdmin === true
 
     // If the user is an admin, get all profiles where adminId points to this user
     if (isAdmin) {
