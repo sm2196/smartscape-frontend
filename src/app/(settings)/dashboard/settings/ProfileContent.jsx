@@ -121,7 +121,7 @@ export default function ProfileContent() {
               name: `${profile.firstName} ${profile.lastName}`,
               email: user?.email,
               isActive: profile.id === user.uid,
-              isAdmin: profile.isAdmin === true,
+              isAdmin: profile?.isAdmin === true,
             }))
             setAvailableAccounts(formattedAccounts)
           } else {
@@ -240,10 +240,8 @@ export default function ProfileContent() {
       setDeleteDialogOpen(false)
       showToast("Account deleted successfully", "success")
 
-      // Redirect to login page after a short delay
-      setTimeout(() => {
-        router.push("/auth")
-      }, 2000)
+      // Immediately redirect to login page without waiting
+      router.push("/auth")
 
       return { success: true }
     } catch (error) {
@@ -379,7 +377,7 @@ export default function ProfileContent() {
     }, 3000)
   }
 
-  if (loading) {
+  if (loading && !isDeleting) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loadingSpinner}></div>
@@ -388,7 +386,7 @@ export default function ProfileContent() {
     )
   }
 
-  if (error && !profile) {
+  if (error && !profile && !isDeleting) {
     return (
       <div className={styles.errorContainer}>
         <p className={styles.errorMessage}>{error}</p>

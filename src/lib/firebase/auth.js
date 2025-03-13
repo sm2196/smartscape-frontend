@@ -137,6 +137,11 @@ export async function deleteUserAccount(password) {
       // Continue with account deletion even if cleanup fails
     }
 
+    // Clear any local storage items related to the app before deleting the user
+    localStorage.removeItem("notifications")
+    localStorage.removeItem("linkedThirdPartyApp")
+    sessionStorage.clear()
+
     // Proceed with user deletion regardless of cleanup success
     await deleteUser(user)
     return { success: true }
@@ -184,6 +189,8 @@ export async function changeUserPassword(currentPassword, newPassword) {
     // Update the password change timestamp in Firestore
     const userDocRef = doc(db, "Users", user.uid)
     await updateDoc(userDocRef, {
+      // Remove passwordLastChanged: new Date(),
+      // Remove updatedAt: new Date(),
     })
 
     return { success: true }
@@ -277,6 +284,7 @@ export async function completeEmailUpdate(user, newEmail) {
     const userDocRef = doc(db, "Users", user.uid)
     await updateDoc(userDocRef, {
       email: user.email, // Use the email from Auth
+      // Remove updatedAt: new Date(),
     })
 
     return { success: true }

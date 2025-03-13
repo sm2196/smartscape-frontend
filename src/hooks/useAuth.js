@@ -60,7 +60,8 @@ export function useAuth() {
           setError(null)
         }
 
-        setLoading(false)
+        // Don't show loading state when user is null (prevents "Account not found" flash)
+        setLoading(currentUser !== null ? false : false)
       },
       (authError) => {
         console.error("Auth state change error:", authError)
