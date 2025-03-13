@@ -15,18 +15,9 @@ const DeviceManagement = () => {
   const [wifiEnabled, setWifiEnabled] = useState(false);
   const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
   const [newDeviceCategory, setNewDeviceCategory] = useState("");
-  const [newDeviceName, setNewDeviceName] = useState(""); //Add Devices
+  const [newDeviceName, setNewDeviceName] = useState(""); // Add Devices
   const [newDevices, setDevices] = useState(devicesData.devices.all); // All Devices
   const [selectedDevice, setSelectedDevice] = useState(null);
-  // const deviceCategories = [
-  //   "Lighting",
-  //   "HVAC",
-  //   "Entertainment",
-  //   "Audio",
-  //   "Appliances",
-  //   "Security",
-  //   "Furniture",
-  // ];
 
   const settings = [
     { name: "Network settings", type: "network", icon: MdWifi },
@@ -80,11 +71,18 @@ const DeviceManagement = () => {
     }
 
     if (!newDeviceCategory.trim()) {
-      alert("Please select a device category!");
+      alert("Please select a room for the device!");
       return;
     }
 
-    console.log("New Device:", newDeviceCategory, newDeviceName);
+    const newDevice = {
+      id: newDevices.length + 1,
+      name: newDeviceName.trim(),
+      category: newDeviceCategory,
+      room: newDeviceCategory, // Set device location as the selected room
+    };
+
+    setDevices((prevDevices) => [...prevDevices, newDevice]);
     closePopup();
   };
 
@@ -120,7 +118,7 @@ const DeviceManagement = () => {
                 <span className={styles.toggleSlider}></span>
               </label>
             </div>
-            <select className={styles.dropdown}>
+            <select className={styles.inputField}>
               <option>Eduroam</option>
               <option>HWUD_Temp</option>
               <option>HWUD_Guest</option>
@@ -138,7 +136,7 @@ const DeviceManagement = () => {
                 <span className={styles.toggleSlider}></span>
               </label>
             </div>
-            <select className={styles.dropdown}>
+            <select className={styles.inputField}>
               <option>XYZ Camera</option>
               <option>XYZ TV</option>
             </select>
@@ -166,16 +164,6 @@ const DeviceManagement = () => {
             ))}
           </div>
         );
-      // case "category":
-      //   return (
-      //     <div className={styles.popupList}>
-      //       {deviceCategories.map((item, index) => (
-      //         <Button key={index} className={styles.popupButton}>
-      //           {item}
-      //         </Button>
-      //       ))}
-      //     </div>
-      //   );
       case "addRoom":
         return (
           <div>
@@ -201,7 +189,7 @@ const DeviceManagement = () => {
             <h3>Add New Device</h3>
             <select
               className={styles.inputField}
-              value={newDeviceCategory} // You may want to change this to newRoomName or similar
+              value={newDeviceCategory}
               onChange={(e) => setNewDeviceCategory(e.target.value)} // Change handler to rooms
             >
               <option value="">Select Room</option>
