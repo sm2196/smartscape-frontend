@@ -11,6 +11,21 @@ import {
 import { auth, db } from "./config"
 import { doc, updateDoc } from "firebase/firestore"
 
+// Add these functions to your existing auth.js file
+
+// Set auth cookie when user logs in
+function setAuthCookie() {
+  // Create a secure, HTTP-only cookie that expires in 7 days
+  document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
+    window.location.protocol === "https:" ? "Secure;" : ""
+  }`
+}
+
+// Clear auth cookie when user logs out
+function clearAuthCookie() {
+  document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
+}
+
 // Sign up with email and password
 export async function signUpWithEmailAndPassword(email, password) {
   try {
@@ -61,6 +76,7 @@ export async function signUpWithEmailAndPassword(email, password) {
 export async function signInWithEmailAndPassword(email, password) {
   try {
     const userCredential = await firebaseSignIn(auth, email, password)
+    setAuthCookie() // Set the auth cookie
     return { success: true, user: userCredential.user }
   } catch (error) {
     return { success: false, error: error.message }
@@ -88,8 +104,10 @@ export async function signOutUser() {
     // Clear any session storage items
     sessionStorage.clear()
 
+    // Clear the auth cookie
+    clearAuthCookie()
+
     // Sign out from Firebase Auth
-    // This will clear the auth state and remove the user from local persistence
     await signOut(auth)
 
     return { success: true }

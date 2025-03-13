@@ -2,6 +2,7 @@ import { doc, getDoc, getDocs, updateDoc, deleteDoc, query, where, writeBatch } 
 import { db } from "./config"
 import { auth } from "./config"
 import { collection } from "firebase/firestore"
+import { clearAllCache } from "@/hooks/useFirestoreData"
 
 // User collection reference
 const usersCollection = "Users"
@@ -132,6 +133,9 @@ export async function updateProfile(userId, profileData) {
     if (Object.keys(validatedData).length > 0) {
       await updateDoc(userDocRef, validatedData)
 
+      // Clear cache when profile is updated to ensure fresh data
+      clearAllCache()
+
       return { success: true, data: validatedData }
     }
 
@@ -257,51 +261,92 @@ export async function cleanupUserData(userId) {
 
     if (!success) {
       console.error("Error getting profile during cleanup:", error)
-      // Continue with deletion even if we can't get the profile
-      // This ensures the user account can still be deleted
       return { success: true }
     }
 
-    // If the user is an admin, handle their managed users
+    // Create a batch for atomic operations
+    const batch = writeBatch(db)
+
+    // Collections to clean up
+    const collectionsToClean = ["Users", "Notifications"]
+
+    // If the user is an admin, handle their managed users first
     if (profile && profile.isAdmin === true) {
-      // Changed from admin to isAdmin
       try {
-        // Find all users managed by this admin using adminId field
-        const managedUsersQuery = query(collection(db, usersCollection), where("adminId", "==", userId))
+        // Find all users managed by this admin
+        const managedUsersQuery = query(collection(db, "Users"), where("adminId", "==", userId))
         const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
-        // If there are managed users, try to delete them
+        // Delete all managed users' data
         if (!managedUsersSnapshot.empty) {
-          // Delete all managed users in a batch
-          const batch = writeBatch(db)
-          managedUsersSnapshot.forEach((userDoc) => {
-            batch.delete(doc(db, usersCollection, userDoc.id))
-          })
+          for (const userDoc of managedUsersSnapshot.docs) {
+            const managedUserId = userDoc.id
 
-          try {
-            await batch.commit()
-          } catch (batchError) {
-            console.error("Error committing batch delete:", batchError)
-            // Continue with deletion even if batch fails
+            // Delete managed user's data from all collections
+            for (const collectionName of collectionsToClean) {
+              // Delete user's main document
+              const userDocRef = doc(db, collectionName, managedUserId)
+              batch.delete(userDocRef)
+
+              // Delete user's subcollections if any
+              try {
+                const subcollectionsQuery = await getDocs(
+                  collection(db, collectionName, managedUserId, "subcollection"),
+                )
+                subcollectionsQuery.forEach((subdoc) => {
+                  batch.delete(doc(db, collectionName, managedUserId, "subcollection", subdoc.id))
+                })
+              } catch (subcollectionError) {
+                console.error(`Error cleaning subcollections for managed user ${managedUserId}:`, subcollectionError)
+                // Continue with deletion even if subcollection cleanup fails
+              }
+            }
           }
         }
       } catch (managedUsersError) {
         console.error("Error handling managed users:", managedUsersError)
-        // Continue with deletion even if we can't delete managed users
       }
     }
 
-    // Finally, try to delete the user's own profile
-    try {
-      // Delete from the Users collection
-      await deleteProfile(userId)
-    } catch (profileDeleteError) {
-      console.error("Error deleting user profile:", profileDeleteError)
-      // Continue with deletion even if we can't delete the profile
+    // Delete the user's own data from all collections
+    for (const collectionName of collectionsToClean) {
+      // Delete user's main document
+      const userDocRef = doc(db, collectionName, userId)
+      batch.delete(userDocRef)
+
+      // Delete user's subcollections if any
+      try {
+        const subcollectionsQuery = await getDocs(collection(db, collectionName, userId, "subcollection"))
+        subcollectionsQuery.forEach((subdoc) => {
+          batch.delete(doc(db, collectionName, userId, "subcollection", subdoc.id))
+        })
+      } catch (subcollectionError) {
+        console.error("Error cleaning subcollections:", subcollectionError)
+        // Continue with deletion even if subcollection cleanup fails
+      }
+
+      // Clean up any documents where this user is referenced
+      try {
+        const referencingDocsQuery = query(collection(db, collectionName), where("userId", "==", userId))
+        const referencingDocs = await getDocs(referencingDocsQuery)
+        referencingDocs.forEach((doc) => {
+          batch.delete(doc.ref)
+        })
+      } catch (referenceError) {
+        console.error(`Error cleaning up references in ${collectionName}:`, referenceError)
+      }
     }
 
-    // Return success regardless of internal errors to ensure the auth account gets deleted
-    return { success: true }
+    // Commit all the batch operations
+    try {
+      await batch.commit()
+      console.log("Successfully cleaned up all user data")
+      return { success: true }
+    } catch (batchError) {
+      console.error("Error committing batch delete:", batchError)
+      // Return success anyway to ensure the auth account gets deleted
+      return { success: true }
+    }
   } catch (error) {
     console.error("Error in cleanup:", error)
     // Return success anyway to ensure the auth account gets deleted

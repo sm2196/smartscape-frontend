@@ -1,11 +1,20 @@
 "use client"
 
-import { MdClose, MdOutlineMode, MdSwitchAccount, MdPersonAddAlt1, MdDeleteOutline, MdLock } from "react-icons/md"
+import { useRouter } from "next/navigation"
+import { MdClose, MdOutlineMode, MdPersonAddAlt1, MdDeleteOutline, MdLock } from "react-icons/md"
 import styles from "./ModalStyles.module.css"
 import accountStyles from "./ManageAccountModal.module.css"
 
 export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete, onChangePassword }) {
+  const router = useRouter()
+
   if (!isOpen) return null
+
+  // Function to handle navigation to privacy settings
+  const handleNavigateToPrivacy = () => {
+    onClose() // Close the modal first
+    router.push("/dashboard/settings/privacy") // Navigate to privacy settings
+  }
 
   return (
     <div className={styles.modalOverlay}>
@@ -26,7 +35,7 @@ export default function ManageAccountModal({ isOpen, onClose, onEdit, onDelete, 
               <MdLock size={20} />
               <span>Change Password</span>
             </button>
-            <button className={accountStyles.accountOption} onClick={onClose}>
+            <button className={accountStyles.accountOption} onClick={handleNavigateToPrivacy}>
               <MdPersonAddAlt1 size={20} />
               <span>Privacy Settings</span>
             </button>

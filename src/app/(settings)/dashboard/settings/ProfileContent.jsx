@@ -236,10 +236,6 @@ export default function ProfileContent() {
         return { success: false, error: authResult.error }
       }
 
-      // Close the dialog and show success message
-      setDeleteDialogOpen(false)
-      showToast("Account deleted successfully", "success")
-
       // Immediately redirect to login page without waiting
       router.push("/auth")
 
@@ -265,10 +261,13 @@ export default function ProfileContent() {
 
     try {
       if (editingField === "name") {
-        const result = await updateProfile(user.uid, {
+        const updateData = {
           firstName: value.firstName,
           lastName: value.lastName,
-        })
+        }
+
+        // Update profile using our caching hook
+        const result = await updateProfile(user.uid, updateData)
 
         if (result.success) {
           setFieldValues((prev) => ({

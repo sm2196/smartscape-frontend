@@ -81,7 +81,9 @@ function SignupOrLogin() {
 
     const passwordPattern = /^(?=.*\d)(?=.*[@$!%*?&])(?=.*[A-Za-z]).{8,}$/
     if (!passwordPattern.test(value)) {
-      setPasswordError("Password must be at least 8 characters long and include one special character (@$!%*?&) and one number.")
+      setPasswordError(
+        "Password must be at least 8 characters long and include one special character (@$!%*?&) and one number.",
+      )
     } else {
       setPasswordError("")
     }
@@ -148,6 +150,11 @@ function SignupOrLogin() {
         console.log("User Registered Successfully!!")
         toast.success("Registration successful")
         await sendEmailVerification(user)
+
+        // Set auth cookie
+        document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
+          window.location.protocol === "https:" ? "Secure;" : ""
+        }`
 
         console.log("Verification email sent!")
 
