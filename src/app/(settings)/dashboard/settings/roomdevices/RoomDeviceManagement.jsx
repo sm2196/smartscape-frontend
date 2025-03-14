@@ -5,7 +5,16 @@ import { MdChevronRight, MdAdd, MdRemove, MdWifi } from "react-icons/md";
 import Button from "./RoomDeviceButton";
 import styles from "./RoomDeviceManagement.module.css";
 import { db } from "./firebaseConfig"; // Import the Firebase setup
-import { collection, getDocs } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteDoc,
+  doc,
+  addDoc,
+} from "firebase/firestore";
 
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null);
@@ -18,6 +27,15 @@ const DeviceManagement = () => {
   const [newDeviceName, setNewDeviceName] = useState(""); // Add Devices
   const [newDevices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+
+  const db = getFirestore();
+  const devicesCollectionRef = collection(db, "devices");
+
+  // Create a query to find the device by its name
+  const deviceQuery = query(
+    devicesCollectionRef,
+    where("name", "==", newDeviceName)
+  );
 
   const settings = [
     { name: "Network settings", type: "network", icon: MdWifi },
@@ -67,7 +85,7 @@ const DeviceManagement = () => {
     setNewDeviceName("");
   };
 
-  const handleSaveRoom = () => {
+  const handleSaveRoom = async () => {
     if (newRoomName.trim() === "") {
       alert("Room name cannot be empty!");
       return;
@@ -78,34 +96,43 @@ const DeviceManagement = () => {
       return;
     }
 
-    // Save to Firestore
-    const roomRef = collection(db, "rooms");
-    roomRef
-      .add({ name: newRoomName.trim() })
-      .then(() => {
-        setRooms((prevRooms) => [...prevRooms, newRoomName.trim()]);
-        closePopup();
-      })
-      .catch((error) => console.error("Error adding room: ", error));
+    try {
+      const roomRef = collection(db, "rooms");
+      // Add new room to Firestore
+      await addDoc(roomRef, { roomName: newRoomName.trim() });
+      setRooms((prevRooms) => [...prevRooms, newRoomName.trim()]);
+      closePopup();
+    } catch (error) {
+      console.error("Error adding room: ", error);
+    }
   };
 
-  const handleRemoveRoom = (roomName) => {
-    // Remove from Firestore
-    const roomRef = collection(db, "rooms");
-    roomRef
-      .where("name", "==", roomName)
-      .get()
-      .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          doc.ref.delete();
-        });
-        setRooms((prevRooms) => prevRooms.filter((room) => room !== roomName));
-        closePopup();
-      })
-      .catch((error) => console.error("Error removing room: ", error));
+  const handleRemoveRoom = async (roomName) => {
+    try {
+      const roomRef = collection(db, "rooms");
+      const q = query(roomRef, where("roomName", "==", roomName));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        alert("Room not found!");
+        return;
+      }
+
+      // Delete each matching document by its ID
+      querySnapshot.forEach(async (roomDoc) => {
+        await deleteDoc(doc(db, "rooms", roomDoc.id));
+      });
+
+      // Update UI state
+      setRooms((prevRooms) => prevRooms.filter((room) => room !== roomName));
+      closePopup();
+    } catch (error) {
+      console.error("Error removing room: ", error);
+    }
   };
 
-  const handleSaveDevice = () => {
+  // Inside the handleSaveDevice function
+  const handleSaveDevice = async () => {
     if (!newDeviceName.trim()) {
       alert("Device name cannot be empty!");
       return;
@@ -116,16 +143,52 @@ const DeviceManagement = () => {
       return;
     }
 
-    // Add device to Firestore (add similar to room)
-    const newDevice = {
-      id: newDevices.length + 1,
-      name: newDeviceName.trim(),
-      category: newDeviceCategory,
-      room: newDeviceCategory,
-    };
+    try {
+      const deviceRef = collection(db, "devices");
+      // Add new device to Firestore
+      await addDoc(deviceRef, {
+        name: newDeviceName.trim(),
+        category: newDeviceCategory,
+        room: newDeviceCategory,
+      });
+      setDevices((prevDevices) => [
+        ...prevDevices,
+        { name: newDeviceName.trim(), category: newDeviceCategory },
+      ]);
+      closePopup();
+    } catch (error) {
+      console.error("Error adding device: ", error);
+    }
+  };
 
-    setDevices((prevDevices) => [...prevDevices, newDevice]);
-    closePopup();
+  // Remove device function
+  const handleRemoveDevice = async (deviceName) => {
+    try {
+      const deviceRef = collection(db, "devices");
+
+      // Query Firestore for devices with the matching name
+      const deviceQuery = query(deviceRef, where("name", "==", deviceName));
+      const querySnapshot = await getDocs(deviceQuery);
+
+      if (querySnapshot.empty) {
+        alert("Device not found!");
+        return;
+      }
+
+      // Iterate over each matching document and delete
+      querySnapshot.forEach(async (deviceDoc) => {
+        await deleteDoc(doc(db, "devices", deviceDoc.id));
+      });
+
+      // Update local state to remove the device from UI
+      setDevices((prevDevices) =>
+        prevDevices.filter((device) => device.name !== deviceName)
+      );
+
+      closePopup();
+    } catch (error) {
+      console.error("Error removing device: ", error);
+    }
   };
 
   const DevicesList = () => (
