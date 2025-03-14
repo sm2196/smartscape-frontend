@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import {
   MdDescription,
-  MdPhone,
   MdPeople,
   MdShield,
   MdHome,
@@ -12,6 +11,7 @@ import {
   MdPersonAdd,
   MdContentCopy,
   MdClose,
+  MdEmail,
 } from "react-icons/md"
 import styles from "./AdminSettings.module.css"
 import homeIdStyles from "../components/HomeIdCodeModal.module.css"
@@ -296,11 +296,13 @@ const AdminSettings = () => {
                   <div className={styles.supportSection}>
                     <h2>24/7 Support</h2>
                     <p>Our dedicated support team is available round the clock</p>
-                    <a href="tel:800-555-0192" className={styles.phoneNumber}>
-                      <MdPhone size={20} />
-                      800-555-0192
+                    <div className={styles.supportEmail}>
+                      <MdEmail size={20} />
+                      smartscape.grp15@gmail.com
+                    </div>
+                    <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
+                      Contact Support
                     </a>
-                    <button className={styles.actionButton}>Contact Support</button>
                   </div>
                 </div>
               )}
@@ -374,11 +376,13 @@ const AdminSettings = () => {
               <div className={styles.supportSection}>
                 <h2>24/7 Support</h2>
                 <p>Our dedicated support team is available round the clock</p>
-                <a href="tel:800-555-0192" className={styles.phoneNumber}>
-                  <MdPhone size={20} />
-                  800-555-0192
+                <div className={styles.supportEmail}>
+                  <MdEmail size={20} />
+                  smartscape.grp15@gmail.com
+                </div>
+                <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
+                  Contact Support
                 </a>
-                <button className={styles.actionButton}>Contact Support</button>
               </div>
             </aside>
           </div>

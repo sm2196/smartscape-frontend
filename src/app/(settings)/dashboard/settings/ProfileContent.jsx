@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth"
 import { deleteUserAccount, signOutUser, changeUserPassword } from "@/lib/firebase/auth"
 import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 import { isValidPhoneNumber } from "react-phone-number-input"
+import { clearAllAppData } from "@/lib/clearAppData"
 
 // Import the getUserId function at the top of the file with other imports
 import { getUserId } from "@/lib/userCache"
@@ -49,8 +50,7 @@ export default function ProfileContent() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [toast, setToast] = useState({ visible: false, message: "", type: "" })
 
-  // Add this code near the top of the component, after the useState declarations
-  // This will handle the email verification completion when the user returns from the verification link
+  // Update the email verification completion handler
   useEffect(() => {
     const handleEmailVerificationCompletion = async () => {
       // Check if we have a newEmail query parameter (from the verification link)
@@ -77,40 +77,15 @@ export default function ProfileContent() {
 
             // If this was a redirect from email verification, sign out and redirect to auth
             if (emailChanged === "true") {
-              // Clear all cache before redirecting
-              try {
-                // Import and use clearAllCache from useFirestoreData
-                const { clearAllCache } = require("@/hooks/useFirestoreData")
-                clearAllCache()
+              // Clear all application data
+              clearAllAppData()
 
-                // Clear user cache
-                const { clearCachedUserInfo } = require("@/lib/userCache")
-                clearCachedUserInfo()
+              // Sign out the user
+              const { signOutUser } = require("@/lib/firebase/auth")
+              await signOutUser()
 
-                // Clear any localStorage items related to the app
-                localStorage.removeItem("notifications")
-                localStorage.removeItem("linkedThirdPartyApp")
-
-                // Clear any session storage items
-                sessionStorage.clear()
-
-                // Clear cookies
-                document.cookie.split(";").forEach((c) => {
-                  document.cookie = c
-                    .replace(/^ +/, "")
-                    .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
-                })
-
-                // Sign out the user
-                const { signOutUser } = require("@/lib/firebase/auth")
-                await signOutUser()
-
-                // Redirect to auth page
-                router.replace("/auth")
-              } catch (clearError) {
-                console.error("Error during email change cleanup:", clearError)
-                // Continue with normal operation if cleanup fails
-              }
+              // Redirect to auth page
+              router.replace("/auth")
             }
           } else {
             showToast(result.error || "Failed to complete email update", "error")
@@ -240,14 +215,15 @@ export default function ProfileContent() {
     setSignOutDialogOpen(true)
   }
 
+  // Replace the confirmSignOut function with this updated version
   const confirmSignOut = async () => {
     try {
       const result = await signOutUser()
       if (result.success) {
         console.log("Signed out successfully")
 
-        // Clear any additional app state if needed
-        // For example, if you're using any global state management
+        // Clear all application data
+        clearAllAppData()
 
         // Redirect to login page with replace to prevent going back
         router.replace("/auth")
@@ -268,6 +244,7 @@ export default function ProfileContent() {
     setDeleteDialogOpen(true)
   }
 
+  // Replace the confirmDelete function with this updated version
   const confirmDelete = async (password) => {
     setIsDeleting(true)
 
@@ -280,31 +257,8 @@ export default function ProfileContent() {
         return { success: false, error: authResult.error }
       }
 
-      // Clear all cache before redirecting
-      try {
-        // Import and use clearAllCache from useFirestoreData
-        const { clearAllCache } = require("@/hooks/useFirestoreData")
-        clearAllCache()
-
-        // Clear user cache
-        const { clearCachedUserInfo } = require("@/lib/userCache")
-        clearCachedUserInfo()
-
-        // Clear any localStorage items related to the app
-        localStorage.removeItem("notifications")
-        localStorage.removeItem("linkedThirdPartyApp")
-
-        // Clear any session storage items
-        sessionStorage.clear()
-
-        // Clear cookies
-        document.cookie.split(";").forEach((c) => {
-          document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/")
-        })
-      } catch (clearError) {
-        console.error("Error clearing cache:", clearError)
-        // Continue with redirection even if cache clearing fails
-      }
+      // Clear all application data
+      clearAllAppData()
 
       // Immediately redirect to login page
       router.replace("/auth")

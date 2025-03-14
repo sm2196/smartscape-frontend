@@ -23,6 +23,7 @@ const weatherIcons = {
 }
 
 const UPDATE_INTERVAL = 15 * 60 * 1000 // 15 minutes in milliseconds
+const RETRY_INTERVAL = 60 * 1000 // 1 minute in milliseconds
 
 export function WeatherWidget() {
   const [weather, setWeather] = useState({
@@ -33,27 +34,30 @@ export function WeatherWidget() {
 
   useEffect(() => {
     let retryTimeout
+    let mounted = true
 
     async function fetchLocationAndWeather() {
       try {
         const locationResponse = await fetch("http://ip-api.com/json")
         if (!locationResponse.ok) {
-          console.error("Failed to fetch location")
-          return // Return early but don't throw
+          throw new Error("Failed to fetch location")
         }
         const locationData = await locationResponse.json()
         const { lat, lon, city, countryCode } = locationData
+
+        if (!mounted) return
 
         try {
           const weatherResponse = await fetch(
             `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`,
           )
           if (!weatherResponse.ok) {
-            console.error("Failed to fetch weather data")
-            return // Return early but don't throw
+            throw new Error("Failed to fetch weather data")
           }
           const weatherData = await weatherResponse.json()
           const condition = mapWeatherCodeToCondition(weatherData.current_weather.weathercode)
+
+          if (!mounted) return
 
           setWeather({
             temp: weatherData.current_weather.temperature,
@@ -62,25 +66,34 @@ export function WeatherWidget() {
             isDay: weatherData.current_weather.is_day === 1, // 1 for day, 0 for night
           })
         } catch (weatherError) {
-          // Silently log weather fetch errors
           console.error("Error fetching weather data:", weatherError)
+          // Keep retrying weather data if location was successful
+          if (mounted) {
+            retryTimeout = setTimeout(fetchLocationAndWeather, RETRY_INTERVAL)
+          }
         }
       } catch (error) {
-        // Silently log location fetch errors
         console.error("Error fetching location data:", error)
+        // Schedule retry
+        if (mounted) {
+          retryTimeout = setTimeout(fetchLocationAndWeather, RETRY_INTERVAL)
+        }
       }
     }
 
     // Initial fetch
     fetchLocationAndWeather()
 
-    // Set up retry interval (every minute)
-    const retryInterval = setInterval(fetchLocationAndWeather, 60000)
+    // Set up regular update interval
+    const updateInterval = setInterval(fetchLocationAndWeather, UPDATE_INTERVAL)
 
-    // Clear intervals on component unmount
+    // Cleanup function
     return () => {
-      clearInterval(retryInterval)
-      if (retryTimeout) clearTimeout(retryTimeout)
+      mounted = false
+      clearInterval(updateInterval)
+      if (retryTimeout) {
+        clearTimeout(retryTimeout)
+      }
     }
   }, [])
 

@@ -324,15 +324,14 @@
   color: #16a34a;
 }
 
-.phoneNumber {
+.supportEmail {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #0f172a;
-  text-decoration: none;
+  font-size: 1rem;
   margin: 1rem 0;
+  color: var(--oxford-blue);
+  justify-content: flex-start; /* Align to the left */
 }
 
 .actionButton {
@@ -340,7 +339,8 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  width: 100%;
+  width: 80%; /* Reduce width to match design */
+  margin: 0 auto; /* Center the button */
   padding: 0.75rem;
   background-color: #0f172a;
   color: white;
@@ -349,11 +349,7 @@
   font-size: 0.875rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
-}
-
-.actionButton:hover {
-  background-color: #1e293b;
+  text-decoration: none;
 }
 
 .addButton {

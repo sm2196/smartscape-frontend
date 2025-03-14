@@ -10,7 +10,7 @@ import {
 } from "firebase/auth"
 import { auth, db } from "./config"
 import { doc, updateDoc } from "firebase/firestore"
-import { cacheUserInfo, clearCachedUserInfo } from "../userCache"
+import { clearAuthData, clearAllAppData } from "../clearAppData"
 
 // Add this helper function at the top of the file
 function setAuthCookie() {
@@ -48,7 +48,7 @@ export async function signUpWithEmailAndPassword(email, password) {
     })
 
     // Cache user information
-    cacheUserInfo(userCredential.user)
+    clearAuthData(userCredential.user)
 
     return { success: true, user: userCredential.user }
   } catch (error) {
@@ -84,7 +84,7 @@ export async function signInWithEmailAndPassword(email, password) {
     setAuthCookie()
 
     // Cache user information
-    cacheUserInfo(userCredential.user)
+    clearAuthData(userCredential.user)
 
     return { success: true, user: userCredential.user }
   } catch (error) {
@@ -92,7 +92,7 @@ export async function signInWithEmailAndPassword(email, password) {
   }
 }
 
-// Sign out
+// Update the signOutUser function
 export async function signOutUser() {
   try {
     // Get current user before signing out
@@ -106,18 +106,8 @@ export async function signOutUser() {
       })
     }
 
-    // Clear any local storage items related to the app
-    localStorage.removeItem("notifications")
-    localStorage.removeItem("linkedThirdPartyApp")
-
-    // Clear any session storage items
-    sessionStorage.clear()
-
-    // Clear the auth cookie
-    clearAuthCookie()
-
-    // Clear cached user information
-    clearCachedUserInfo()
+    // Clear all application data
+    clearAllAppData()
 
     // Sign out from Firebase Auth
     await signOut(auth)
@@ -134,7 +124,7 @@ export function getCurrentUser() {
   return auth.currentUser
 }
 
-// Delete user account - this is used in ProfileContent.jsx
+// Update the deleteUserAccount function
 export async function deleteUserAccount(password) {
   try {
     const user = auth.currentUser
@@ -167,24 +157,8 @@ export async function deleteUserAccount(password) {
       // Continue with account deletion even if cleanup fails
     }
 
-    // Clear all local storage and session storage
-    localStorage.clear()
-    sessionStorage.clear()
-
-    // Clear cached user information
-    const { clearCachedUserInfo } = require("../userCache")
-    clearCachedUserInfo()
-
-    // Clear all Firestore data cache
-    try {
-      const { clearAllCache } = require("@/hooks/useFirestoreData")
-      clearAllCache()
-    } catch (cacheError) {
-      console.error("Error clearing Firestore cache:", cacheError)
-    }
-
-    // Clear auth cookie
-    document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
+    // Clear all application data
+    clearAllAppData()
 
     // Proceed with user deletion regardless of cleanup success
     await deleteUser(user)
@@ -340,7 +314,7 @@ export async function completeEmailUpdate(user, newEmail) {
     }
 
     // Update cached user information with new email
-    cacheUserInfo({
+    clearAuthData({
       ...user,
       email: user.email,
     })
