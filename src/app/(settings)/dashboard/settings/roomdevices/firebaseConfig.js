@@ -1,20 +1,20 @@
-// Import the functions you need from Firebase SDKs
+// firebaseConfig.js
 import { initializeApp } from "firebase/app";
-import { getFirestore, collection, getDocs, addDoc, setDoc, doc } from "firebase/firestore";
+import { getFirestore, collection, getDocs } from "firebase/firestore";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyAqRNlH_km9VO7dGkZ1M2PEMZLtNdaxgAM",
-  authDomain: "firestore-d3a8b.firebaseapp.com",
-  projectId: "firestore-d3a8b",
-  storageBucket: "firestore-d3a8b.firebasestorage.app",
-  messagingSenderId: "728375424214",
-  appId: "1:728375424214:web:8c5c8a9ef8864f99d6c577",
-  measurementId: "G-JHCWDLK9MX"
+  apiKey: "AIzaSyAlcx97VjChNpSbLZbvfeMkremnLXHJgo0",
+  authDomain: "smartscape-e062e.firebaseapp.com",
+  projectId: "smartscape-e062e",
+  storageBucket: "smartscape-e062e.firebasestorage.app",
+  messagingSenderId: "10186914859",
+  appId: "1:10186914859:web:fa2ce3e7c403d15ca6fe6e"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Initialize Firestore
+// Get Firestore instance
 const db = getFirestore(app);
+
+export { db, collection, getDocs };

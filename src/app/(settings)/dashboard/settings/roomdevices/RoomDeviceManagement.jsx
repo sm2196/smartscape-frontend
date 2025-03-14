@@ -1,32 +1,62 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MdChevronRight, MdAdd, MdRemove, MdWifi } from "react-icons/md";
 import Button from "./RoomDeviceButton";
 import styles from "./RoomDeviceManagement.module.css";
-import roomsData from "./rooms.json";
-import devicesData from "./devices.json";
+import { db } from "./firebaseConfig"; // Import the Firebase setup
+import { collection, getDocs } from "firebase/firestore";
 
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [newRoomName, setNewRoomName] = useState("");
-  const [rooms, setRooms] = useState(roomsData[0]?.content || []);
+  const [rooms, setRooms] = useState([]);
   const [wifiEnabled, setWifiEnabled] = useState(false);
   const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
   const [newDeviceCategory, setNewDeviceCategory] = useState("");
   const [newDeviceName, setNewDeviceName] = useState(""); // Add Devices
-  const [newDevices, setDevices] = useState(devicesData.devices.all); // All Devices
+  const [newDevices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
 
   const settings = [
     { name: "Network settings", type: "network", icon: MdWifi },
   ];
 
+  // Fetch room names from Firestore
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "rooms"));
+        const roomNames = querySnapshot.docs.map((doc) => doc.data().roomName); // Use 'roomName' instead of 'name'
+        setRooms(roomNames);
+      } catch (error) {
+        console.error("Error fetching rooms: ", error);
+      }
+    };
+
+    fetchRooms();
+  }, []);
+
+  // Fetch devices from Firestore
+  useEffect(() => {
+    const fetchDevices = async () => {
+      try {
+        const querySnapshot = await getDocs(collection(db, "devices"));
+        const fetchedDevices = querySnapshot.docs.map((doc) => doc.data()); // Fetch device data
+        setDevices(fetchedDevices);
+      } catch (error) {
+        console.error("Error fetching devices: ", error);
+      }
+    };
+
+    fetchDevices();
+  }, []);
+
   const openPopup = (type, room = null, device = null) => {
     setPopupType(type);
     if (room) setSelectedRoom(room);
-    if (device) setSelectedDevice(device); // Store the selected device
+    if (device) setSelectedDevice(device);
   };
 
   const closePopup = () => {
@@ -48,20 +78,31 @@ const DeviceManagement = () => {
       return;
     }
 
-    setRooms((prevRooms) => [...prevRooms, newRoomName.trim()]);
-    closePopup();
+    // Save to Firestore
+    const roomRef = collection(db, "rooms");
+    roomRef
+      .add({ name: newRoomName.trim() })
+      .then(() => {
+        setRooms((prevRooms) => [...prevRooms, newRoomName.trim()]);
+        closePopup();
+      })
+      .catch((error) => console.error("Error adding room: ", error));
   };
 
   const handleRemoveRoom = (roomName) => {
-    setRooms((prevRooms) => prevRooms.filter((room) => room !== roomName));
-    closePopup();
-  };
-
-  const handleRemoveDevice = (deviceName) => {
-    setDevices((prevDevices) =>
-      prevDevices.filter((device) => device.name !== deviceName)
-    );
-    closePopup();
+    // Remove from Firestore
+    const roomRef = collection(db, "rooms");
+    roomRef
+      .where("name", "==", roomName)
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          doc.ref.delete();
+        });
+        setRooms((prevRooms) => prevRooms.filter((room) => room !== roomName));
+        closePopup();
+      })
+      .catch((error) => console.error("Error removing room: ", error));
   };
 
   const handleSaveDevice = () => {
@@ -75,11 +116,12 @@ const DeviceManagement = () => {
       return;
     }
 
+    // Add device to Firestore (add similar to room)
     const newDevice = {
       id: newDevices.length + 1,
       name: newDeviceName.trim(),
       category: newDeviceCategory,
-      room: newDeviceCategory, // Set device location as the selected room
+      room: newDeviceCategory,
     };
 
     setDevices((prevDevices) => [...prevDevices, newDevice]);
@@ -88,15 +130,19 @@ const DeviceManagement = () => {
 
   const DevicesList = () => (
     <div>
-      {newDevices.map(({ id, name, category, room }) => (
-        <Button
-          key={id}
-          className={styles.buttonItem}
-          onClick={() => openPopup("device", null, name)} // Passing device name here
-        >
-          {name} - {category} - {room}
-        </Button>
-      ))}
+      {devices.length > 0 ? (
+        devices.map(({ id, name, room }) => (
+          <Button
+            key={id}
+            className={styles.buttonItem}
+            onClick={() => openPopup("device", null, name)}
+          >
+            {name} - {room}
+          </Button>
+        ))
+      ) : (
+        <p>No devices found.</p>
+      )}
     </div>
   );
 
@@ -183,6 +229,7 @@ const DeviceManagement = () => {
             </div>
           </div>
         );
+
       case "addDevice":
         return (
           <div>
@@ -235,6 +282,7 @@ const DeviceManagement = () => {
         ) : (
           <p>No device selected</p>
         );
+
       default:
         return null;
     }
@@ -270,18 +318,6 @@ const DeviceManagement = () => {
       {/* Devices Section */}
       <div className={styles.section}>
         <h2 className={styles.sectionHeader}>Devices</h2>
-        <div className={styles.buttonList}>
-          {settings.map(({ name, type, icon: Icon }) => (
-            <Button
-              key={name}
-              className={styles.buttonItem}
-              onClick={() => openPopup(type)}
-            >
-              {name}
-              <Icon className={styles.chevronIcon} />
-            </Button>
-          ))}
-        </div>
         <div>
           <p className={styles.paragraph}>All Devices</p>
           <div className={styles.popupGrid}>
