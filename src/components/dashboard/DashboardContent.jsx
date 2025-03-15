@@ -21,6 +21,7 @@ import { FaPowerOff } from "react-icons/fa6"
 import { DeviceCard } from "./DeviceCard"
 import { RoomSection } from "./RoomSection"
 import styles from "./DashboardContent.module.css"
+import { useFirebase } from "../../firebase/FirebaseContext"
 
 const bedroomDevices = {
   "Master Bedroom": [
@@ -46,8 +47,57 @@ const bedroomDevices = {
   ],
 }
 
+// Define device IDs for master controls
+const lightAndFanDevices = [
+  "living_lamp",
+  "living_lights",
+  "living_fan",
+  "garage_lights",
+  "master_lamp",
+  "guest_light",
+  "kids_nightlight",
+  "kids_lamp",
+]
+
+const mediaDevices = ["living_tv", "living_speaker", "living_projector"]
+
 export function DashboardContent() {
   const [selectedBedroom, setSelectedBedroom] = useState("Master Bedroom")
+  const { updateDeviceState, devices } = useFirebase()
+
+  // Function to turn off all lights and fans
+  const turnOffLightsAndFans = () => {
+    lightAndFanDevices.forEach((deviceId) => {
+      // Get current device state or use default
+      const currentState = devices[deviceId] || { status: "Off", isActive: false }
+
+      // Only update if the device is currently active
+      if (currentState.isActive) {
+        updateDeviceState(deviceId, {
+          status: "Off",
+          isActive: false,
+          statusColor: "",
+        })
+      }
+    })
+  }
+
+  // Function to turn off all media devices
+  const turnOffMediaDevices = () => {
+    mediaDevices.forEach((deviceId) => {
+      // Get current device state or use default
+      const currentState = devices[deviceId] || { status: "Off", isActive: false }
+
+      // Only update if the device is currently active
+      if (currentState.isActive) {
+        updateDeviceState(deviceId, {
+          status: "Off",
+          isActive: false,
+          statusColor: "",
+        })
+      }
+    })
+  }
 
   return (
     <>
@@ -128,11 +178,11 @@ export function DashboardContent() {
       </RoomSection>
 
       <div className={styles.actionBar}>
-        <button className={styles.actionButton}>
+        <button className={styles.actionButton} onClick={turnOffLightsAndFans}>
           <FaPowerOff />
           Turn Off All Lights and Fans
         </button>
-        <button className={styles.actionButton}>
+        <button className={styles.actionButton} onClick={turnOffMediaDevices}>
           <MdTv />
           Turn Off TV and Speakers
         </button>
