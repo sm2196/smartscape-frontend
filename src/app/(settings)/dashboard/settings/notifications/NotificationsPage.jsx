@@ -21,43 +21,50 @@ import styles from "./NotificationsPage.module.css"
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useAuth()
   const [error, setError] = useState(null)
+  const [userId, setUserId] = useState(null)
 
-  // Get user ID with priority from cache first, then from auth object
-  const userId = getUserId(user)
+  // Use useEffect to get userId on client-side only
+  useEffect(() => {
+    // Get user ID with priority from cache first, then from auth object
+    setUserId(getUserId(user))
+  }, [user])
 
-  // Default notification settings for new users
-  const defaultNotifications = {
-    usageAlerts: true,
-    outageAlerts: true,
-    consumptionAlerts: true,
-    leakAlerts: true,
-    deviceStatus: true,
-    firmwareUpdates: true,
-    doorAlerts: true,
-    motionDetection: true,
-    maintenanceAlerts: true,
-    softwareUpdates: true,
-    batteryAlerts: true,
-    wifiConnectivity: true,
-    homeAway: false,
-  }
+  // Default notification settings - all notifications enabled by default
+  const defaultEnabledNotifications = [
+    "usageAlerts",
+    "outageAlerts",
+    "consumptionAlerts",
+    "leakAlerts",
+    "deviceStatus",
+    "firmwareUpdates",
+    "doorAlerts",
+    "motionDetection",
+    "maintenanceAlerts",
+    "softwareUpdates",
+    "batteryAlerts",
+    "wifiConnectivity",
+    // "homeAway" is disabled by default
+  ]
 
-  // Use our custom hook to fetch and cache notification settings
+  // Update the useFirestoreData hook usage to target the Users collection
   const {
-    data: notifications,
+    data: userData,
     loading: dataLoading,
     error: dataError,
     updateData,
     refetch,
-  } = useFirestoreData("Notifications", userId, {
+  } = useFirestoreData("Users", userId, {
     localStorageCache: true, // Enable localStorage caching for persistence
     cacheDuration: 30 * 60 * 1000, // Cache for 30 minutes
-    defaultData: defaultNotifications, // Default data for new users
+    defaultData: { enabledNotifications: defaultEnabledNotifications }, // Default data for new users
   })
+
+  // Extract enabled notifications from user data
+  const enabledNotifications = userData?.enabledNotifications || defaultEnabledNotifications
 
   // Set error state if there's an error from the hook
   useEffect(() => {
-    if (dataError && dataError !== "Document ID is required") {
+    if (dataError) {
       setError(dataError)
     }
   }, [dataError])
@@ -66,11 +73,23 @@ export default function NotificationsPage() {
   const toggleNotification = async (type) => {
     if (!userId) return
 
-    const updatedValue = !notifications[type]
+    // Check if notification is currently enabled
+    const isEnabled = enabledNotifications.includes(type)
+    let updatedNotifications
+
+    if (isEnabled) {
+      // Remove from array if currently enabled
+      updatedNotifications = enabledNotifications.filter((item) => item !== type)
+    } else {
+      // Add to array if currently disabled
+      updatedNotifications = [...enabledNotifications, type]
+    }
 
     try {
-      // Use our updateData function to update both Firestore and cache
-      await updateData({ [type]: updatedValue })
+      // Update the enabledNotifications array in the user document
+      await updateData({
+        enabledNotifications: updatedNotifications,
+      })
     } catch (error) {
       console.error("Error updating Firestore:", error)
       setError("Failed to update notification settings")
@@ -183,24 +202,28 @@ export default function NotificationsPage() {
               <h2>{category.title}</h2>
             </div>
             <div className={styles.notificationList}>
-              {category.items.map(({ key, name, icon: Icon }) => (
-                <div key={key} className={styles.notificationItem}>
-                  <div className={styles.notificationInfo}>
-                    <Icon size={20} className={styles.notificationIcon} />
-                    <span>{name}</span>
+              {category.items.map(({ key, name, icon: Icon }) => {
+                const isEnabled = enabledNotifications.includes(key)
+
+                return (
+                  <div key={key} className={styles.notificationItem}>
+                    <div className={styles.notificationInfo}>
+                      <Icon size={20} className={styles.notificationIcon} />
+                      <span>{name}</span>
+                    </div>
+                    <button
+                      className={`${styles.toggleButton} ${isEnabled ? styles.on : styles.off}`}
+                      onClick={() => toggleNotification(key)}
+                      aria-label={`${isEnabled ? "Disable" : "Enable"} ${name}`}
+                    >
+                      <span className={styles.toggleTrack}>
+                        <span className={styles.toggleThumb} />
+                      </span>
+                      <span className={styles.toggleStatus}>{isEnabled ? "On" : "Off"}</span>
+                    </button>
                   </div>
-                  <button
-                    className={`${styles.toggleButton} ${notifications && notifications[key] ? styles.on : styles.off}`}
-                    onClick={() => toggleNotification(key)}
-                    aria-label={`${notifications && notifications[key] ? "Disable" : "Enable"} ${name}`}
-                  >
-                    <span className={styles.toggleTrack}>
-                      <span className={styles.toggleThumb} />
-                    </span>
-                    <span className={styles.toggleStatus}>{notifications && notifications[key] ? "On" : "Off"}</span>
-                  </button>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         ))}

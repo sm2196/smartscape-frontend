@@ -165,7 +165,7 @@ export async function getProfileByUserId(userId) {
         email: currentUser ? currentUser.email : "",
         phone: profileData.phone || "",
         verified: profileData.verified || false,
-        isAdmin: profileData.admin === true, // Changed from admin to isAdmin
+        isAdmin: profileData.admin === true,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
         // Remove updatedAt
@@ -267,86 +267,71 @@ export async function cleanupUserData(userId) {
     // Create a batch for atomic operations
     const batch = writeBatch(db)
 
-    // Collections to clean up
-    const collectionsToClean = ["Users", "Notifications"]
+    // First, find and delete all rooms owned by this user
+    const roomsRef = collection(db, "Rooms")
+    const roomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", userId)))
+    const roomsSnapshot = await getDocs(roomsQuery)
 
-    // If the user is an admin, handle their managed users first
+    // Store room IDs to delete associated devices
+    const roomIds = []
+
+    // Add room deletions to batch
+    roomsSnapshot.forEach((roomDoc) => {
+      roomIds.push(roomDoc.id)
+      batch.delete(roomDoc.ref)
+    })
+
+    // Find and delete all devices that reference these rooms
+    const devicesRef = collection(db, "Devices")
+    for (const roomId of roomIds) {
+      const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
+      const devicesSnapshot = await getDocs(devicesQuery)
+
+      devicesSnapshot.forEach((deviceDoc) => {
+        batch.delete(deviceDoc.ref)
+      })
+    }
+
+    // If the user is an admin, handle their managed users
     if (profile && profile.isAdmin === true) {
-      try {
-        // Find all users managed by this admin
-        const managedUsersQuery = query(collection(db, "Users"), where("adminId", "==", userId))
-        const managedUsersSnapshot = await getDocs(managedUsersQuery)
+      const managedUsersQuery = query(collection(db, "Users"), where("adminId", "==", userId))
+      const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
-        // Delete all managed users' data
-        if (!managedUsersSnapshot.empty) {
-          for (const userDoc of managedUsersSnapshot.docs) {
-            const managedUserId = userDoc.id
+      for (const userDoc of managedUsersSnapshot.docs) {
+        const managedUserId = userDoc.id
 
-            // Delete managed user's data from all collections
-            for (const collectionName of collectionsToClean) {
-              // Delete user's main document
-              const userDocRef = doc(db, collectionName, managedUserId)
-              batch.delete(userDocRef)
+        // Delete managed user's rooms
+        const managedRoomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", managedUserId)))
+        const managedRoomsSnapshot = await getDocs(managedRoomsQuery)
 
-              // Delete user's subcollections if any
-              try {
-                const subcollectionsQuery = await getDocs(
-                  collection(db, collectionName, managedUserId, "subcollection"),
-                )
-                subcollectionsQuery.forEach((subdoc) => {
-                  batch.delete(doc(db, collectionName, managedUserId, "subcollection", subdoc.id))
-                })
-              } catch (subcollectionError) {
-                console.error(`Error cleaning subcollections for managed user ${managedUserId}:`, subcollectionError)
-                // Continue with deletion even if subcollection cleanup fails
-              }
-            }
-          }
+        const managedRoomIds = []
+        managedRoomsSnapshot.forEach((roomDoc) => {
+          managedRoomIds.push(roomDoc.id)
+          batch.delete(roomDoc.ref)
+        })
+
+        // Delete managed user's devices
+        for (const roomId of managedRoomIds) {
+          const managedDevicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
+          const managedDevicesSnapshot = await getDocs(managedDevicesQuery)
+
+          managedDevicesSnapshot.forEach((deviceDoc) => {
+            batch.delete(deviceDoc.ref)
+          })
         }
-      } catch (managedUsersError) {
-        console.error("Error handling managed users:", managedUsersError)
+
+        // Delete the managed user document
+        batch.delete(doc(db, "Users", managedUserId))
       }
     }
 
-    // Delete the user's own data from all collections
-    for (const collectionName of collectionsToClean) {
-      // Delete user's main document
-      const userDocRef = doc(db, collectionName, userId)
-      batch.delete(userDocRef)
-
-      // Delete user's subcollections if any
-      try {
-        const subcollectionsQuery = await getDocs(collection(db, collectionName, userId, "subcollection"))
-        subcollectionsQuery.forEach((subdoc) => {
-          batch.delete(doc(db, collectionName, userId, "subcollection", subdoc.id))
-        })
-      } catch (subcollectionError) {
-        console.error("Error cleaning subcollections:", subcollectionError)
-        // Continue with deletion even if subcollection cleanup fails
-      }
-
-      // Clean up any documents where this user is referenced
-      try {
-        const referencingDocsQuery = query(collection(db, collectionName), where("userId", "==", userId))
-        const referencingDocs = await getDocs(referencingDocsQuery)
-        referencingDocs.forEach((doc) => {
-          batch.delete(doc.ref)
-        })
-      } catch (referenceError) {
-        console.error(`Error cleaning up references in ${collectionName}:`, referenceError)
-      }
-    }
+    // Delete the user's own document
+    batch.delete(doc(db, "Users", userId))
 
     // Commit all the batch operations
-    try {
-      await batch.commit()
-      console.log("Successfully cleaned up all user data")
-      return { success: true }
-    } catch (batchError) {
-      console.error("Error committing batch delete:", batchError)
-      // Return success anyway to ensure the auth account gets deleted
-      return { success: true }
-    }
+    await batch.commit()
+    console.log("Successfully cleaned up all user data")
+    return { success: true }
   } catch (error) {
     console.error("Error in cleanup:", error)
     // Return success anyway to ensure the auth account gets deleted

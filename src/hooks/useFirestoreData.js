@@ -54,6 +54,11 @@ export function useFirestoreData(
 
   // Function to get data from cache
   const getFromCache = useCallback(() => {
+    // Check if we're in a browser environment
+    if (typeof window === "undefined") {
+      return null
+    }
+
     // Check in-memory cache first
     const cachedData = cache.get(cacheKey)
 
@@ -87,6 +92,11 @@ export function useFirestoreData(
   // Function to save data to cache
   const saveToCache = useCallback(
     (data) => {
+      // Check if we're in a browser environment
+      if (typeof window === "undefined") {
+        return
+      }
+
       const timestamp = Date.now()
 
       // Save to in-memory cache
@@ -220,7 +230,6 @@ export function useFirestoreData(
       // Reset state when documentId is not available
       setData(null)
       setLoading(false)
-      setError("Document ID is required")
     }
 
     // Cleanup function to handle component unmount

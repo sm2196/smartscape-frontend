@@ -16,12 +16,14 @@ export function cacheUserInfo(user) {
   if (!user) return
 
   try {
-    localStorage.setItem(USER_ID_CACHE_KEY, user.uid)
-    if (user.email) {
-      localStorage.setItem(USER_EMAIL_CACHE_KEY, user.email)
-    }
-    if (user.isAdmin !== undefined) {
-      localStorage.setItem(USER_ADMIN_CACHE_KEY, user.isAdmin.toString())
+    if (typeof window !== "undefined") {
+      localStorage.setItem(USER_ID_CACHE_KEY, user.uid)
+      if (user.email) {
+        localStorage.setItem(USER_EMAIL_CACHE_KEY, user.email)
+      }
+      if (user.isAdmin !== undefined) {
+        localStorage.setItem(USER_ADMIN_CACHE_KEY, user.isAdmin.toString())
+      }
     }
   } catch (error) {
     console.error("Error caching user info:", error)
@@ -34,7 +36,11 @@ export function cacheUserInfo(user) {
  */
 export function getCachedUserId() {
   try {
-    return localStorage.getItem(USER_ID_CACHE_KEY)
+    // Check if window is defined (client-side) before accessing localStorage
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(USER_ID_CACHE_KEY)
+    }
+    return null
   } catch (error) {
     console.error("Error getting cached user ID:", error)
     return null
@@ -47,7 +53,10 @@ export function getCachedUserId() {
  */
 export function getCachedUserEmail() {
   try {
-    return localStorage.getItem(USER_EMAIL_CACHE_KEY)
+    if (typeof window !== "undefined") {
+      return localStorage.getItem(USER_EMAIL_CACHE_KEY)
+    }
+    return null
   } catch (error) {
     console.error("Error getting cached user email:", error)
     return null
@@ -60,8 +69,11 @@ export function getCachedUserEmail() {
  */
 export function getCachedUserIsAdmin() {
   try {
-    const isAdmin = localStorage.getItem(USER_ADMIN_CACHE_KEY)
-    return isAdmin ? isAdmin === "true" : null
+    if (typeof window !== "undefined") {
+      const isAdmin = localStorage.getItem(USER_ADMIN_CACHE_KEY)
+      return isAdmin ? isAdmin === "true" : null
+    }
+    return null
   } catch (error) {
     console.error("Error getting cached user admin status:", error)
     return null
@@ -73,9 +85,11 @@ export function getCachedUserIsAdmin() {
  */
 export function clearCachedUserInfo() {
   try {
-    localStorage.removeItem(USER_ID_CACHE_KEY)
-    localStorage.removeItem(USER_EMAIL_CACHE_KEY)
-    localStorage.removeItem(USER_ADMIN_CACHE_KEY)
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(USER_ID_CACHE_KEY)
+      localStorage.removeItem(USER_EMAIL_CACHE_KEY)
+      localStorage.removeItem(USER_ADMIN_CACHE_KEY)
+    }
   } catch (error) {
     console.error("Error clearing cached user info:", error)
   }
