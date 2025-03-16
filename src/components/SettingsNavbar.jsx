@@ -13,7 +13,6 @@ import {
 } from "react-icons/md";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { WeatherWidget } from "./Weather";
 
 const navigation = [
   { name: "Profiles", href: "/dashboard/settings", icon: MdPerson },
@@ -116,9 +115,6 @@ export default function SettingsNavbar() {
           );
         })}
       </nav>
-      <div className="tw:mt-auto tw:max-lg:hidden">
-        <WeatherWidget />
-      </div>
     </div>
   );
 }
