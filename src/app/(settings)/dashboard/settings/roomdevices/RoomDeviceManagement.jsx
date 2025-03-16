@@ -263,13 +263,13 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the refreshData function to use the new cache functions
-  const refreshData = () => {
-    // Clear cache for Rooms and Devices
+  // Add a function to handle manual refresh with cache clearing
+  const handleRefresh = async () => {
+    // Clear cache
     clearRelatedCollectionsCache("Rooms", "Devices")
 
-    // Force refresh from Firestore
-    fetchRooms(true)
+    // Refetch data
+    refetch()
   }
 
   // Update the useEffect that calls fetchRooms to use the new dependency
@@ -287,14 +287,15 @@ const DeviceManagement = () => {
     )
   }
 
-  if (error || dataError) {
+  if (error) {
     return (
       <div className={styles.errorContainer}>
         <MdError size={48} className={styles.errorIcon} />
-        <p className={styles.errorMessage}>{error || dataError}</p>
-        <button onClick={() => window.location.reload()} className={styles.retryButton}>
-          Retry
-        </button>
+        <p className={styles.errorMessage}>{error}</p>
+        <button className={styles.retryButton} onClick={handleRefresh}>
+            <MdRefresh size={16} />
+            Retry
+          </button>
       </div>
     )
   }
@@ -304,11 +305,6 @@ const DeviceManagement = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>Rooms & Devices</h1>
         <p className={styles.subtitle}>Manage your smart home setup by organizing rooms and devices</p>
-        {/* Add a refresh button to the UI in the header section */}
-        {/* Inside the header div, add this button after the subtitle paragraph */}
-        <button onClick={refreshData} className={styles.refreshButton}>
-          Refresh Data
-        </button>
       </div>
 
       <div className={styles.content}>
