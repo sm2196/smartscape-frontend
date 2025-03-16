@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/useAuth"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
-import { getUserId } from "@/lib/userCache"
+import { getUserId } from "@/lib/cacheUtils"
 import {
   MdPower,
   MdWaterDrop,

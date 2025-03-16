@@ -1,13 +1,21 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { MdChevronRight, MdAdd, MdHome, MdDevicesOther, MdClose, MdDelete, MdError } from "react-icons/md"
 import { collection, query, where, getDocs, deleteDoc, doc, addDoc } from "firebase/firestore"
 import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
 import styles from "./RoomDeviceManagement.module.css"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
-import { getUserId } from "@/lib/userCache"
+import {
+  getUserId,
+  getRelatedCollectionsFromCache,
+  saveRelatedCollectionsToCache,
+  clearRelatedCollectionsCache,
+} from "@/lib/cacheUtils"
+
+// Add these constants for cache keys and expiration time
+const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
 
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null)
@@ -32,10 +40,8 @@ const DeviceManagement = () => {
 
   // Update the useFirestoreData hook to handle the case when userId is null
   const {
-    data: userPreferences,
     loading: dataLoading,
     error: dataError,
-    updateData: updatePreferences,
   } = useFirestoreData("Users", userId, {
     localStorageCache: true,
     cacheDuration: 30 * 60 * 1000, // Cache for 30 minutes
@@ -52,54 +58,68 @@ const DeviceManagement = () => {
   // Add this loading state determination
   const isLoading = (authLoading && !userId) || (userId && dataLoading)
 
-  // Fetch rooms that belong to the current user
-  const fetchRooms = async () => {
-    try {
-      if (!user || !userId) return
+  // Replace the fetchRooms function with this updated version
+  const fetchRooms = useCallback(
+    async (skipCache = false) => {
+      try {
+        if (!user || !userId) return
 
-      const roomsRef = collection(db, "Rooms")
-      const q = query(roomsRef, where("userRef", "==", doc(db, "Users", user.uid)))
-      const querySnapshot = await getDocs(q)
+        // Check cache first if not skipping cache
+        if (!skipCache) {
+          const cachedData = getRelatedCollectionsFromCache("Rooms", "Devices", CACHE_EXPIRATION)
+          if (cachedData) {
+            setRooms(cachedData.rooms)
+            setDevices(cachedData.devices)
+            setError(null)
+            return
+          }
+        }
 
-      const roomsData = []
-      querySnapshot.forEach((doc) => {
-        roomsData.push({
-          id: doc.id,
-          ...doc.data(),
-        })
-      })
+        // Fetch from Firestore if cache is invalid or we're skipping cache
+        const roomsRef = collection(db, "Rooms")
+        const q = query(roomsRef, where("userRef", "==", doc(db, "Users", user.uid)))
+        const querySnapshot = await getDocs(q)
 
-      setRooms(roomsData)
-
-      // Fetch devices for each room
-      const devicesByRoom = {}
-      for (const room of roomsData) {
-        const devicesRef = collection(db, "Devices")
-        const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", room.id)))
-        const devicesSnapshot = await getDocs(devicesQuery)
-
-        const roomDevices = []
-        devicesSnapshot.forEach((deviceDoc) => {
-          roomDevices.push({
-            id: deviceDoc.id,
-            ...deviceDoc.data(),
+        const roomsData = []
+        querySnapshot.forEach((doc) => {
+          roomsData.push({
+            id: doc.id,
+            ...doc.data(),
           })
         })
 
-        devicesByRoom[room.id] = roomDevices
+        setRooms(roomsData)
+
+        // Fetch devices for each room
+        const devicesByRoom = {}
+        for (const room of roomsData) {
+          const devicesRef = collection(db, "Devices")
+          const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", room.id)))
+          const devicesSnapshot = await getDocs(devicesQuery)
+
+          const roomDevices = []
+          devicesSnapshot.forEach((deviceDoc) => {
+            roomDevices.push({
+              id: deviceDoc.id,
+              ...deviceDoc.data(),
+            })
+          })
+
+          devicesByRoom[room.id] = roomDevices
+        }
+
+        setDevices(devicesByRoom)
+        setError(null)
+
+        // Update cache with fresh data
+        saveRelatedCollectionsToCache("Rooms", "Devices", roomsData, devicesByRoom)
+      } catch (error) {
+        console.error("Error fetching rooms and devices: ", error)
+        setError("Failed to load rooms and devices. Please try again.")
       }
-
-      setDevices(devicesByRoom)
-      setError(null)
-    } catch (error) {
-      console.error("Error fetching rooms and devices: ", error)
-      setError("Failed to load rooms and devices. Please try again.")
-    }
-  }
-
-  useEffect(() => {
-    fetchRooms()
-  }, [user, userPreferences, userId])
+    },
+    [user, userId],
+  )
 
   const openPopup = (type, room = null, device = null) => {
     setPopupType(type)
@@ -116,6 +136,7 @@ const DeviceManagement = () => {
     setSelectedDevice(null)
   }
 
+  // Update the handleSaveRoom function to use the new cache functions
   const handleSaveRoom = async () => {
     if (!user || !newRoomName.trim()) return
 
@@ -132,8 +153,16 @@ const DeviceManagement = () => {
         userRef: doc(db, "Users", user.uid),
       }
 
-      setRooms((prev) => [...prev, newRoom])
-      setDevices((prev) => ({ ...prev, [newRoomRef.id]: [] }))
+      // Update state
+      const updatedRooms = [...rooms, newRoom]
+      setRooms(updatedRooms)
+
+      const updatedDevices = { ...devices, [newRoomRef.id]: [] }
+      setDevices(updatedDevices)
+
+      // Update cache
+      saveRelatedCollectionsToCache("Rooms", "Devices", updatedRooms, updatedDevices)
+
       closePopup()
     } catch (error) {
       console.error("Error adding room: ", error)
@@ -141,6 +170,7 @@ const DeviceManagement = () => {
     }
   }
 
+  // Update the handleRemoveRoom function to use the new cache functions
   const handleRemoveRoom = async (room) => {
     if (!user) return
 
@@ -155,12 +185,16 @@ const DeviceManagement = () => {
       await Promise.all(deletePromises)
       await deleteDoc(doc(db, "Rooms", room.id))
 
-      setRooms((prev) => prev.filter((r) => r.id !== room.id))
-      setDevices((prev) => {
-        const newDevices = { ...prev }
-        delete newDevices[room.id]
-        return newDevices
-      })
+      // Update state
+      const updatedRooms = rooms.filter((r) => r.id !== room.id)
+      setRooms(updatedRooms)
+
+      const updatedDevices = { ...devices }
+      delete updatedDevices[room.id]
+      setDevices(updatedDevices)
+
+      // Update cache
+      saveRelatedCollectionsToCache("Rooms", "Devices", updatedRooms, updatedDevices)
 
       closePopup()
     } catch (error) {
@@ -169,6 +203,7 @@ const DeviceManagement = () => {
     }
   }
 
+  // Update the handleSaveDevice function to use the new cache functions
   const handleSaveDevice = async () => {
     if (!user || !newDeviceName.trim() || !newDeviceCategory) return
 
@@ -187,10 +222,15 @@ const DeviceManagement = () => {
         roomRef: doc(db, "Rooms", newDeviceCategory),
       }
 
-      setDevices((prev) => ({
-        ...prev,
-        [newDeviceCategory]: [...(prev[newDeviceCategory] || []), newDevice],
-      }))
+      // Update state
+      const updatedDevices = {
+        ...devices,
+        [newDeviceCategory]: [...(devices[newDeviceCategory] || []), newDevice],
+      }
+      setDevices(updatedDevices)
+
+      // Update cache
+      saveRelatedCollectionsToCache("Rooms", "Devices", rooms, updatedDevices)
 
       closePopup()
     } catch (error) {
@@ -199,16 +239,22 @@ const DeviceManagement = () => {
     }
   }
 
+  // Update the handleRemoveDevice function to use the new cache functions
   const handleRemoveDevice = async (device) => {
     if (!user || !selectedRoom) return
 
     try {
       await deleteDoc(doc(db, "Devices", device.id))
 
-      setDevices((prev) => ({
-        ...prev,
-        [selectedRoom.id]: prev[selectedRoom.id].filter((d) => d.id !== device.id),
-      }))
+      // Update state
+      const updatedDevices = {
+        ...devices,
+        [selectedRoom.id]: devices[selectedRoom.id].filter((d) => d.id !== device.id),
+      }
+      setDevices(updatedDevices)
+
+      // Update cache
+      saveRelatedCollectionsToCache("Rooms", "Devices", rooms, updatedDevices)
 
       closePopup()
     } catch (error) {
@@ -216,6 +262,20 @@ const DeviceManagement = () => {
       setError("Failed to remove device. Please try again.")
     }
   }
+
+  // Update the refreshData function to use the new cache functions
+  const refreshData = () => {
+    // Clear cache for Rooms and Devices
+    clearRelatedCollectionsCache("Rooms", "Devices")
+
+    // Force refresh from Firestore
+    fetchRooms(true)
+  }
+
+  // Update the useEffect that calls fetchRooms to use the new dependency
+  useEffect(() => {
+    fetchRooms()
+  }, [fetchRooms])
 
   // Replace the existing loading check with this one
   if (isLoading) {
@@ -244,6 +304,11 @@ const DeviceManagement = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>Rooms & Devices</h1>
         <p className={styles.subtitle}>Manage your smart home setup by organizing rooms and devices</p>
+        {/* Add a refresh button to the UI in the header section */}
+        {/* Inside the header div, add this button after the subtitle paragraph */}
+        <button onClick={refreshData} className={styles.refreshButton}>
+          Refresh Data
+        </button>
       </div>
 
       <div className={styles.content}>

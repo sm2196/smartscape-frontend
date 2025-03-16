@@ -4,7 +4,7 @@
  */
 
 import { clearAllCache } from "@/hooks/useFirestoreData"
-import { clearCachedUserInfo } from "./userCache"
+import { clearCachedUserInfo, clearRelatedCollectionsCache } from "./cacheUtils"
 
 /**
  * Clear all application data from localStorage, sessionStorage, and cookies
@@ -17,14 +17,17 @@ export function clearAllAppData() {
   // Clear user cache
   clearCachedUserInfo()
 
-  // Clear specific localStorage items
+  // Clear specific collections using the new utility
+  clearRelatedCollectionsCache("Rooms", "Devices")
+
+  // Clear other app-specific localStorage keys
   const localStorageItemsToClear = [
     "notifications",
     "linkedThirdPartyApp",
     // Add any other app-specific localStorage keys here
   ]
 
-  localStorageItemsToClear.forEach(key => {
+  localStorageItemsToClear.forEach((key) => {
     try {
       localStorage.removeItem(key)
     } catch (error) {
@@ -49,7 +52,7 @@ export function clearAllAppData() {
  */
 function clearAllCookies() {
   try {
-    document.cookie.split(";").forEach(cookie => {
+    document.cookie.split(";").forEach((cookie) => {
       const name = cookie.trim().split("=")[0]
       document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
     })
@@ -65,7 +68,8 @@ function clearAllCookies() {
 export function clearAuthData() {
   // Clear auth cookie
   document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
-  
+
   // Clear user cache
   clearCachedUserInfo()
 }
+

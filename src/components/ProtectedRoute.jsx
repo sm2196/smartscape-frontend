@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
 import { clearAllCache } from "@/hooks/useFirestoreData" // Import the cache clearing function
-import { getUserId } from "@/lib/userCache" // Import the getUserId function
+import { getUserId } from "@/lib/cacheUtils" // Import the getUserId function
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()

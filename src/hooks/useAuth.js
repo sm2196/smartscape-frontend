@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/config"
 import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore"
-// Update the imports to include getUserId
-import { cacheUserInfo, getUserId } from "@/lib/userCache"
+import { cacheUserInfo, getUserId } from "@/lib/cacheUtils"
 
 export function useAuth() {
   const [user, setUser] = useState(null)

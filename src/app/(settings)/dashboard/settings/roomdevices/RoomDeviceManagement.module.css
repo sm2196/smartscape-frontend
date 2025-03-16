@@ -414,6 +414,29 @@
   background-color: var(--space-cadet);
 }
 
+/* Add styles for the refresh button */
+.refreshButton {
+  padding: 8px 16px;
+  background-color: var(--oxford-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 16px;
+}
+
+.refreshButton:hover {
+  background-color: var(--space-cadet);
+  transform: translateY(-1px);
+}
+
+.refreshButton:active {
+  transform: translateY(0);
+}
+
 /* Responsive styles */
 @media (max-width: 768px) {
   .container {

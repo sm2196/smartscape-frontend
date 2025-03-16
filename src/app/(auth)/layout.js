@@ -1,4 +1,4 @@
-import "@/app/global.css";
+import "@/app/globals.css";
 
 export const viewport = {
   width: "device-width",

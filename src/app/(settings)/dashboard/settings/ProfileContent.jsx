@@ -9,8 +9,8 @@ import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 import { isValidPhoneNumber } from "react-phone-number-input"
 import { clearAllAppData } from "@/lib/clearAppData"
 
-// Import the getUserId function at the top of the file with other imports
-import { getUserId } from "@/lib/userCache"
+// Import the getUserId function from cacheUtils instead of userCache
+import { getUserId } from "@/lib/cacheUtils"
 
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
