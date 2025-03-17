@@ -273,11 +273,11 @@ const DeviceManagement = () => {
     )
   }
 
-  if (error || dataError) {
+  if (error) {
     return (
       <div className={styles.errorContainer}>
         <MdError size={48} className={styles.errorIcon} />
-        <p className={styles.errorMessage}>{error || dataError}</p>
+        <p className={styles.errorMessage}>{error}</p>
         <button onClick={() => window.location.reload()} className={styles.retryButton}>
           Retry
         </button>
