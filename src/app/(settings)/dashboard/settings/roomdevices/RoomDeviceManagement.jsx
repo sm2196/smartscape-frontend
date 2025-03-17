@@ -7,15 +7,13 @@ import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
 import styles from "./RoomDeviceManagement.module.css"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
-import {
-  getUserId,
-  getRelatedCollectionsFromCache,
-  saveRelatedCollectionsToCache,
-  clearRelatedCollectionsCache,
-} from "@/lib/cacheUtils"
+import { getUserId, getRelatedCollectionsFromCache, saveRelatedCollectionsToCache } from "@/lib/cacheUtils"
 
 // Add these constants for cache keys and expiration time
 const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
+
+// Define the collections array
+const CACHE_COLLECTIONS = ["Rooms", "Devices"]
 
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null)
@@ -39,10 +37,7 @@ const DeviceManagement = () => {
   }, [user])
 
   // Update the useFirestoreData hook to handle the case when userId is null
-  const {
-    loading: dataLoading,
-    error: dataError,
-  } = useFirestoreData("Users", userId, {
+  const { loading: dataLoading, error: dataError } = useFirestoreData("Users", userId, {
     localStorageCache: true,
     cacheDuration: 30 * 60 * 1000, // Cache for 30 minutes
     defaultData: {},
@@ -66,7 +61,7 @@ const DeviceManagement = () => {
 
         // Check cache first if not skipping cache
         if (!skipCache) {
-          const cachedData = getRelatedCollectionsFromCache("Rooms", "Devices", CACHE_EXPIRATION)
+          const cachedData = getRelatedCollectionsFromCache(CACHE_COLLECTIONS, CACHE_EXPIRATION)
           if (cachedData) {
             setRooms(cachedData.rooms)
             setDevices(cachedData.devices)
@@ -112,7 +107,7 @@ const DeviceManagement = () => {
         setError(null)
 
         // Update cache with fresh data
-        saveRelatedCollectionsToCache("Rooms", "Devices", roomsData, devicesByRoom)
+        saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [roomsData, devicesByRoom])
       } catch (error) {
         console.error("Error fetching rooms and devices: ", error)
         setError("Failed to load rooms and devices. Please try again.")
@@ -136,7 +131,7 @@ const DeviceManagement = () => {
     setSelectedDevice(null)
   }
 
-  // Update the handleSaveRoom function to use the new cache functions
+  // Update the handleSaveRoom function
   const handleSaveRoom = async () => {
     if (!user || !newRoomName.trim()) return
 
@@ -161,7 +156,7 @@ const DeviceManagement = () => {
       setDevices(updatedDevices)
 
       // Update cache
-      saveRelatedCollectionsToCache("Rooms", "Devices", updatedRooms, updatedDevices)
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedRooms, updatedDevices])
 
       closePopup()
     } catch (error) {
@@ -170,7 +165,7 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the handleRemoveRoom function to use the new cache functions
+  // Update the handleRemoveRoom function
   const handleRemoveRoom = async (room) => {
     if (!user) return
 
@@ -194,7 +189,7 @@ const DeviceManagement = () => {
       setDevices(updatedDevices)
 
       // Update cache
-      saveRelatedCollectionsToCache("Rooms", "Devices", updatedRooms, updatedDevices)
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedRooms, updatedDevices])
 
       closePopup()
     } catch (error) {
@@ -203,7 +198,7 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the handleSaveDevice function to use the new cache functions
+  // Update the handleSaveDevice function
   const handleSaveDevice = async () => {
     if (!user || !newDeviceName.trim() || !newDeviceCategory) return
 
@@ -230,7 +225,7 @@ const DeviceManagement = () => {
       setDevices(updatedDevices)
 
       // Update cache
-      saveRelatedCollectionsToCache("Rooms", "Devices", rooms, updatedDevices)
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [rooms, updatedDevices])
 
       closePopup()
     } catch (error) {
@@ -239,7 +234,7 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the handleRemoveDevice function to use the new cache functions
+  // Update the handleRemoveDevice function
   const handleRemoveDevice = async (device) => {
     if (!user || !selectedRoom) return
 
@@ -254,22 +249,13 @@ const DeviceManagement = () => {
       setDevices(updatedDevices)
 
       // Update cache
-      saveRelatedCollectionsToCache("Rooms", "Devices", rooms, updatedDevices)
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [rooms, updatedDevices])
 
       closePopup()
     } catch (error) {
       console.error("Error removing device: ", error)
       setError("Failed to remove device. Please try again.")
     }
-  }
-
-  // Add a function to handle manual refresh with cache clearing
-  const handleRefresh = async () => {
-    // Clear cache
-    clearRelatedCollectionsCache("Rooms", "Devices")
-
-    // Refetch data
-    refetch()
   }
 
   // Update the useEffect that calls fetchRooms to use the new dependency
@@ -287,15 +273,14 @@ const DeviceManagement = () => {
     )
   }
 
-  if (error) {
+  if (error || dataError) {
     return (
       <div className={styles.errorContainer}>
         <MdError size={48} className={styles.errorIcon} />
-        <p className={styles.errorMessage}>{error}</p>
-        <button className={styles.retryButton} onClick={handleRefresh}>
-            <MdRefresh size={16} />
-            Retry
-          </button>
+        <p className={styles.errorMessage}>{error || dataError}</p>
+        <button onClick={() => window.location.reload()} className={styles.retryButton}>
+          Retry
+        </button>
       </div>
     )
   }

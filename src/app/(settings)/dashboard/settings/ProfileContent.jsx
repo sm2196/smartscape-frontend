@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter } from "next/navigation"
 import styles from "./ProfileContent.module.css"
 import { useAuth } from "@/hooks/useAuth"
@@ -9,13 +9,11 @@ import { getProfilesByEmail, updateProfile } from "@/lib/firebase/firestore"
 import { isValidPhoneNumber } from "react-phone-number-input"
 import { clearAllAppData } from "@/lib/clearAppData"
 
-// At the top of the file, update the import to include all the functions
-import {
-  getUserId,
-  getRelatedCollectionsFromCache,
-  saveRelatedCollectionsToCache,
-  clearRelatedCollectionsCache,
-} from "@/lib/cacheUtils"
+// Import all caching utilities
+import { getUserId, saveRelatedCollectionsToCache, clearRelatedCollectionsCache } from "@/lib/cacheUtils"
+
+// Define cache constants for consistency
+const CACHE_COLLECTIONS = ["Users"]
 
 // Import components
 import ProfileHeader from "./components/ProfileHeader"
@@ -28,13 +26,11 @@ import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
 import ChangePasswordModal from "./components/ChangePasswordModal"
 
-// Add a constant for cache expiration time near the top of the component
-const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
-
 export default function ProfileContent() {
   const router = useRouter()
-  const { user, profile, loading, error, refreshProfile } = useAuth()
+  const { user, profile, loading, error, fetchProfile: initialFetchProfile } = useAuth()
   const [isMobile, setIsMobile] = useState(false)
+  const [isLoading, setLoading] = useState(false)
 
   // State for field values
   const [fieldValues, setFieldValues] = useState({
@@ -57,6 +53,31 @@ export default function ProfileContent() {
   const [availableAccounts, setAvailableAccounts] = useState([])
   const [isDeleting, setIsDeleting] = useState(false)
   const [toast, setToast] = useState({ visible: false, message: "", type: "" })
+
+  // Update the refreshProfile function to use caching
+  const refreshProfile = useCallback(async () => {
+    if (user) {
+      setLoading(true)
+
+      try {
+        // Clear cache first to ensure fresh data
+        clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+
+        // Fetch fresh profile data
+        await initialFetchProfile(user.uid)
+
+        // If we have profile data, save it to cache
+        if (profile) {
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [profile])
+        }
+      } catch (error) {
+        console.error("Error refreshing profile:", error)
+        showToast("Failed to refresh profile data", "error")
+      } finally {
+        setLoading(false)
+      }
+    }
+  }, [user, profile, initialFetchProfile])
 
   // Update the email verification completion handler
   useEffect(() => {
@@ -136,21 +157,11 @@ export default function ProfileContent() {
   }, [profile, user])
 
   // Load available accounts
-  // Replace the loadAccounts function in the useEffect with this updated version
-  // that uses caching
   useEffect(() => {
     const loadAccounts = async () => {
       if (user) {
         try {
-          // Check cache first
-          const cachedData = getRelatedCollectionsFromCache("Users", "Accounts", CACHE_EXPIRATION)
-          if (cachedData && cachedData.users) {
-            setAvailableAccounts(cachedData.accounts || [])
-            return
-          }
-
-          // If no cache, fetch from Firebase
-          const { success, profiles, error: accountsError } = await getProfilesByEmail(user.email)
+          const { success, profiles } = await getProfilesByEmail(user.email)
 
           if (success && profiles.length > 0) {
             const formattedAccounts = profiles.map((profile) => ({
@@ -161,12 +172,9 @@ export default function ProfileContent() {
               isAdmin: profile?.isAdmin === true,
             }))
             setAvailableAccounts(formattedAccounts)
-
-            // Save to cache
-            saveRelatedCollectionsToCache("Users", "Accounts", profiles, formattedAccounts)
           } else {
             // Fallback to current user if no profiles were found
-            const fallbackAccount = [
+            setAvailableAccounts([
               {
                 id: user.uid,
                 name: `${fieldValues.firstName} ${fieldValues.lastName}`,
@@ -174,16 +182,12 @@ export default function ProfileContent() {
                 isActive: true,
                 isAdmin: profile?.isAdmin === true,
               },
-            ]
-            setAvailableAccounts(fallbackAccount)
-
-            // Save fallback to cache
-            saveRelatedCollectionsToCache("Users", "Accounts", [profile], fallbackAccount)
+            ])
           }
         } catch (error) {
           console.error("Error in loadAccounts:", error)
           // Fallback to current user only
-          const fallbackAccount = [
+          setAvailableAccounts([
             {
               id: user.uid,
               name: `${fieldValues.firstName} ${fieldValues.lastName}`,
@@ -191,8 +195,7 @@ export default function ProfileContent() {
               isActive: true,
               isAdmin: profile?.isAdmin === true,
             },
-          ]
-          setAvailableAccounts(fallbackAccount)
+          ])
         }
       }
     }
@@ -244,9 +247,6 @@ export default function ProfileContent() {
   // Replace the confirmSignOut function with this updated version
   const confirmSignOut = async () => {
     try {
-      // Clear cache before signing out
-      clearRelatedCollectionsCache("Users", "Accounts")
-
       const result = await signOutUser()
       if (result.success) {
         console.log("Signed out successfully")
@@ -278,9 +278,6 @@ export default function ProfileContent() {
     setIsDeleting(true)
 
     try {
-      // Clear cache before deleting account
-      clearRelatedCollectionsCache("Users", "Accounts")
-
       // Attempt to delete the user account
       const authResult = await deleteUserAccount(password)
 
@@ -311,7 +308,6 @@ export default function ProfileContent() {
 
   // Replace instances where we directly access user.uid with getUserId(user)
   // For example, in the handleSaveField function:
-  // Update the handleSaveField function to clear cache after updates
   const handleSaveField = async (value) => {
     if (!user) {
       showToast("You must be logged in to update your profile", "error")
@@ -325,6 +321,7 @@ export default function ProfileContent() {
           lastName: value.lastName,
         }
 
+        // Use getUserId instead of directly accessing user.uid
         const userId = getUserId(user)
         const result = await updateProfile(userId, updateData)
 
@@ -334,11 +331,18 @@ export default function ProfileContent() {
             firstName: value.firstName,
             lastName: value.lastName,
           }))
+
+          // Update cache with new profile data
+          if (profile) {
+            const updatedProfile = {
+              ...profile,
+              firstName: value.firstName,
+              lastName: value.lastName,
+            }
+            saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedProfile])
+          }
+
           showToast("Name updated successfully", "success")
-
-          // Clear cache after successful update
-          clearRelatedCollectionsCache("Users", "Accounts")
-
           await refreshProfile()
         } else {
           throw new Error(result.error || "Failed to update name")
@@ -349,6 +353,7 @@ export default function ProfileContent() {
           throw new Error("Please enter a valid phone number")
         }
 
+        // Use getUserId instead of directly accessing user.uid
         const userId = getUserId(user)
         const result = await updateProfile(userId, {
           phone: value,
@@ -359,16 +364,23 @@ export default function ProfileContent() {
             ...prev,
             phone: value,
           }))
+
+          // Update cache with new profile data
+          if (profile) {
+            const updatedProfile = {
+              ...profile,
+              phone: value,
+            }
+            saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedProfile])
+          }
+
           showToast("Phone number updated successfully", "success")
-
-          // Clear cache after successful update
-          clearRelatedCollectionsCache("Users", "Accounts")
-
           await refreshProfile()
         } else {
           throw new Error(result.error || "Failed to update phone number")
         }
       } else if (editingField === "email") {
+        // Use getUserId instead of directly accessing user.uid
         const userId = getUserId(user)
         const result = await updateProfile(userId, {
           email: value,
@@ -382,12 +394,18 @@ export default function ProfileContent() {
               ...prev,
               email: value,
             }))
+
+            // Update cache with new profile data
+            if (profile) {
+              const updatedProfile = {
+                ...profile,
+                email: value,
+              }
+              saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedProfile])
+            }
+
             showToast("Email updated successfully", "success")
           }
-
-          // Clear cache after successful update
-          clearRelatedCollectionsCache("Users", "Accounts")
-
           await refreshProfile()
         } else {
           if (result.error?.includes("please log out and log back in")) {
@@ -449,7 +467,7 @@ export default function ProfileContent() {
     }, 3000)
   }
 
-  if (loading && !isDeleting) {
+  if (isLoading && !isDeleting) {
     return (
       <div className={styles.loadingContainer}>
         <div className={styles.loadingSpinner}></div>

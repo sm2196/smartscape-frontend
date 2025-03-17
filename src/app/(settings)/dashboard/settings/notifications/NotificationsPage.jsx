@@ -1,14 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useAuth } from "@/hooks/useAuth"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
-import {
-  getUserId,
-  getRelatedCollectionsFromCache,
-  saveRelatedCollectionsToCache,
-  clearRelatedCollectionsCache,
-} from "@/lib/cacheUtils"
 import {
   MdPower,
   MdWaterDrop,
@@ -22,14 +16,17 @@ import {
   MdHome,
 } from "react-icons/md"
 import styles from "./NotificationsPage.module.css"
+import { getUserId, getRelatedCollectionsFromCache, saveRelatedCollectionsToCache } from "@/lib/cacheUtils"
 
-// Add a constant for cache expiration time
+// Change the CACHE_COLLECTIONS constant to only include "Users"
+const CACHE_COLLECTIONS = ["Users"]
 const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
 
 export default function NotificationsPage() {
   const { user, loading: authLoading } = useAuth()
   const [error, setError] = useState(null)
   const [userId, setUserId] = useState(null)
+  const [profile, setProfile] = useState(null)
 
   // Use useEffect to get userId on client-side only
   useEffect(() => {
@@ -68,14 +65,7 @@ export default function NotificationsPage() {
   })
 
   // Extract enabled notifications from user data
-  const [enabledNotifications, setEnabledNotifications] = useState(defaultEnabledNotifications)
-
-  // Update enabledNotifications when userData changes
-  useEffect(() => {
-    if (userData?.enabledNotifications) {
-      setEnabledNotifications(userData.enabledNotifications)
-    }
-  }, [userData])
+  const enabledNotifications = userData?.enabledNotifications || defaultEnabledNotifications
 
   // Set error state if there's an error from the hook
   useEffect(() => {
@@ -84,41 +74,53 @@ export default function NotificationsPage() {
     }
   }, [dataError])
 
-  // Add a function to check cache for notification history
-  const fetchNotificationHistory = async () => {
-    if (!userId) return []
+  // Replace the fetchProfile function with this enhanced version that uses caching
+  const fetchNotificationSettings = useCallback(
+    async (skipCache = false) => {
+      try {
+        if (!userId) return
 
-    try {
-      // Check cache first
-      const cachedData = getRelatedCollectionsFromCache("Users", "Notifications", CACHE_EXPIRATION)
-      if (cachedData && cachedData.notifications) {
-        return cachedData.notifications
+        // Check cache first if not skipping cache
+        if (!skipCache) {
+          const cachedData = getRelatedCollectionsFromCache(CACHE_COLLECTIONS, CACHE_EXPIRATION)
+          if (cachedData && cachedData.users) {
+            setProfile(cachedData.users)
+            setError(null)
+            return
+          }
+        }
+
+        // If no cache or skipCache is true, fetch from Firestore
+        if (userData) {
+          // Store the user data
+          setProfile(userData)
+
+          // Update cache with fresh data
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [userData])
+
+          setError(null)
+        } else {
+          setError("User profile not found")
+        }
+      } catch (error) {
+        console.error("Error fetching notification settings:", error)
+        setError("Failed to load notification settings. Please try again.")
       }
+    },
+    [userId, userData], // Remove defaultEnabledNotifications from dependencies
+  )
 
-      // If no cache or cache expired, we would fetch from Firestore
-      // For this example, we'll just return an empty array since we don't have actual notification history
-      const notificationHistory = []
-
-      // Save to cache
-      if (userData) {
-        saveRelatedCollectionsToCache("Users", "Notifications", userData, notificationHistory)
-      }
-
-      return notificationHistory
-    } catch (error) {
-      console.error("Error fetching notification history:", error)
-      return []
-    }
-  }
-
-  // Call fetchNotificationHistory when component mounts
+  // Update the useEffect that calls fetchProfile to be more robust
   useEffect(() => {
-    if (userId) {
-      fetchNotificationHistory()
+    // Only fetch if we have a userId and either:
+    // 1. We don't have profile data yet, or
+    // 2. We have userData but it hasn't been loaded into profile yet
+    if (userId && (!profile || (userData && JSON.stringify(profile) !== JSON.stringify(userData)))) {
+      fetchNotificationSettings()
     }
-  }, [userId])
+  }, [fetchNotificationSettings, userId, profile, userData])
 
-  // Toggle notification and update Firestore
+  // Update the toggleNotification function to be more robust with caching
   const toggleNotification = async (type) => {
     if (!userId) return
 
@@ -135,36 +137,31 @@ export default function NotificationsPage() {
     }
 
     try {
-      // Update local state immediately for better UX
-      setEnabledNotifications(updatedNotifications)
-
       // Update the enabledNotifications array in the user document
-      await updateData({
+      const result = await updateData({
         enabledNotifications: updatedNotifications,
       })
 
-      // Clear and update cache after successful update
-      if (userData) {
-        const updatedUserData = {
-          ...userData,
-          enabledNotifications: updatedNotifications,
+      if (result.success) {
+        // Update the cache with the new notification settings
+        if (profile) {
+          const updatedProfile = {
+            ...profile,
+            enabledNotifications: updatedNotifications,
+          }
+
+          // Save updated profile to cache
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedProfile])
         }
-
-        // Get any notification history from cache
-        const cachedData = getRelatedCollectionsFromCache("Users", "Notifications", CACHE_EXPIRATION)
-        const notificationHistory = cachedData?.notifications || []
-
-        // Clear existing cache and save updated data
-        clearRelatedCollectionsCache("Users", "Notifications")
-        saveRelatedCollectionsToCache("Users", "Notifications", updatedUserData, notificationHistory)
+      } else {
+        // If update failed, show error and refetch
+        console.error("Failed to update notification settings")
+        setError("Failed to update notification settings")
+        refetch()
       }
     } catch (error) {
       console.error("Error updating Firestore:", error)
       setError("Failed to update notification settings")
-
-      // If there's an error, revert the local state
-      setEnabledNotifications(userData?.enabledNotifications || defaultEnabledNotifications)
-
       // If there's an error, refetch to ensure UI is in sync with server
       refetch()
     }
@@ -211,15 +208,6 @@ export default function NotificationsPage() {
     },
   ]
 
-  // Add a function to handle manual refresh with cache clearing
-  const handleRefresh = async () => {
-    // Clear cache
-    clearRelatedCollectionsCache("Users", "Notifications")
-
-    // Refetch data
-    refetch()
-  }
-
   // Determine if we're in a loading state
   const isLoading = (authLoading && !userId) || (userId && dataLoading)
 
@@ -259,7 +247,7 @@ export default function NotificationsPage() {
         </div>
         <div className={styles.errorContainer}>
           <p className={styles.errorMessage}>{error}</p>
-          <button className={styles.retryButton} onClick={handleRefresh}>
+          <button className={styles.retryButton} onClick={refetch}>
             <MdRefresh size={16} />
             Retry
           </button>

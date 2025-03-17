@@ -335,35 +335,49 @@ export function getCachedCollectionData(collection, cacheDuration = 5 * 60 * 100
   }
 }
 
+// Replace the existing related collections functions with these more dynamic versions
+
 /**
- * Get cached data for a pair of related collections
- * @param {string} primaryCollection - The primary collection name
- * @param {string} secondaryCollection - The secondary collection name
+ * Get cached data for multiple related collections
+ * @param {string[]} collections - Array of collection names
  * @param {number} cacheDuration - How long the cache is valid in milliseconds
- * @returns {Object|null} Object containing both collections' data or null if not found or expired
+ * @returns {Object|null} Object containing all collections' data or null if not found or expired
  */
-export function getRelatedCollectionsFromCache(primaryCollection, secondaryCollection, cacheDuration = 5 * 60 * 1000) {
+export function getRelatedCollectionsFromCache(collections, cacheDuration = 5 * 60 * 1000) {
   try {
     // Check if we're in a browser environment
     if (typeof window === "undefined") {
       return null
     }
 
-    // Generate cache keys
-    const primaryCacheKey = generateCacheKey(primaryCollection)
-    const secondaryCacheKey = generateCacheKey(secondaryCollection)
+    // Validate input
+    if (!Array.isArray(collections) || collections.length === 0) {
+      console.error("Invalid collections parameter: must be a non-empty array")
+      return null
+    }
 
-    // Check if cache is valid
-    if (isCacheValid(primaryCollection, cacheDuration)) {
-      const primaryData = getCachedData(primaryCacheKey, cacheDuration)
-      const secondaryData = getCachedData(secondaryCacheKey, cacheDuration)
+    // Generate cache keys for all collections
+    const cacheKeys = collections.map((collection) => generateCacheKey(collection))
 
-      if (primaryData && secondaryData) {
-        console.log(`Using cached ${primaryCollection} and ${secondaryCollection} data`)
-        return {
-          [primaryCollection.toLowerCase()]: primaryData,
-          [secondaryCollection.toLowerCase()]: secondaryData,
+    // Check if primary collection cache is valid (we use the first collection as the reference)
+    if (isCacheValid(collections[0], cacheDuration)) {
+      const result = {}
+      let allDataFound = true
+
+      // Try to get data for all collections
+      for (let i = 0; i < collections.length; i++) {
+        const data = getCachedData(cacheKeys[i], cacheDuration)
+        if (data) {
+          result[collections[i].toLowerCase()] = data
+        } else {
+          allDataFound = false
+          break
         }
+      }
+
+      if (allDataFound) {
+        console.log(`Using cached data for collections: ${collections.join(", ")}`)
+        return result
       }
     }
 
@@ -375,29 +389,40 @@ export function getRelatedCollectionsFromCache(primaryCollection, secondaryColle
 }
 
 /**
- * Save data for a pair of related collections to cache
- * @param {string} primaryCollection - The primary collection name
- * @param {string} secondaryCollection - The secondary collection name
- * @param {any} primaryData - The primary collection data to cache
- * @param {any} secondaryData - The secondary collection data to cache
+ * Save data for multiple related collections to cache
+ * @param {string[]} collections - Array of collection names
+ * @param {Array} collectionsData - Array of data for each collection (in same order as collections)
  * @returns {boolean} Whether the operation was successful
  */
-export function saveRelatedCollectionsToCache(primaryCollection, secondaryCollection, primaryData, secondaryData) {
+export function saveRelatedCollectionsToCache(collections, collectionsData) {
   try {
     // Check if we're in a browser environment
     if (typeof window === "undefined") {
       return false
     }
 
-    // Generate cache keys
-    const primaryCacheKey = generateCacheKey(primaryCollection)
-    const secondaryCacheKey = generateCacheKey(secondaryCollection)
+    // Validate input
+    if (
+      !Array.isArray(collections) ||
+      !Array.isArray(collectionsData) ||
+      collections.length === 0 ||
+      collections.length !== collectionsData.length
+    ) {
+      console.error("Invalid parameters: collections and collectionsData must be arrays of the same length")
+      return false
+    }
 
-    // Save to cache
-    const primaryResult = cacheData(primaryCacheKey, primaryData)
-    const secondaryResult = cacheData(secondaryCacheKey, secondaryData)
+    // Save each collection's data to cache
+    let allSaved = true
+    for (let i = 0; i < collections.length; i++) {
+      const cacheKey = generateCacheKey(collections[i])
+      const saved = cacheData(cacheKey, collectionsData[i])
+      if (!saved) {
+        allSaved = false
+      }
+    }
 
-    return primaryResult && secondaryResult
+    return allSaved
   } catch (e) {
     console.error("Error writing to cache:", e)
     return false
@@ -405,27 +430,34 @@ export function saveRelatedCollectionsToCache(primaryCollection, secondaryCollec
 }
 
 /**
- * Clear cache for a pair of related collections
- * @param {string} primaryCollection - The primary collection name
- * @param {string} secondaryCollection - The secondary collection name
+ * Clear cache for multiple related collections
+ * @param {string[]} collections - Array of collection names
  * @returns {boolean} Whether the operation was successful
  */
-export function clearRelatedCollectionsCache(primaryCollection, secondaryCollection) {
+export function clearRelatedCollectionsCache(collections) {
   try {
     // Check if we're in a browser environment
     if (typeof window === "undefined") {
       return false
     }
 
-    // Generate cache keys
-    const primaryCacheKey = generateCacheKey(primaryCollection)
-    const secondaryCacheKey = generateCacheKey(secondaryCollection)
+    // Validate input
+    if (!Array.isArray(collections) || collections.length === 0) {
+      console.error("Invalid collections parameter: must be a non-empty array")
+      return false
+    }
 
-    // Clear cache
-    const primaryResult = clearCachedData(primaryCacheKey)
-    const secondaryResult = clearCachedData(secondaryCacheKey)
+    // Clear cache for each collection
+    let allCleared = true
+    for (const collection of collections) {
+      const cacheKey = generateCacheKey(collection)
+      const cleared = clearCachedData(cacheKey)
+      if (!cleared) {
+        allCleared = false
+      }
+    }
 
-    return primaryResult && secondaryResult
+    return allCleared
   } catch (e) {
     console.error("Error clearing cache:", e)
     return false
