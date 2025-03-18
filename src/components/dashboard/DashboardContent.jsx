@@ -13,6 +13,7 @@ import {
   MdWindPower,
   MdBed,
   MdOutlineLight,
+  MdBolt,
 } from "react-icons/md"
 import { LuHeater, LuLamp, LuLampDesk, LuProjector, LuWashingMachine, LuBlinds } from "react-icons/lu"
 import { BsSpeaker } from "react-icons/bs"
@@ -20,8 +21,12 @@ import { TbAirConditioning } from "react-icons/tb"
 import { FaPowerOff } from "react-icons/fa6"
 import { DeviceCard } from "./DeviceCard"
 import { RoomSection } from "./RoomSection"
+import { VoltageAlert } from "./VoltageAlert"
 import styles from "./DashboardContent.module.css"
-import { useFirebase } from "../../firebase/FirebaseContext"
+import { useFirebase, DEFAULT_DEVICE_VOLTAGES } from "../../firebase/FirebaseContext"
+
+// Add this constant at the top of the file, after the imports
+// Default voltages for devices
 
 const bedroomDevices = {
   "Master Bedroom": [
@@ -35,12 +40,12 @@ const bedroomDevices = {
   ],
   "Kids Bedroom": [
     {
-      id: "kids_nightlight",
-      icon: MdLightbulb,
-      title: "Night Light",
-      status: "On",
+      id: "kids_water_heater",
+      icon: MdThermostat,
+      title: "Water Heater",
+      status: "45°C",
       isActive: true,
-      statusColor: "statusYellow",
+      statusColor: "statusBlue",
     },
     { id: "kids_bed", icon: MdBed, title: "Smart Bed", status: "Occupied" },
     { id: "kids_lamp", icon: LuLampDesk, title: "Study Lamp", status: "Off" },
@@ -61,9 +66,38 @@ const lightAndFanDevices = [
 
 const mediaDevices = ["living_tv", "living_speaker", "living_projector"]
 
+// Device title mapping
+const deviceTitles = {
+  living_lamp: "Living Room Lamp",
+  living_heater: "Living Room Heater",
+  living_fan: "Ceiling Fan",
+  living_lights: "Pendant Lights",
+  living_tv: "SONY TV",
+  living_speaker: "JBL GO 4",
+  living_projector: "Epson Projector",
+  garage_lights: "Garage Lights",
+  garage_freezer: "Freezer",
+  garage_washer: "Washing Machine",
+  master_lamp: "Master Bedroom Lamp",
+  guest_light: "Guest Bedroom Light",
+  guest_ac: "Guest Bedroom AC",
+  kids_nightlight: "Kids Night Light",
+  kids_lamp: "Kids Study Lamp",
+  kids_water_heater: "Kids Water Heater",
+}
+
 export function DashboardContent() {
   const [selectedBedroom, setSelectedBedroom] = useState("Master Bedroom")
-  const { updateDeviceState, devices } = useFirebase()
+  const {
+    updateDeviceState,
+    devices,
+    totalVoltage,
+    isPeakHour,
+    showVoltageAlert,
+    dismissVoltageAlert,
+    triggerVoltageAlert,
+    VOLTAGE_THRESHOLD,
+  } = useFirebase()
 
   // Function to turn off all lights and fans
   const turnOffLightsAndFans = () => {
@@ -97,6 +131,54 @@ export function DashboardContent() {
         })
       }
     })
+  }
+
+  // Function to turn on high-voltage devices for testing
+  const turnOnHighVoltageDevices = () => {
+    // Turn on heater (1500W)
+    updateDeviceState("living_heater", {
+      status: "On",
+      isActive: true,
+      statusColor: "statusBlue",
+    })
+
+    // Turn on TV (150W)
+    updateDeviceState("living_tv", {
+      status: "On",
+      isActive: true,
+      statusColor: "statusGreen",
+    })
+
+    // Turn on freezer (700W)
+    updateDeviceState("garage_freezer", {
+      status: "-6.5°C",
+      isActive: true,
+      statusColor: "statusBlue",
+    })
+
+    // After turning on devices, trigger the alert
+    setTimeout(() => {
+      triggerVoltageAlert()
+    }, 1000)
+  }
+
+  // Get high voltage devices for the alert
+  const getHighVoltageDevices = () => {
+    const activeDevices = Object.entries(devices)
+      .filter(([id, device]) => {
+        // Only include active devices with significant voltage (more than 50W)
+        const voltage = device.voltage || DEFAULT_DEVICE_VOLTAGES[id] || 0
+        return device.isActive && voltage > 50
+      })
+      .map(([id, device]) => ({
+        id,
+        title: deviceTitles[id] || id,
+        voltage: device.voltage || DEFAULT_DEVICE_VOLTAGES[id] || 0,
+      }))
+      .sort((a, b) => b.voltage - a.voltage) // Sort by voltage, highest first
+      .slice(0, 5) // Get top 5 highest voltage devices
+
+    return activeDevices
   }
 
   return (
@@ -186,7 +268,21 @@ export function DashboardContent() {
           <MdTv />
           Turn Off TV and Speakers
         </button>
+        {/* <button className={styles.actionButton} onClick={turnOnHighVoltageDevices}>
+          <MdBolt />
+          Test Peak Hour Alert
+        </button> */}
       </div>
+
+      {/* Voltage Alert */}
+      {showVoltageAlert && (
+        <VoltageAlert
+          totalVoltage={totalVoltage}
+          threshold={VOLTAGE_THRESHOLD}
+          onDismiss={dismissVoltageAlert}
+          highVoltageDevices={getHighVoltageDevices()}
+        />
+      )}
     </>
   )
 }

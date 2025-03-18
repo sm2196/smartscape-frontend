@@ -1,0 +1,133 @@
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 22, 48, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .overlay.visible {
+    opacity: 1;
+  }
+
+  .alert {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    background-color: var(--surface-dark);
+    border: 1px solid rgba(210, 220, 245, 0.15);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    z-index: 101;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+  }
+
+  .alert.visible {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  .alertHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid rgba(210, 220, 245, 0.1);
+    background-color: rgba(255, 87, 34, 0.1);
+  }
+
+  .alertTitle {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #ff5722;
+  }
+
+  .alertIcon {
+    width: 24px;
+    height: 24px;
+    color: #ff5722;
+  }
+
+  .closeButton {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+  }
+
+  .closeButton:hover {
+    background-color: rgba(210, 220, 245, 0.1);
+    color: var(--text-primary);
+  }
+
+  .alertContent {
+    padding: 20px;
+  }
+
+  .alertContent p {
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .deviceListTitle {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 20px 0 12px;
+  }
+
+  .deviceList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    background-color: rgba(210, 220, 245, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .deviceItem {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(210, 220, 245, 0.05);
+  }
+
+  .deviceItem:last-child {
+    border-bottom: none;
+  }
+
+  .deviceName {
+    font-weight: 500;
+  }
+
+  .deviceVoltage {
+    color: #ff5722;
+    font-weight: 500;
+  }
+
+  .alertTip {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    margin-top: 16px;
+  }

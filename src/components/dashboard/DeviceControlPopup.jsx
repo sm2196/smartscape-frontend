@@ -84,6 +84,7 @@ const LightControls = ({ initialState = "Off", onUpdate }) => {
   )
 }
 
+// Replace the HeaterControls component with this clean slider version
 const HeaterControls = ({ initialTemp = "Off", onUpdate }) => {
   const [isOn, setIsOn] = useState(initialTemp !== "Off")
   const [temperature, setTemperature] = useState(initialTemp === "Off" ? 22 : Number.parseInt(initialTemp) || 22)
@@ -94,7 +95,7 @@ const HeaterControls = ({ initialTemp = "Off", onUpdate }) => {
     onUpdate({
       status: newState ? `${temperature}°C` : "Off",
       isActive: newState,
-      statusColor: newState ? "statusBlue" : "",
+      statusColor: newState ? getStatusColorForTemp(temperature) : "",
     })
   }
 
@@ -104,9 +105,16 @@ const HeaterControls = ({ initialTemp = "Off", onUpdate }) => {
       onUpdate({
         status: `${newTemp}°C`,
         isActive: true,
-        statusColor: "statusBlue",
+        statusColor: getStatusColorForTemp(newTemp),
       })
     }
+  }
+
+  // Get status color based on temperature
+  const getStatusColorForTemp = (temp) => {
+    if (temp > 26) return "statusPink"
+    if (temp > 22) return "statusYellow"
+    return "statusBlue"
   }
 
   return (
@@ -119,25 +127,160 @@ const HeaterControls = ({ initialTemp = "Off", onUpdate }) => {
         </button>
       </div>
 
-      <div className={styles.temperatureControl}>
-        <button
-          className={styles.tempButton}
-          onClick={() => handleTempChange(Math.max(16, temperature - 1))}
-          disabled={!isOn}
-        >
-          -
-        </button>
-        <div className={styles.tempDisplay}>
-          <span className={styles.tempValue}>{temperature}</span>
-          <span className={styles.tempUnit}>°C</span>
+      <div className={styles.tempSliderContainer}>
+        <div className={styles.tempValue}>{temperature}°C</div>
+
+        <div className={styles.tempSlider}>
+          <input
+            type="range"
+            min="16"
+            max="30"
+            value={temperature}
+            onChange={(e) => handleTempChange(Number.parseInt(e.target.value))}
+            className={styles.tempSliderInput}
+            disabled={!isOn}
+          />
         </div>
-        <button
-          className={styles.tempButton}
-          onClick={() => handleTempChange(Math.min(30, temperature + 1))}
-          disabled={!isOn}
-        >
-          +
+
+        <div className={styles.tempRange}>
+          <span>16°C</span>
+          <span>30°C</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Replace the FreezerControls component with this clean slider version
+const FreezerControls = ({ initialTemp = "-6.5°C", onUpdate }) => {
+  const [isOn, setIsOn] = useState(initialTemp !== "Off")
+  const [temperature, setTemperature] = useState(initialTemp === "Off" ? -6.5 : Number.parseFloat(initialTemp) || -6.5)
+
+  const handleToggle = () => {
+    const newState = !isOn
+    setIsOn(newState)
+    onUpdate({
+      status: newState ? `${temperature.toFixed(1)}°C` : "Off",
+      isActive: newState,
+      statusColor: newState ? "statusBlue" : "",
+    })
+  }
+
+  const handleTempChange = (newTemp) => {
+    setTemperature(newTemp)
+    if (isOn) {
+      onUpdate({
+        status: `${newTemp.toFixed(1)}°C`,
+        isActive: true,
+        statusColor: "statusBlue",
+      })
+    }
+  }
+
+  return (
+    <div className={styles.controlsContainer}>
+      <h3 className={styles.controlTitle}>Freezer Temperature</h3>
+      <div className={styles.toggleContainer}>
+        <span>Power</span>
+        <button className={`${styles.toggleButton} ${isOn ? styles.active : ""}`} onClick={handleToggle}>
+          {isOn ? "On" : "Off"}
         </button>
+      </div>
+
+      <div className={styles.tempSliderContainer}>
+        <div className={styles.tempValue}>{temperature.toFixed(1)}°C</div>
+
+        <div className={styles.tempSlider}>
+          <input
+            type="range"
+            min="-20"
+            max="5"
+            step="0.5"
+            value={temperature}
+            onChange={(e) => handleTempChange(Number.parseFloat(e.target.value))}
+            className={styles.tempSliderInputCold}
+            disabled={!isOn}
+          />
+        </div>
+
+        <div className={styles.tempRange}>
+          <span>-20°C</span>
+          <span>5°C</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Replace the WaterHeaterControls component with this clean slider version
+const WaterHeaterControls = ({ initialTemp = "45°C", onUpdate }) => {
+  const [isOn, setIsOn] = useState(initialTemp !== "Off")
+  const [temperature, setTemperature] = useState(initialTemp === "Off" ? 45 : Number.parseInt(initialTemp) || 45)
+
+  const handleToggle = () => {
+    const newState = !isOn
+    setIsOn(newState)
+    onUpdate({
+      status: newState ? `${temperature}°C` : "Off",
+      isActive: newState,
+      statusColor: newState ? getStatusColorForTemp(temperature) : "",
+    })
+  }
+
+  const handleTempChange = (newTemp) => {
+    setTemperature(newTemp)
+    if (isOn) {
+      onUpdate({
+        status: `${newTemp}°C`,
+        isActive: true,
+        statusColor: getStatusColorForTemp(newTemp),
+      })
+    }
+  }
+
+  // Get status color based on temperature
+  const getStatusColorForTemp = (temp) => {
+    if (temp > 75) return "statusPink"
+    if (temp > 60) return "statusYellow"
+    return "statusBlue"
+  }
+
+  return (
+    <div className={styles.controlsContainer}>
+      <h3 className={styles.controlTitle}>Water Temperature Control</h3>
+      <div className={styles.toggleContainer}>
+        <span>Power</span>
+        <button className={`${styles.toggleButton} ${isOn ? styles.active : ""}`} onClick={handleToggle}>
+          {isOn ? "On" : "Off"}
+        </button>
+      </div>
+
+      <div className={styles.tempSliderContainer}>
+        <div className={styles.tempValue}>{temperature}°C</div>
+
+        <div className={styles.tempSlider}>
+          <input
+            type="range"
+            min="30"
+            max="90"
+            value={temperature}
+            onChange={(e) => handleTempChange(Number.parseInt(e.target.value))}
+            className={styles.tempSliderInputHot}
+            disabled={!isOn}
+          />
+        </div>
+
+        <div className={styles.tempRange}>
+          <span>30°C</span>
+          <span>90°C</span>
+        </div>
+      </div>
+
+      <div className={styles.waterUsageInfo}>
+        <div className={styles.waterUsageIcon}>💧</div>
+        <div className={styles.waterUsageText}>
+          {temperature < 50 ? "Low" : temperature < 70 ? "Medium" : "High"} water usage
+        </div>
       </div>
     </div>
   )
@@ -521,6 +664,81 @@ const DefaultControls = ({ title, status, onUpdate }) => {
   )
 }
 
+// Now, let's update the renderControls function to use our new FreezerControls component
+
+// Determine which control component to render based on device type and title
+const renderControls = (device, onUpdate, handleClose) => {
+  const { title, status, icon } = device
+  const iconName = icon.name
+
+  // Fan controls
+  if (iconName === "MdWindPower" || title.includes("Fan")) {
+    return <FanControls initialSpeed={status} onUpdate={onUpdate} />
+  }
+  // Light controls
+  else if (
+    iconName === "MdLightbulb" ||
+    iconName === "LuLamp" ||
+    iconName === "LuLampDesk" ||
+    iconName === "MdOutlineLight" ||
+    title.includes("Light") ||
+    title.includes("Lamp")
+  ) {
+    return <LightControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Water Heater controls
+  else if (title.includes("Water Heater")) {
+    return <WaterHeaterControls initialTemp={status} onUpdate={onUpdate} />
+  }
+  // Freezer controls
+  else if (title.includes("Freezer")) {
+    return <FreezerControls initialTemp={status} onUpdate={onUpdate} />
+  }
+  // Temperature controls
+  else if (
+    iconName === "LuHeater" ||
+    iconName === "TbAirConditioning" ||
+    iconName === "MdThermostat" ||
+    title.includes("Heater") ||
+    title.includes("AC") ||
+    title.includes("Temp")
+  ) {
+    return <HeaterControls initialTemp={status} onUpdate={onUpdate} />
+  }
+  // TV controls
+  else if (iconName === "MdTv" || title.includes("TV")) {
+    return <TVControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Door controls - with auto-close
+  else if (iconName === "MdDoorFront" || iconName === "MdGarage" || title.includes("Door")) {
+    return <DoorControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
+  }
+  // Blinds controls
+  else if (iconName === "LuBlinds" || title.includes("Blind")) {
+    return <BlindsControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Speaker controls
+  else if (iconName === "BsSpeaker" || title.includes("Speaker") || title.includes("JBL")) {
+    return <SpeakerControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Projector controls
+  else if (iconName === "LuProjector" || title.includes("Projector")) {
+    return <ProjectorControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Notification controls - with auto-close
+  else if (iconName === "MdNotifications" || title.includes("Notification")) {
+    return <NotificationControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
+  }
+  // Washing machine controls
+  else if (iconName === "LuWashingMachine" || title.includes("Washing Machine")) {
+    return <WashingMachineControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Default controls for other devices
+  else {
+    return <DefaultControls title={title} status={status} onUpdate={onUpdate} />
+  }
+}
+
 export function DeviceControlPopup({ device, onClose, onUpdate }) {
   const [isVisible, setIsVisible] = useState(false)
 
@@ -552,71 +770,6 @@ export function DeviceControlPopup({ device, onClose, onUpdate }) {
     )
   }
 
-  // Determine which control component to render based on device type and title
-  const renderControls = () => {
-    const { title, status, icon } = device
-    const iconName = icon.name
-
-    // Fan controls
-    if (iconName === "MdWindPower" || title.includes("Fan")) {
-      return <FanControls initialSpeed={status} onUpdate={onUpdate} />
-    }
-    // Light controls
-    else if (
-      iconName === "MdLightbulb" ||
-      iconName === "LuLamp" ||
-      iconName === "LuLampDesk" ||
-      iconName === "MdOutlineLight" ||
-      title.includes("Light") ||
-      title.includes("Lamp")
-    ) {
-      return <LightControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Temperature controls
-    else if (
-      iconName === "LuHeater" ||
-      iconName === "TbAirConditioning" ||
-      iconName === "MdThermostat" ||
-      title.includes("Heater") ||
-      title.includes("AC") ||
-      title.includes("Temp")
-    ) {
-      return <HeaterControls initialTemp={status} onUpdate={onUpdate} />
-    }
-    // TV controls
-    else if (iconName === "MdTv" || title.includes("TV")) {
-      return <TVControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Door controls - with auto-close
-    else if (iconName === "MdDoorFront" || iconName === "MdGarage" || title.includes("Door")) {
-      return <DoorControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
-    }
-    // Blinds controls
-    else if (iconName === "LuBlinds" || title.includes("Blind")) {
-      return <BlindsControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Speaker controls
-    else if (iconName === "BsSpeaker" || title.includes("Speaker") || title.includes("JBL")) {
-      return <SpeakerControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Projector controls
-    else if (iconName === "LuProjector" || title.includes("Projector")) {
-      return <ProjectorControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Notification controls - with auto-close
-    else if (iconName === "MdNotifications" || title.includes("Notification")) {
-      return <NotificationControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
-    }
-    // Washing machine controls
-    else if (iconName === "LuWashingMachine" || title.includes("Washing Machine")) {
-      return <WashingMachineControls initialState={status} onUpdate={onUpdate} />
-    }
-    // Default controls for other devices
-    else {
-      return <DefaultControls title={title} status={status} onUpdate={onUpdate} />
-    }
-  }
-
   return (
     <>
       <div className={`${styles.overlay} ${isVisible ? styles.visible : ""}`} onClick={handleClose} />
@@ -632,7 +785,7 @@ export function DeviceControlPopup({ device, onClose, onUpdate }) {
             </button>
           )}
         </div>
-        <div className={styles.popupContent}>{renderControls()}</div>
+        <div className={styles.popupContent}>{renderControls(device, onUpdate, handleClose)}</div>
       </div>
     </>
   )

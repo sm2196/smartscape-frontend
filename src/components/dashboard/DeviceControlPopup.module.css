@@ -276,10 +276,6 @@
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
   padding: 12px;
-  border:  (220, 245, 0.1);
-  border: 1px solid rgba(210, 220, 245, 0.2);
-  color: var(--text-primary);
-  padding: 12px;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -331,7 +327,7 @@
 
 .batteryFill {
   height: 100%;
-  background-color: var(--status-pink);
+  background-color: #dc2626; /* Red instead of pink */
   border-radius: 4px;
 }
 
@@ -453,4 +449,120 @@
   100% {
     width: 90%;
   }
+}
+
+.waterUsageInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: rgba(210, 220, 245, 0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+
+.waterUsageIcon {
+  font-size: 1.25rem;
+}
+
+.waterUsageText {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* New temperature slider styles */
+.tempSliderContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.tempValue {
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.tempSlider {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  margin: 8px 0;
+}
+
+.tempSliderInput {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  border-radius: 12px;
+  outline: none;
+  background: linear-gradient(to right, #60a5fa, #ffd700, #dc2626);
+  cursor: pointer;
+}
+
+.tempSliderInputCold {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  border-radius: 12px;
+  outline: none;
+  background: linear-gradient(to right, #bfdbfe, #93c5fd, #60a5fa);
+  cursor: pointer;
+}
+
+.tempSliderInputHot {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  border-radius: 12px;
+  outline: none;
+  background: linear-gradient(to right, #60a5fa, #ffd700, #dc2626);
+  cursor: pointer;
+}
+
+.tempSliderInput::-webkit-slider-thumb,
+.tempSliderInputCold::-webkit-slider-thumb,
+.tempSliderInputHot::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: 2px solid rgba(210, 220, 245, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tempSliderInput::-moz-range-thumb,
+.tempSliderInputCold::-moz-range-thumb,
+.tempSliderInputHot::-moz-range-thumb {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: white;
+  cursor: pointer;
+  border: 2px solid rgba(210, 220, 245, 0.5);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.tempSliderInput:disabled,
+.tempSliderInputCold:disabled,
+.tempSliderInputHot:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tempRange {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
 }
