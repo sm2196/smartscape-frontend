@@ -112,10 +112,8 @@ export default function NotificationsPage() {
 
   // Update the useEffect that calls fetchProfile to be more robust
   useEffect(() => {
-    // Only fetch if we have a userId and either:
-    // 1. We don't have profile data yet, or
-    // 2. We have userData but it hasn't been loaded into profile yet
-    if (userId && (!profile || (userData && JSON.stringify(profile) !== JSON.stringify(userData)))) {
+    // Only fetch if we have a userId and userData but no profile yet
+    if (userId && userData && !profile) {
       fetchNotificationSettings()
     }
   }, [fetchNotificationSettings, userId, profile, userData])

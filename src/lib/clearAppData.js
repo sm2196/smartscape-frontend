@@ -18,7 +18,7 @@ export function clearAllAppData() {
   clearCachedUserInfo()
 
   // Clear specific collections using the new utility
-  clearRelatedCollectionsCache("Rooms", "Devices")
+  clearRelatedCollectionsCache(["Rooms", "Devices"])
 
   // Clear other app-specific localStorage keys
   const localStorageItemsToClear = [

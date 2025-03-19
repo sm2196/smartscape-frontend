@@ -9,10 +9,9 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVe
 import { auth, db } from "@/lib/firebase/config"
 import { setDoc, doc } from "firebase/firestore"
 import { ToastContainer, toast } from "react-toastify"
-import "./SignUpOrLogin.css"
 
 function SignupOrLogin() {
-  const router = useRouter() // Next.js router
+  const router = useRouter()
   const [signIn, toggle] = useState(false)
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [password, setPassword] = useState("")
@@ -81,9 +80,7 @@ function SignupOrLogin() {
 
     const passwordPattern = /^(?=.*\d)(?=.*[@$!%*?&])(?=.*[A-Za-z]).{8,}$/
     if (!passwordPattern.test(value)) {
-      setPasswordError(
-        "Password must be at least 8 characters long and include one special character (@$!%*?&) and one number.",
-      )
+      setPasswordError("Password must be at least 8 characters long and include one special character and one number.")
     } else {
       setPasswordError("")
     }
@@ -132,14 +129,15 @@ function SignupOrLogin() {
       const user = userCredential.user
 
       if (user) {
-        // Validate that Firestore gets correct data
+        // Generate Home ID for the user
         const userData = {
           firstName: fname || "",
           lastName: lname || "",
           phone: phoneValue || "",
-          verified: false, // User is not verified yet
           isAdmin: false,
           isOnline: true,
+          adminPin: null, // Admin pin will be null initially
+          homeId: null, // The generated Home ID
         }
 
         console.log("Writing to Firestore:", userData) // Debugging step
@@ -151,18 +149,14 @@ function SignupOrLogin() {
         toast.success("Registration successful")
         await sendEmailVerification(user)
 
-        // Set auth cookie
-        document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
-          window.location.protocol === "https:" ? "Secure;" : ""
-        }`
-
         console.log("Verification email sent!")
 
         // Show a toast notification that the email verification was sent
         toast.info("A verification email has been sent. Please check your inbox.", { position: "top-right" })
         setTimeout(() => {
-          // Pass phone as a query parameter instead of state
-          router.push(`/OTP?phone=${encodeURIComponent(phoneValue)}`)
+          // Store phone in localStorage instead of exposing in URL
+          localStorage.setItem("phoneNumber", phoneValue)
+          router.push("/auth/OTPVerification")
         }, 1500)
       }
     } catch (error) {
@@ -177,6 +171,14 @@ function SignupOrLogin() {
     try {
       const result = await signInWithEmailAndPassword(auth, email, password)
       if (result.user) {
+        // Check if the email is verified
+        if (!result.user.emailVerified) {
+          // If the email is not verified, show an error message and prevent login
+          toast.error("Please verify your email address before logging in.")
+          setLoading(false)
+          return
+        }
+
         toast.success("Login successful")
         console.log("User Login Successfully!!")
 
@@ -262,11 +264,21 @@ function SignupOrLogin() {
             />
             <label className="RSTermsText">
               I have read and agree to the{" "}
-              <a className="RSLinks" href="#">
+              <a
+                className="RSLinks"
+                href="https://docs.google.com/document/d/1Q6r_lRzIUZn4J3eFrCvfJ_n2ZT3szbq134eKq0mGHRI/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 SmartScape's Terms
               </a>{" "}
               and{" "}
-              <a className="RSLinks" href="#">
+              <a
+                className="RSLinks"
+                href="https://docs.google.com/document/d/1mtVqldz80iHshNOun4jq8p7xhPhpROsxxw5BXQwldsY/edit?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 Privacy Policy
               </a>
             </label>
@@ -294,7 +306,7 @@ function SignupOrLogin() {
           </div>
 
           {passwordError && <span className="RSErrorMessage">{passwordError}</span>}
-          <a className="RSLinks" href="#">
+          <a className="RSLinks" href="/ForgotPassword">
             Forgot your password?
           </a>
           <button className="RSButton" disabled={loading}>

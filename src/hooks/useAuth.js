@@ -12,9 +12,30 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Function to fetch profile data
+  // Update the fetchProfile function to use caching
   const fetchProfile = useCallback(async (userId) => {
     try {
+      // Check if we have a cached profile first
+      if (typeof window !== "undefined") {
+        const cachedData = localStorage.getItem(`smartscape_Users_${userId}`)
+        if (cachedData) {
+          try {
+            const parsedData = JSON.parse(cachedData)
+            const timestamp = localStorage.getItem(`smartscape_Users_${userId}_timestamp`)
+
+            // Check if cache is still valid (less than 30 minutes old)
+            if (timestamp && Date.now() - Number(timestamp) < 30 * 60 * 1000) {
+              setProfile(parsedData)
+              setError(null)
+              return parsedData
+            }
+          } catch (e) {
+            console.error("Error parsing cached profile:", e)
+            // Continue to fetch from Firestore if cache parsing fails
+          }
+        }
+      }
+
       const userDocRef = doc(db, "Users", userId)
       const userDocSnap = await getDoc(userDocRef)
 
@@ -41,15 +62,29 @@ export function useAuth() {
             isAdmin: profileData.isAdmin === true,
           })
         }
+
+        // Cache the profile data
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.setItem(`smartscape_Users_${userId}`, JSON.stringify(formattedProfile))
+            localStorage.setItem(`smartscape_Users_${userId}_timestamp`, Date.now().toString())
+          } catch (e) {
+            console.error("Error caching profile:", e)
+          }
+        }
+
+        return formattedProfile
       } else {
         console.log("No profile data found for this user")
         setProfile(null)
         setError("Profile data not found")
+        return null
       }
     } catch (err) {
       console.error("Error fetching user profile:", err)
       setProfile(null)
       setError(`Failed to load profile: ${err.message}`)
+      return null
     }
   }, [])
 
@@ -182,15 +217,6 @@ export function useAuth() {
     }
   }, [user])
 
-  // Function to refresh profile data manually
-  const refreshProfile = useCallback(async () => {
-    if (user) {
-      setLoading(true)
-      await fetchProfile(user.uid)
-      setLoading(false)
-    }
-  }, [user, fetchProfile])
-
-  return { user, profile, loading, error, refreshProfile }
+  return { user, profile, loading, error, fetchProfile }
 }
 

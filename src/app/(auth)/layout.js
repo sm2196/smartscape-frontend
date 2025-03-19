@@ -1,4 +1,5 @@
 import "@/app/globals.css";
+import "./Rushaan.css"
 
 export const viewport = {
   width: "device-width",

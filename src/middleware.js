@@ -5,7 +5,7 @@ export function middleware(request) {
   const path = request.nextUrl.pathname
 
   // Define public paths that don't require authentication
-  const isPublicPath = path === "/auth" || path === "/"
+  const isPublicPath = path.startsWith("/auth") || path === "/"
 
   // Check for email verification redirect
   const url = new URL(request.url)

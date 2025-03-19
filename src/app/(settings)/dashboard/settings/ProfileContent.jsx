@@ -10,7 +10,12 @@ import { isValidPhoneNumber } from "react-phone-number-input"
 import { clearAllAppData } from "@/lib/clearAppData"
 
 // Import all caching utilities
-import { getUserId, saveRelatedCollectionsToCache, clearRelatedCollectionsCache } from "@/lib/cacheUtils"
+import {
+  getUserId,
+  saveRelatedCollectionsToCache,
+  clearRelatedCollectionsCache,
+  getRelatedCollectionsFromCache,
+} from "@/lib/cacheUtils"
 
 // Define cache constants for consistency
 const CACHE_COLLECTIONS = ["Users"]
@@ -26,9 +31,12 @@ import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
 import ChangePasswordModal from "./components/ChangePasswordModal"
 
+// At the top of the file, add these constants for caching
+const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
+
 export default function ProfileContent() {
   const router = useRouter()
-  const { user, profile, loading, error, fetchProfile: initialFetchProfile } = useAuth()
+  const { user, profile, loading, error, fetchProfile } = useAuth()
   const [isMobile, setIsMobile] = useState(false)
   const [isLoading, setLoading] = useState(false)
 
@@ -64,7 +72,7 @@ export default function ProfileContent() {
         clearRelatedCollectionsCache(CACHE_COLLECTIONS)
 
         // Fetch fresh profile data
-        await initialFetchProfile(user.uid)
+        await fetchProfile(user.uid)
 
         // If we have profile data, save it to cache
         if (profile) {
@@ -77,7 +85,47 @@ export default function ProfileContent() {
         setLoading(false)
       }
     }
-  }, [user, profile, initialFetchProfile])
+  }, [user, profile, fetchProfile])
+
+  const userId = user?.uid
+
+  // Add a new function to fetch profile data with caching
+  const fetchProfileWithCache = useCallback(
+    async (skipCache = false) => {
+      try {
+        if (!userId) return
+
+        // Check cache first if not skipping cache
+        if (!skipCache) {
+          const cachedData = getRelatedCollectionsFromCache(CACHE_COLLECTIONS, CACHE_EXPIRATION)
+          if (cachedData && cachedData.users) {
+            setFieldValues({
+              firstName: cachedData.users.firstName || "",
+              lastName: cachedData.users.lastName || "",
+              email: user?.email || cachedData.users.email || "",
+              phone: cachedData.users.phone || "",
+              governmentId: "Verified",
+            })
+            return
+          }
+        }
+
+        // If no cache or skipCache is true, fetch from Firestore via initialFetchProfile
+        if (user) {
+          await fetchProfile(user.uid)
+
+          // Update cache with fresh data if profile is available
+          if (profile) {
+            saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [profile])
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching profile data:", error)
+        showToast("Failed to load profile data. Please try again.", "error")
+      }
+    },
+    [userId, user, profile, fetchProfile],
+  )
 
   // Update the email verification completion handler
   useEffect(() => {
@@ -126,10 +174,8 @@ export default function ProfileContent() {
       }
     }
 
-    if (!loading) {
-      handleEmailVerificationCompletion()
-    }
-  }, [user, loading, refreshProfile, router])
+    handleEmailVerificationCompletion()
+  }, [user, refreshProfile, router])
 
   // Check for mobile view
   useEffect(() => {
@@ -155,6 +201,13 @@ export default function ProfileContent() {
       })
     }
   }, [profile, user])
+
+  // Update the useEffect that loads profile data to use the new caching function
+  useEffect(() => {
+    if (userId && !isLoading) {
+      fetchProfileWithCache()
+    }
+  }, [fetchProfileWithCache, userId, isLoading])
 
   // Load available accounts
   useEffect(() => {

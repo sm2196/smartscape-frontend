@@ -117,7 +117,10 @@ export function useFirestoreData(
   // Function to fetch data from Firestore
   const fetchData = useCallback(
     async (skipCache = false) => {
-      setLoading(true)
+      // Don't set loading state if we're already loading
+      if (!loading) {
+        setLoading(true)
+      }
 
       try {
         // Check if documentId is undefined or null
@@ -167,7 +170,7 @@ export function useFirestoreData(
         setLoading(false)
       }
     },
-    [collectionName, actualDocumentId, defaultData, getFromCache, saveToCache],
+    [collectionName, actualDocumentId, defaultData, getFromCache, saveToCache, loading],
   )
 
   // Function to update data in Firestore and cache
@@ -224,6 +227,7 @@ export function useFirestoreData(
 
   // Fetch data on mount and when dependencies change
   useEffect(() => {
+    // Only fetch if we have a valid documentId
     if (actualDocumentId) {
       fetchData()
     } else {
