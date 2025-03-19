@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from "react-router-dom";
+
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { app } from "./firebase"; // Import your Firebase app configuration
 

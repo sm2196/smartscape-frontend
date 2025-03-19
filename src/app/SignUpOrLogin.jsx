@@ -9,6 +9,7 @@ import { signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth
 import { auth, db } from "./firebase";
 import { setDoc, doc } from "firebase/firestore";
 import { ToastContainer, toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
 
 function SignuOrLogin() {
   const navigate = useNavigate(); // Initialize navigate
@@ -126,59 +127,88 @@ function SignuOrLogin() {
   };
 
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-      // Register the user with email and password
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+const handleRegister = async (e) => {
+  e.preventDefault();
+  try {
+    // Register the user with email and password
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-      if (user) {
-        // Validate that Firestore gets correct data
-        const userData = {
-          email: user.email || "",
-          firstName: fname || "",
-          lastName: lname || "",
-          phone: phoneValue || "",
-          verified: false,  // User is not verified yet
-          admin: false,
-        };
+    if (user) {
+      // Generate Home ID for the user
 
-        console.log("Writing to Firestore:", userData); // Debugging step
+      const userData = {
+        email: user.email || "",
+        firstName: fname || "",
+        lastName: lname || "",
+        phone: phoneValue || "",
+        admin: false,  // Default is not an admin
+        adminPin: null,  // Admin pin will be null initially
+        homeId: null,  // The generated Home ID
+      };
 
-        // Add the user details to Firestore
-        await setDoc(doc(db, "Users", user.uid), userData, { merge: true });
+      console.log("Writing to Firestore:", userData); // Debugging step
 
-        console.log("User Registered Successfully!!");
-        toast.success("Registration successful");
-        await sendEmailVerification(user);
+      // Add the user details to Firestore
+      await setDoc(doc(db, "Users", user.uid), userData, { merge: true });
 
-        console.log("Verification email sent!");
+      console.log("User Registered Successfully!!");
+      toast.success("Registration successful");
+      await sendEmailVerification(user);
 
-        // Show a toast notification that the email verification was sent
-        toast.info("A verification email has been sent. Please check your inbox.", { position: "top-right" });
-        setTimeout(() => {
-          navigate("/OTP", { state: { phone: phoneValue } });
-        }, 1500);
+      console.log("Verification email sent!");
 
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
-      toast.error(error.message, { position: "top-right" });
+      // Show a toast notification that the email verification was sent
+      toast.info("A verification email has been sent. Please check your inbox.", { position: "top-right" });
+      setTimeout(() => {
+        navigate("/OTPVerification", { state: { phone: phoneValue } });
+      }, 1500);
     }
-  };
+  } catch (error) {
+    console.error("Error registering user:", error);
+    toast.error(error.message, { position: "top-right" });
+  }
+};
+
+
+  // const handleLogin = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
+  //   try {
+  //     await signInWithEmailAndPassword(auth, email, password);
+  //     toast.success("Login successful");
+  //     console.log("User Login Successfully!!");
+  //     // Add a delay before navigating to the OTP page
+
+  //   } catch (error) {
+  //     console.error("Error registering user:", error);
+  //     toast.error(error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      // Sign in the user
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Check if the email is verified
+      if (!user.emailVerified) {
+        // If the email is not verified, show an error message and prevent login
+        toast.error("Please verify your email address before logging in.");
+        return;
+      }
+
       toast.success("Login successful");
       console.log("User Login Successfully!!");
-      // Add a delay before navigating to the OTP page
 
     } catch (error) {
-      console.error("Error registering user:", error);
+      console.error("Error logging in:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -247,8 +277,13 @@ function SignuOrLogin() {
             />
             <label className="RSTermsText">
               I have read and agree to the{" "}
-              <a className="RSLinks" href="#">SmartScape's Terms</a> and{" "}
-              <a className="RSLinks" href="#">Privacy Policy</a>
+              <a   className="RSLinks"
+                        href="https://docs.google.com/document/d/1Q6r_lRzIUZn4J3eFrCvfJ_n2ZT3szbq134eKq0mGHRI/edit?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer">SmartScape's Terms</a> and{" "}
+              <a   className="RSLinks" href="https://docs.google.com/document/d/1mtVqldz80iHshNOun4jq8p7xhPhpROsxxw5BXQwldsY/edit?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer">Privacy Policy</a>
             </label>
           </div>
 
@@ -271,7 +306,7 @@ function SignuOrLogin() {
             <input type="text" className="input" onChange={handleEmailChange} value={email} required />
             <label className="user-label">Email</label>
           </div>
-
+          {emailError && <span className="RSErrorMessage">{emailError}</span>}
           <div className="input-group">
             <input type="password" className="input" value={password}
               onChange={handlePasswordChange} required />
@@ -280,7 +315,7 @@ function SignuOrLogin() {
 
 
           {passwordError && <span className="RSErrorMessage">{passwordError}</span>}
-          <a className="RSLinks" href="#">Forgot your password?</a>
+          <Link className="RSLinks" to="/ForgotPassword">Forgot your password?</Link>
           <button className="RSButton">Sign In</button>
 
         </form>

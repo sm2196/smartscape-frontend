@@ -1199,3 +1199,43 @@ width: 100%;
 
 }
 
+
+
+/* thankyou */
+
+.subtitle-ty{
+  text-align: center;
+  color: #1b346fd8;
+  margin-bottom: 10px;
+  font-size: 15px;
+  padding-bottom:40px;
+}
+
+
+/*Change phone*/
+.padding-cfn{
+  padding-bottom: 20px;
+}
+
+.right-section-cfn{
+  width: 45%;
+  /* Right side takes up 50% of the page */
+  display: flex;
+  background: #FFFAFA;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  height: 75%;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+}
+@media (max-width: 768px) {
+.right-section-cfn{
+  width: 90%;
+  box-shadow: none;
+
+}
+}
+
