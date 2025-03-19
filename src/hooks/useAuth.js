@@ -12,28 +12,13 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  // Update the fetchProfile function to use caching
+  // Update the fetchProfile function to ensure it always gets fresh data
   const fetchProfile = useCallback(async (userId) => {
     try {
-      // Check if we have a cached profile first
+      // Clear any existing cache for this user to ensure fresh data
       if (typeof window !== "undefined") {
-        const cachedData = localStorage.getItem(`smartscape_Users_${userId}`)
-        if (cachedData) {
-          try {
-            const parsedData = JSON.parse(cachedData)
-            const timestamp = localStorage.getItem(`smartscape_Users_${userId}_timestamp`)
-
-            // Check if cache is still valid (less than 30 minutes old)
-            if (timestamp && Date.now() - Number(timestamp) < 30 * 60 * 1000) {
-              setProfile(parsedData)
-              setError(null)
-              return parsedData
-            }
-          } catch (e) {
-            console.error("Error parsing cached profile:", e)
-            // Continue to fetch from Firestore if cache parsing fails
-          }
-        }
+        localStorage.removeItem(`smartscape_Users_${userId}`)
+        localStorage.removeItem(`smartscape_Users_${userId}_timestamp`)
       }
 
       const userDocRef = doc(db, "Users", userId)
@@ -46,10 +31,16 @@ export function useAuth() {
 
         // Convert Firestore timestamps to JS Dates if they exist
         const formattedProfile = {
-          ...profileData,
           id: userId,
+          firstName: profileData.firstName || "",
+          lastName: profileData.lastName || "",
           email: currentUser ? currentUser.email : "", // Get email directly from Auth
+          phone: profileData.phone || "",
+          verified: profileData.verified || false,
+          isAdmin: profileData.isAdmin === true,
+          profileImageUrl: profileData.profileImageUrl || null,
           createdAt: profileData.createdAt?.toDate() || null,
+          updatedAt: profileData.updatedAt?.toDate() || new Date(),
         }
 
         setProfile(formattedProfile)
@@ -175,26 +166,18 @@ export function useAuth() {
     return () => unsubscribe()
   }, [user])
 
+  // Update the presence system to properly handle online status
   // Add a presence system to track online status
   useEffect(() => {
     if (user) {
       // Create a reference to the user's document
       const userStatusRef = doc(db, "Users", user.uid)
 
-      // Create a reference to the Realtime Database for connection status
-      const isOfflineForDatabase = {
-        isOnline: false,
-      }
-
-      const isOnlineForDatabase = {
-        isOnline: true,
-      }
-
       // When the page is closed or the user navigates away
       const handleBeforeUnload = async () => {
         // Update the Firestore document to show user is offline
         try {
-          await updateDoc(userStatusRef, isOfflineForDatabase)
+          await updateDoc(userStatusRef, { isOnline: false })
         } catch (error) {
           console.error("Error updating offline status:", error)
         }
@@ -203,14 +186,14 @@ export function useAuth() {
       window.addEventListener("beforeunload", handleBeforeUnload)
 
       // Update online status when the component mounts
-      updateDoc(userStatusRef, isOnlineForDatabase).catch((error) =>
+      updateDoc(userStatusRef, { isOnline: true }).catch((error) =>
         console.error("Error updating online status:", error),
       )
 
       return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload)
         // Update offline status when component unmounts
-        updateDoc(userStatusRef, isOfflineForDatabase).catch((error) =>
+        updateDoc(userStatusRef, { isOnline: false }).catch((error) =>
           console.error("Error updating offline status on unmount:", error),
         )
       }

@@ -260,6 +260,20 @@ export function clearCollectionCache(collection) {
         }
       })
 
+      // Also clear any in-memory cache for this collection
+      try {
+        const { cache } = require("@/hooks/useFirestoreData")
+        if (cache) {
+          for (const key of cache.keys()) {
+            if (key.startsWith(collection)) {
+              cache.delete(key)
+            }
+          }
+        }
+      } catch (e) {
+        console.error("Error clearing in-memory cache:", e)
+      }
+
       return true
     }
     return false

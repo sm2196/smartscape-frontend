@@ -369,6 +369,13 @@ export default function ProfileContent() {
 
     try {
       if (editingField === "name") {
+        // Check if name is unchanged
+        if (value.firstName === fieldValues.firstName && value.lastName === fieldValues.lastName) {
+          showToast("No changes were made to your name", "info")
+          setEditingField(null)
+          return
+        }
+
         const updateData = {
           firstName: value.firstName,
           lastName: value.lastName,
@@ -379,6 +386,7 @@ export default function ProfileContent() {
         const result = await updateProfile(userId, updateData)
 
         if (result.success) {
+          // Update local state immediately
           setFieldValues((prev) => ({
             ...prev,
             firstName: value.firstName,
@@ -396,11 +404,23 @@ export default function ProfileContent() {
           }
 
           showToast("Name updated successfully", "success")
+
+          // Force a refresh of the profile data
           await refreshProfile()
+
+          // Clear all cache to ensure fresh data on next load
+          clearRelatedCollectionsCache(CACHE_COLLECTIONS)
         } else {
           throw new Error(result.error || "Failed to update name")
         }
       } else if (editingField === "phone") {
+        // Check if phone is unchanged
+        if (value === fieldValues.phone) {
+          showToast("No changes were made to your phone number", "info")
+          setEditingField(null)
+          return
+        }
+
         // Validate phone number before saving
         if (value && !isValidPhoneNumber(value)) {
           throw new Error("Please enter a valid phone number")
@@ -413,6 +433,7 @@ export default function ProfileContent() {
         })
 
         if (result.success) {
+          // Update local state immediately
           setFieldValues((prev) => ({
             ...prev,
             phone: value,
@@ -428,11 +449,23 @@ export default function ProfileContent() {
           }
 
           showToast("Phone number updated successfully", "success")
+
+          // Force a refresh of the profile data
           await refreshProfile()
+
+          // Clear all cache to ensure fresh data on next load
+          clearRelatedCollectionsCache(CACHE_COLLECTIONS)
         } else {
           throw new Error(result.error || "Failed to update phone number")
         }
       } else if (editingField === "email") {
+        // Check if email is unchanged
+        if (value === user.email || value === fieldValues.email) {
+          showToast("No changes were made to your email address", "info")
+          setEditingField(null)
+          return
+        }
+
         // Use getUserId instead of directly accessing user.uid
         const userId = getUserId(user)
         const result = await updateProfile(userId, {
@@ -442,7 +475,18 @@ export default function ProfileContent() {
         if (result.success) {
           if (result.verificationRequired) {
             showToast(result.message, "info")
+
+            // Add timeout and redirect to auth page after showing the message
+            setTimeout(() => {
+              // Clear all application data and cache
+              clearAllAppData()
+              clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+
+              // Redirect to auth page
+              router.replace("/auth")
+            }, 1500)
           } else {
+            // Update local state immediately
             setFieldValues((prev) => ({
               ...prev,
               email: value,
@@ -459,7 +503,12 @@ export default function ProfileContent() {
 
             showToast("Email updated successfully", "success")
           }
+
+          // Force a refresh of the profile data
           await refreshProfile()
+
+          // Clear all cache to ensure fresh data on next load
+          clearRelatedCollectionsCache(CACHE_COLLECTIONS)
         } else {
           if (result.error?.includes("please log out and log back in")) {
             showToast("For security reasons, please log out and log back in before changing your email.", "error")

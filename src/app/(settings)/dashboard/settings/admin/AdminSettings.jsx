@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
   MdDescription,
   MdPeople,
@@ -15,6 +15,17 @@ import {
 } from "react-icons/md"
 import styles from "./AdminSettings.module.css"
 import homeIdStyles from "../components/HomeIdCodeModal.module.css"
+import { useAuth } from "@/hooks/useAuth"
+import { useFirestoreData } from "@/hooks/useFirestoreData"
+import { saveRelatedCollectionsToCache, clearRelatedCollectionsCache } from "@/lib/cacheUtils"
+import { getDoc, doc, updateDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase/config"
+import { toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
+// Define cache constants for consistency
+const CACHE_COLLECTIONS = ["Users"]
+const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
 
 const AdminSettings = () => {
   const [authenticated, setAuthenticated] = useState(false)
@@ -37,9 +48,93 @@ const AdminSettings = () => {
   const [activeTab, setActiveTab] = useState("family")
   const [showHomeIdModal, setShowHomeIdModal] = useState(false)
   const [copied, setCopied] = useState(false)
+  const [isCreatingPin, setIsCreatingPin] = useState(false)
+  const [homeId, setHomeId] = useState("")
+  const [adminPin, setAdminPin] = useState(null)
 
-  // Generate a random Home ID code
-  const homeId = "SMART-" + Math.random().toString(36).substring(2, 8).toUpperCase()
+  // Get the current user
+  const { user } = useAuth()
+  const userId = user?.uid
+
+  // Fetch user data with caching
+  const {
+    data: userData,
+    loading: dataLoading,
+    updateData,
+  } = useFirestoreData("Users", userId, {
+    localStorageCache: true,
+    cacheDuration: CACHE_EXPIRATION,
+  })
+
+  // Fetch user data with caching
+  const fetchUserData = useCallback(
+    async (skipCache = true) => {
+      // Always skip cache by default
+      try {
+        if (!userId) return
+
+        // Directly fetch from Firestore, bypassing all caches
+        const userDocRef = doc(db, "Users", userId)
+        const userDocSnap = await getDoc(userDocRef)
+
+        if (userDocSnap.exists()) {
+          const freshUserData = userDocSnap.data()
+          console.log("Direct from Firestore - adminPin:", freshUserData.adminPin)
+
+          // Update state with fresh data
+          setHomeId(freshUserData.homeId || "")
+          setAdminPin(freshUserData.adminPin)
+          setIsCreatingPin(!freshUserData.adminPin)
+
+          // Force clear and update cache
+          clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [freshUserData])
+
+          return freshUserData
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+        setErrorMessage("Failed to load user data. Please try again.")
+      }
+    },
+    [userId],
+  )
+
+  // Update the useEffect that loads user data to force a direct Firestore fetch
+  useEffect(() => {
+    let mounted = true
+
+    const fetchData = async () => {
+      // First clear any cached data
+      clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+
+      // Directly fetch from Firestore
+      const userDocRef = doc(db, "Users", userId)
+      try {
+        const userDocSnap = await getDoc(userDocRef)
+
+        if (userDocSnap.exists() && mounted) {
+          const freshData = userDocSnap.data()
+          console.log("Direct Firestore fetch - adminPin:", freshData.adminPin)
+
+          // Update state with fresh data
+          setHomeId(freshData.homeId || "")
+          setAdminPin(freshData.adminPin)
+          setIsCreatingPin(!freshData.adminPin)
+        }
+      } catch (error) {
+        console.error("Error in direct Firestore fetch:", error)
+      }
+    }
+
+    if (userId) {
+      fetchData()
+    }
+
+    return () => {
+      mounted = false
+    }
+  }, [userId])
 
   useEffect(() => {
     const checkMobile = () => {
@@ -51,15 +146,59 @@ const AdminSettings = () => {
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
 
-  const handlePinSubmit = (e) => {
+  useEffect(() => {
+    if (userData) {
+      console.log("User data loaded:", userData)
+      console.log("Admin PIN:", userData.adminPin)
+      console.log("Is creating PIN:", isCreatingPin)
+    }
+  }, [userData, isCreatingPin])
+
+  const handlePinSubmit = async (e) => {
     e.preventDefault()
     const enteredPin = pinDigits.join("")
-    if (enteredPin === "1234") {
-      setAuthenticated(true)
-      setErrorMessage("")
+
+    if (isCreatingPin) {
+      // Creating a new PIN
+      if (enteredPin.length !== 4 || !/^\d+$/.test(enteredPin)) {
+        setErrorMessage("PIN must be 4 digits.")
+        setPinDigits(["", "", "", ""])
+        return
+      }
+
+      try {
+        // Update the adminPin in Firestore
+        const userDocRef = doc(db, "Users", userId)
+        await updateDoc(userDocRef, {
+          adminPin: enteredPin,
+        })
+
+        // Update local state
+        setAdminPin(enteredPin)
+        setAuthenticated(true)
+        setErrorMessage("")
+
+        // Update cache
+        if (userData) {
+          const updatedUserData = { ...userData, adminPin: enteredPin }
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedUserData])
+        }
+
+        toast.success("Admin PIN created successfully!")
+      } catch (error) {
+        console.error("Error updating admin PIN:", error)
+        setErrorMessage("Failed to create PIN. Please try again.")
+        setPinDigits(["", "", "", ""])
+      }
     } else {
-      setErrorMessage("Invalid PIN. Please try again.")
-      setPinDigits(["", "", "", ""])
+      // Verifying existing PIN
+      if (enteredPin === adminPin) {
+        setAuthenticated(true)
+        setErrorMessage("")
+      } else {
+        setErrorMessage("Invalid PIN. Please try again.")
+        setPinDigits(["", "", "", ""])
+      }
     }
   }
 
@@ -79,19 +218,38 @@ const AdminSettings = () => {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  if (dataLoading) {
+    return (
+      <div className={styles.pinContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Loading settings...</p>
+      </div>
+    )
+  }
+
   if (!authenticated) {
     return (
       <div className={styles.pinContainer}>
         <div className={styles.pinBox}>
           <MdShield className={styles.pinIcon} size={32} />
-          <h2 className={styles.pinTitle}>Admin Access Required</h2>
+          {isCreatingPin ? (
+            <>
+              <h2 className={styles.pinTitle}>Create Admin PIN</h2>
+              <p className={styles.pinDescription}>
+                You need to create a 4-digit PIN to access admin settings. This PIN will be required each time you
+                access this page.
+              </p>
+            </>
+          ) : (
+            <h2 className={styles.pinTitle}>Admin Access Required</h2>
+          )}
           <form onSubmit={handlePinSubmit}>
             <div className={styles.pinInputContainer}>
               {[0, 1, 2, 3].map((index) => (
                 <input
                   key={index}
                   id={`pin-input-${index}`}
-                  type="password"
+                  type="text"
                   pattern="\d*"
                   inputMode="numeric"
                   maxLength="1"
@@ -107,7 +265,7 @@ const AdminSettings = () => {
                 />
               ))}
             </div>
-            <button className={styles.pinButton}>Unlock Admin Settings</button>
+            <button className={styles.pinButton}>{isCreatingPin ? "Create PIN" : "Unlock Admin Settings"}</button>
             {errorMessage && <div className={styles.errorMessage}>{errorMessage}</div>}
           </form>
         </div>

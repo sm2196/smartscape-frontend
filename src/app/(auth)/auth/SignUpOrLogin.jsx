@@ -135,7 +135,7 @@ function SignupOrLogin() {
           lastName: lname || "",
           phone: phoneValue || "",
           isAdmin: false,
-          isOnline: true,
+          isOnline: false,
           adminPin: null, // Admin pin will be null initially
           homeId: null, // The generated Home ID
         }

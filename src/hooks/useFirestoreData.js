@@ -5,8 +5,8 @@ import { doc, getDoc, setDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/config"
 import { getUserId } from "@/lib/cacheUtils"
 
-// In-memory cache to store data between component renders and navigation
-const cache = new Map()
+// Export the cache Map so it can be accessed by other modules
+export const cache = new Map()
 
 /**
  * Custom hook for fetching and caching Firestore data

@@ -7,7 +7,7 @@ import { clearAllCache } from "@/hooks/useFirestoreData"
 // User collection reference
 const usersCollection = "Users"
 
-// Enhance the updateProfile function to be more robust
+// Enhance the updateProfile function to be more robust and fix caching issues
 export async function updateProfile(userId, profileData) {
   try {
     const userDocRef = doc(db, usersCollection, userId)
@@ -120,14 +120,17 @@ export async function updateProfile(userId, profileData) {
             console.error("Error checking phone uniqueness:", error)
             return { success: false, error: "Failed to validate phone uniqueness" }
           }
+        } else {
+          // Phone is the same as current, no need to update
+          validatedData.phone = phone
         }
       } else {
         validatedData.phone = ""
       }
     }
 
-    // Add timestamp
-    // validatedData.updatedAt = new Date() // Remove this line
+    // Add timestamp for tracking when the profile was last updated
+    validatedData.updatedAt = new Date()
 
     // Update only if we have valid data
     if (Object.keys(validatedData).length > 0) {
@@ -139,7 +142,7 @@ export async function updateProfile(userId, profileData) {
       return { success: true, data: validatedData }
     }
 
-    return { success: false, error: "No valid fields to update" }
+    return { success: true, message: "No changes detected" }
   } catch (error) {
     console.error("Error updating profile:", error)
     return { success: false, error: error.message }
@@ -253,7 +256,7 @@ export async function getProfilesByEmail(email) {
   }
 }
 
-// Cleanup user data - used in deleteUserAccount
+// Update the cleanupUserData function to ensure isOnline is set to false when account is deleted
 export async function cleanupUserData(userId) {
   try {
     // Get the user profile to check if they're an admin
@@ -299,6 +302,9 @@ export async function cleanupUserData(userId) {
 
       for (const userDoc of managedUsersSnapshot.docs) {
         const managedUserId = userDoc.id
+
+        // Set managed users to offline
+        batch.update(doc(db, "Users", managedUserId), { isOnline: false })
 
         // Delete managed user's rooms
         const managedRoomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", managedUserId)))

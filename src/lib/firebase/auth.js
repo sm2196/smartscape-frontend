@@ -26,7 +26,7 @@ function clearAuthCookie() {
   document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
 }
 
-// Sign up with email and password
+// Update the signUpWithEmailAndPassword function to set isOnline to false by default
 export async function signUpWithEmailAndPassword(email, password) {
   try {
     // Add validation for password length
@@ -41,10 +41,10 @@ export async function signUpWithEmailAndPassword(email, password) {
 
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
 
-    // Update user's online status to true in Firestore
+    // Set user's online status to false by default in Firestore
     const userDocRef = doc(db, "Users", userCredential.user.uid)
     await updateDoc(userDocRef, {
-      isOnline: true,
+      isOnline: false,
     })
 
     // Cache user information
@@ -75,13 +75,19 @@ export async function signUpWithEmailAndPassword(email, password) {
   }
 }
 
-// Update the signInWithEmailAndPassword function
+// Update the signInWithEmailAndPassword function to set isOnline to true
 export async function signInWithEmailAndPassword(email, password) {
   try {
     const userCredential = await firebaseSignIn(auth, email, password)
 
     // Set auth cookie on successful login
     setAuthCookie()
+
+    // Update user's online status to true in Firestore
+    const userDocRef = doc(db, "Users", userCredential.user.uid)
+    await updateDoc(userDocRef, {
+      isOnline: true,
+    })
 
     // Cache user information
     clearAuthData(userCredential.user)
@@ -92,7 +98,7 @@ export async function signInWithEmailAndPassword(email, password) {
   }
 }
 
-// Update the signOutUser function
+// Update the signOutUser function to ensure isOnline is set to false
 export async function signOutUser() {
   try {
     // Get current user before signing out
@@ -139,13 +145,13 @@ export async function deleteUserAccount(password) {
     } catch (error) {
       // Return early if password verification fails
       // This prevents any data deletion
-      if (error.code === "auth/wrong-password") {
-        return { success: false, error: "auth/wrong-password" }
+      if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
+        return { success: false, error: "Current password is incorrect" }
       }
       if (error.code === "auth/too-many-requests") {
-        return { success: false, error: "auth/too-many-requests" }
+        return { success: false, error: "Too many attempts. Please try again later." }
       }
-      return { success: false, error: error.code || "auth/unknown" }
+      return { success: false, error: "Authentication failed. Please check your current password." }
     }
 
     // Attempt to clean up user data first
@@ -192,13 +198,13 @@ export async function changeUserPassword(currentPassword, newPassword) {
       const credential = EmailAuthProvider.credential(user.email, currentPassword)
       await reauthenticateWithCredential(user, credential)
     } catch (error) {
-      if (error.code === "auth/wrong-password") {
+      if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
         return { success: false, error: "Current password is incorrect" }
       }
       if (error.code === "auth/too-many-requests") {
         return { success: false, error: "Too many attempts. Please try again later." }
       }
-      return { success: false, error: error.code || "Authentication failed" }
+      return { success: false, error: "Authentication failed. Please check your current password." }
     }
 
     // Update the password
@@ -235,7 +241,7 @@ export async function updateUserEmail(newEmail) {
     try {
       // Configure action code settings - redirect to auth page after verification
       const actionCodeSettings = {
-        url: `${window.location.origin}/auth?newEmail=${encodeURIComponent(newEmail)}&emailChanged=true`,
+        url: `${window.location.origin}/auth`,
         handleCodeInApp: true,
       }
 
@@ -246,7 +252,7 @@ export async function updateUserEmail(newEmail) {
         success: true,
         verificationRequired: true,
         message:
-          "A verification email has been sent to your new address. Please check your email and verify before the change takes effect. You'll be redirected to the login page after verification.",
+          "A verification email has been sent to your new address. Please check your email and verify before the change takes effect.",
       }
     } catch (error) {
       if (error.code === "auth/requires-recent-login") {

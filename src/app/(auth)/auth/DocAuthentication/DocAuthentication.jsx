@@ -141,7 +141,7 @@ function FileUploading() {
         phone: userData.phone,
       })
 
-      toast.success("You are now an admin, and the home has been created!")
+      toast.success("You are now an admin, and your smart home is ready to go!")
     } catch (error) {
       console.error("Error setting user as admin:", error)
       toast.error("Failed to set admin status.")

@@ -1,3 +1,31 @@
+/* Add styles for the PIN description */
+.pinDescription {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Add loading spinner styles */
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(21, 36, 71, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--oxford-blue);
+  animation: spin 1s ease-in-out infinite;
+  margin: 0 auto 16px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Update the status badge styles to be non-interactive */
 .statusBadge {
   display: flex;
