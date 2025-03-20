@@ -140,6 +140,9 @@ const OTPVerification = () => {
                     Didn’t receive a code? Resend again
                 </a>
 
+                <button className="ChangebuttonPhone" onClick={handleChangePhone}>
+                    <FaArrowLeft className="changearrow" /> Change Phone Number
+                </button>
             </div>
         </div>
     );
