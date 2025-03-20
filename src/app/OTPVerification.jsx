@@ -47,12 +47,19 @@ const OTPVerification = () => {
         newOtp[index] = value;
         setOtp(newOtp);
 
-        // Focus on next input if value is entered
+        // Move focus to the next input if value is entered
         if (value && index < 3) {
-            const nextInput = document.getElementById(`otp-${index + 1}`);
-            if (nextInput) nextInput.focus(); // Check if nextInput exists
+            document.getElementById(`otp-${index + 1}`).focus();
         }
     };
+
+    const handleKeyDown = (index, e) => {
+        // Handle backspace to move focus to the previous input
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+            document.getElementById(`otp-${index - 1}`).focus();
+        }
+    };
+
 
     const handleVerify = () => {
         if (isDisabled) {
@@ -97,9 +104,9 @@ const OTPVerification = () => {
     return (
         <div className="RSUserSignUpLogInFU">
             <div className="HeaderPhone">
-        <img src="\nobg.png" alt="Logo" className="HeaderPhoneLogo" />
-      </div>
-       <ToastContainer/>
+                <img src="\nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+            </div>
+            <ToastContainer />
             <div className="left-section">
                 <img src="/nobg.png" alt="Logo" className="RSLogoImagee" />
 
@@ -118,15 +125,18 @@ const OTPVerification = () => {
                     {otp.map((digit, index) => (
                         <input
                             key={index}
+                            id={`otp-${index}`}  // Unique identifier
                             type="text"
                             maxLength="1"
                             className="otp-box"
                             value={digit}
                             onChange={(e) => handleChange(index, e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(index, e)}
                             disabled={isDisabled}
                         />
                     ))}
                 </div>
+
 
                 <p className="otp-expiry">
                     This code expires in <b>{formatTime()}</b>

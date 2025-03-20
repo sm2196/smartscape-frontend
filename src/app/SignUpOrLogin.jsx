@@ -143,7 +143,7 @@ const handleRegister = async (e) => {
         lastName: lname || "",
         phone: phoneValue || "",
         admin: false,  // Default is not an admin
-        adminPin: null,  // Admin pin will be null initially
+
         homeId: null,  // The generated Home ID
       };
 

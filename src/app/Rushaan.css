@@ -10,6 +10,7 @@ body {
   margin: 0;
 }
 
+/************ Signup *****************/
 .RSUserSignUpLogIn {
   width: 100vw;
   display: flex;
@@ -163,6 +164,7 @@ body {
 .RSButtonCover:active {
   filter: brightness(.8);
 }
+
 .RSErrorMessage {
   color: rgb(141, 0, 0);
   background: transparent;
@@ -173,7 +175,8 @@ body {
   display: inline-block;
   margin-bottom: 6px;
 
-  text-align: left; /* Align text to the left */
+  text-align: left;
+  /* Align text to the left */
 
 }
 
@@ -433,7 +436,7 @@ h2 {
 
 
 
-/************ FileUploading *****************/
+/************ Doc Authentication *****************/
 .RSUserSignUpLogInFU {
   width: 100vw;
   display: flex;
@@ -455,10 +458,11 @@ h2 {
   background: #FFFAFA;
   flex-direction: column;
   align-items: center;
-margin-top: 5rem;
+  margin-top: 13rem;
   padding: 10px;
   height: 100%;
 }
+
 .right-section-file {
   width: 100%;
   /* Right side takes up 50% of the page */
@@ -470,18 +474,28 @@ margin-top: 5rem;
   padding: 20px;
   height: 100%;
 }
-.FileHeader{
+
+.FileHeader {
   margin-top: 40px;
-margin-bottom: 50px;
+  margin-bottom: 50px;
   text-align: center;
 
 
 }
 
-.file-upload-header{
+.FileHeader-family {
+  margin-top: 40px;
+  margin-bottom: 20px;
+  text-align: center;
+
+
+}
+
+.file-upload-header {
   font-size: 15px;
   color: #152447;
 }
+
 /* .main-container {
   display: flex;
   flex-direction: column;
@@ -520,7 +534,8 @@ margin-bottom: 50px;
   --folder-H: 30px;
   align-items: center;
   justify-content: center;
-  padding: 10px 40px; /* Increase padding for a longer height */
+  padding: 10px 40px;
+  /* Increase padding for a longer height */
   display: flex;
   align-items: center;
   background: #fff;
@@ -675,8 +690,9 @@ margin-bottom: 50px;
 
   align-items: center;
   justify-content: center;
-  padding: 10px 40px; /* Increase padding for a longer height */
-padding-left: 120px;
+  padding: 10px 40px;
+  /* Increase padding for a longer height */
+  padding-left: 120px;
   border-radius: 15px;
   box-shadow: 0 15px 30px rgba(97, 97, 97, 0.2);
   height: calc(var(--folder-H) * 2);
@@ -786,7 +802,7 @@ padding-left: 120px;
 .RSButtonFile {
   border-radius: 20px;
   border: 1px solid #4a5f96;
-margin-top:15px ;
+  margin-top: 15px;
   background-color: #4a5f96;
   color: #fffafa;
   font-size: 13px;
@@ -809,22 +825,25 @@ margin-top:15px ;
   outline: none;
 }
 
-.success-message{
-margin-top: 4rem;
-padding: 20px;
-padding-right: 5px;
-text-align: center;
-font-size: 15px;
-color: #0A1630;
+.success-message {
+  margin-top: 4rem;
+  padding: 20px;
+  padding-right: 5px;
+  text-align: center;
+  font-size: 15px;
+  color: #0A1630;
 
 }
+
 @keyframes float {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -832,36 +851,40 @@ color: #0A1630;
 
 
 @media (max-width: 768px) {
-.custom-file-upload {
-  padding: 8px 20px;
+  .custom-file-upload {
+    padding: 8px 20px;
 
-}
-.right-section-file {
-margin-left: 20px;
-margin-top: 100px;
-}
-.left-section-file {
+  }
 
-  margin-left: 20px;
-margin-top: 100px;
-}
-.file-card {
+  .right-section-file {
+    margin-left: 20px;
+    margin-top: 100px;
+  }
+
+  .left-section-file {
+
+    margin-left: 20px;
+    margin-top: 100px;
+  }
+
+  .file-card {
     width: 310px;
+  }
+
+  .progress-container {
+    width: 350px;
+  }
+
+  .RSButton {
+    width: 35%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
 }
 
-.progress-container{
-  width: 350px;
-}
-
-.RSButton {
-  width: 35%;
-  padding: 12px;
-  font-size: 14px;
-  margin-top: 10px;
-}
-
-}
-/************ OTP *****************/
+/************ Otp Verification *****************/
 .otp-container {
   display: flex;
   justify-content: center;
@@ -888,6 +911,7 @@ margin-top: 100px;
   padding: 20px;
   height: 100%;
 }
+
 .otp-logo {
   max-width: 150px;
 }
@@ -901,10 +925,14 @@ margin-top: 100px;
   width: 17.5rem;
   height: 3.5em;
   border: white 0.2em solid;
-  display: flex; /* Align text and icon in a row */
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
-  gap: 10px; /* Space between text and arrow */
+  display: flex;
+  /* Align text and icon in a row */
+  align-items: center;
+  /* Center vertically */
+  justify-content: center;
+  /* Center horizontally */
+  gap: 10px;
+  /* Space between text and arrow */
   transition: all 0.6s ease;
   padding: 5px 5px;
   border-radius: 20px;
@@ -923,8 +951,10 @@ margin-top: 100px;
 }
 
 .changearrow {
-  font-size: 1.5em; /* Make arrow bigger */
-  line-height: 1; /* Align with text */
+  font-size: 1.5em;
+  /* Make arrow bigger */
+  line-height: 1;
+  /* Align with text */
 }
 
 
@@ -976,8 +1006,10 @@ margin-top: 100px;
   padding: 12px 45px;
   letter-spacing: 1px;
   background-color: transparent;
-  border: 3px solid #1b346fd8; /* Blue border */
-  --color: #1b346fd8; /* Default blue */
+  border: 3px solid #1b346fd8;
+  /* Blue border */
+  --color: #1b346fd8;
+  /* Default blue */
   position: relative;
   overflow: hidden;
   cursor: pointer;
@@ -1014,7 +1046,8 @@ margin-top: 100px;
 .RSButtonCoverOTP:hover::after {
   width: 410px;
   height: 410px;
-  background-color: #1b346fd8; /* Green */
+  background-color: #1b346fd8;
+  /* Green */
 }
 
 .RSButtonCoverOTP:hover {
@@ -1027,46 +1060,49 @@ margin-top: 100px;
 }
 
 
-.OTPicon{
+.OTPicon {
   font-size: 6em;
   vertical-align: middle;
-  color:#152447 ;
- margin-bottom: 20px;
+  color: #152447;
+  margin-bottom: 20px;
 }
 
-
-
 .ChangebuttonPhone {
-display: none;
+  display: none;
 }
 
 @media (max-width: 768px) {
 
-  .RSUserSignUpLogInFU{
+  .RSUserSignUpLogInFU {
     background: white;
     overflow-y: auto;
 
   }
-  .left-section{
+
+  .left-section {
     display: none;
   }
 
   .right-section {
-width: 100%;
+    width: 100%;
 
   }
 
-  .ChangebuttonPhone{
+  .ChangebuttonPhone {
     background-color: #a4bffe2b;
     color: #1b346fd8;
     margin-top: 15px;
     width: 20em;
     height: 3em;
     border: #1b346fd8 0.2em solid;
-    display: flex; /* Align text and icon in a row */
-    align-items: center; /* Center vertically */
-    justify-content: center; /* Center horizontally */
-    gap: 10px; /* Space between text and arrow */
+    display: flex;
+    /* Align text and icon in a row */
+    align-items: center;
+    /* Center vertically */
+    justify-content: center;
+    /* Center horizontally */
+    gap: 10px;
+    /* Space between text and arrow */
     transition: all 0.6s ease;
     padding: 5px 5px;
     border-radius: 20px;
@@ -1084,8 +1120,8 @@ width: 100%;
 
 }
 
-/* forgot pass*/
-.right-section-fp{
+/************ Forgot password *****************/
+.right-section-fp {
   width: 45%;
   /* Right side takes up 50% of the page */
   display: flex;
@@ -1133,6 +1169,7 @@ width: 100%;
 .RSButton-fp:focus {
   outline: none;
 }
+
 .RSForms-fp {
   background-color: #FFFAFA;
   display: flex;
@@ -1141,7 +1178,7 @@ width: 100%;
   flex-direction: column;
   padding: 0 50px;
   height: 100%;
-  width:90%;
+  width: 90%;
   text-align: center;
 }
 
@@ -1180,44 +1217,47 @@ width: 100%;
   overflow: hidden;
 
 }
+
 @media (max-width: 768px) {
-  .RSUserSignUpLogInFP{
+  .RSUserSignUpLogInFP {
     background: white;
     overflow-y: auto;
     margin-top: 20px;
     align-items: start;
 
   }
-  .right-section-fp{
+
+  .right-section-fp {
     width: 90%;
     box-shadow: none;
 
   }
 
-  .RSLogoImagee-fp{display: none;}
+  .RSLogoImagee-fp {
+    display: none;
+  }
 
 
 }
 
 
+/************ Thank you *****************/
 
-/* thankyou */
-
-.subtitle-ty{
+.subtitle-ty {
   text-align: center;
   color: #1b346fd8;
   margin-bottom: 10px;
   font-size: 15px;
-  padding-bottom:40px;
+  padding-bottom: 40px;
 }
 
 
-/*Change phone*/
-.padding-cfn{
+/************ Change Phone Number *****************/
+.padding-cfn {
   padding-bottom: 20px;
 }
 
-.right-section-cfn{
+.right-section-cfn {
   width: 45%;
   /* Right side takes up 50% of the page */
   display: flex;
@@ -1231,11 +1271,11 @@ width: 100%;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
 }
+
 @media (max-width: 768px) {
-.right-section-cfn{
-  width: 90%;
-  box-shadow: none;
+  .right-section-cfn {
+    width: 90%;
+    box-shadow: none;
 
+  }
 }
-}
-

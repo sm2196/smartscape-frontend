@@ -8,7 +8,9 @@ import { FaFilePdf } from "react-icons/fa";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import { doc, setDoc, getDoc } from "firebase/firestore";  // Import doc, setDoc, getDoc
 import { db } from "./firebase"; // Make sure db is properly initialized
-// Simulate file upload progress
+import axios from 'axios';
+
+
 const simulateUpload = (progressCallback) => {
     let progress = 0;
     const interval = setInterval(() => {
@@ -63,164 +65,160 @@ function FileUploading() {
         setProgress(0);
     };
 
-    const handleRegistrationComplete = async () => {
 
+    const handleUpload = async () => {
+        if (!selectedFiles || selectedFiles.length !== 3) {
+            toast.error("Please select exactly 3 files.");
+            return;
+        }
+
+        setUploadStatus("uploading");
+        setProgress(0);
 
         const auth = getAuth();
         const user = auth.currentUser;
 
         if (!user) {
             toast.error("User not authenticated.");
+            setUploadStatus("select");
             return;
         }
 
-        const userEmail = user.email; // Get user email from Firebase
+        const userEmail = user.email;
+        const formData = new FormData();
+        formData.append("userId", user.uid);
+        formData.append("userEmail", userEmail);
+        formData.append("subject", "Documents Submission");
+        formData.append(
+            "text",
+            `Dear SmartScape Verification Team,\n\nA user has submitted the required documents for verification. Please find the attached files for review. Kindly process the verification at your earliest convenience and update the system accordingly.\n\nUser Details:\n- User ID: ${user.uid}\n- User Email: ${userEmail}\n\nThank you.\n\nBest regards,\nSmartScape System`
+        );
+
+        selectedFiles.forEach((file) => {
+            formData.append("documents", file);
+        });
+
+        // Call setUserAsAdmin after successful upload
+        await setUserAsAdmin(user.uid);
+        setUploadStatus("done");
 
         try {
-            // Sending email using EmailJS
-            await emailjs.send(
-                "service_bfv0h4h",  // Replace with your EmailJS service ID
-                "template_vuyc74s", // Replace with your EmailJS template ID
-                {
-                    to_name: user.displayName || "User", // Get the user's name from Firebase
-                    to_email: userEmail,   // Send email to the user
-                    from_name: "SmartScape",
-                    message: "Welcome to SmartScape! You have successfully registered. The admin will contact you shortly to link you to a household account."
+            await axios.post("http://localhost:5000/send-email", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                onUploadProgress: (progressEvent) => {
+                    const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                    setProgress(percentCompleted);
                 },
-                "hbWTAcvJCRfka3lwx" // Replace with your EmailJS public key
-            );
+            });
 
-            toast.success("Registration completed.");
+
+
+
+            // Delay navigation to ensure the toast is seen
+
         } catch (error) {
-            console.error("Email sending error:", error);
-            toast.error("Error sending confirmation email.");
+
+        } finally {
+            setUploadStatus("select");
         }
     };
 
-    const handleUpload = async () => {
-        if (selectedFiles.every(file => file !== null)) {
-            setUploadStatus("uploading");
-            setProgress(0);
 
-            const auth = getAuth();
-            const user = auth.currentUser;
+    // Set the user as admin and create the home document
+    const setUserAsAdmin = async (userId) => {
+        const homeId = generateHomeId(); // Generate a new home ID
 
-            if (!user) {
-                toast.error("User not authenticated.");
-                setUploadStatus("select");
+        try {
+            // Get user data
+            const userDocRef = doc(db, "Users", userId);
+            const userDoc = await getDoc(userDocRef);
+            if (!userDoc.exists()) {
+                toast.error("User not found.");
+                return;
+            }
+            const userData = userDoc.data();
+
+            // Update user document to set admin status and homeId
+            await setDoc(userDocRef, { admin: true, homeId }, { merge: true });
+
+            // Create the Homes document with the generated homeId
+            await setDoc(doc(db, "Homes", homeId), {
+                adminId: userId,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                phone: userData.phone,
+            });
+
+            // // Initialize generalUsers subcollection
+            // await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
+            //     userId: userId,
+
+            // });
+
+            toast.success("Documents successfully uploaded!");
+        } catch (error) {
+            console.error("Error setting user as admin:", error);
+            toast.error("Failed to set admin status.");
+        }
+    };
+
+
+    // Link a general user to an existing home
+    const linkUserToHome = async (userId, homeId) => {
+        //     console.log("homeId:", homeId, typeof homeId);  // Should be a string
+        // console.log("userId:", userId, typeof userId);  // Should be a string
+
+        try {
+            // Get user data
+            const userDocRef = doc(db, "Users", userId);
+            const userDoc = await getDoc(userDocRef);
+            if (!userDoc.exists()) {
+                toast.error("User not found.");
+                return;
+            }
+            const userData = userDoc.data();
+
+            // Check if the homeId exists
+            const homeDocRef = doc(db, "Homes", homeId);
+            const homeDoc = await getDoc(homeDocRef);
+            if (!homeDoc.exists()) {
+                toast.error("Home ID does not exist.");
                 return;
             }
 
-            const userEmail = user.email; // Get user email from Firebase
-
-            // Simulate file upload
-            simulateUpload(setProgress);
-
-            try {
-                await setUserAsAdmin(user.uid);
-                const checkProgress = setInterval(() => {
-
-                }, 100); // Check every 100ms
-            } catch (error) {
-                console.error("Email sending error:", error);
-                setUploadStatus("select");
+            const homeData = homeDoc.data();
+            if (homeData.adminId === userId) {
+                toast.error("Admin cannot be added as a general user.");
+                return;
             }
+            // Add the user to the generalUsers subcollection for the home
+            await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
+                userId: userId,
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                phone: userData.phone,
+            });
+
+
+
+            // Update the user document to store the linked home ID
+            await setDoc(userDocRef, { homeId }, { merge: true });
+
+            toast.success("Account successfully linked to the home!");
+
+        } catch (error) {
+            console.error("Error linking user to home:", error);
+            toast.error("Failed to link account to home.");
         }
     };
 
-// Set the user as admin and create the home document
-const setUserAsAdmin = async (userId) => {
-    const homeId = generateHomeId(); // Generate a new home ID
 
-    try {
-        // Get user data
-        const userDocRef = doc(db, "Users", userId);
-        const userDoc = await getDoc(userDocRef);
-        if (!userDoc.exists()) {
-            toast.error("User not found.");
-            return;
-        }
-        const userData = userDoc.data();
-
-        // Update user document to set admin status and homeId
-        await setDoc(userDocRef, { admin: true, homeId }, { merge: true });
-
-        // Create the Homes document with the generated homeId
-        await setDoc(doc(db, "Homes", homeId), {
-            adminId: userId,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            phone: userData.phone,
-        });
-
-        // // Initialize generalUsers subcollection
-        // await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
-        //     userId: userId,
-
-        // });
-
-        toast.success("You are now an admin, and the home has been created!");
-
-    } catch (error) {
-        console.error("Error setting user as admin:", error);
-        toast.error("Failed to set admin status.");
-    }
-};
-
-// Link a general user to an existing home
-const linkUserToHome = async (userId, homeId) => {
-//     console.log("homeId:", homeId, typeof homeId);  // Should be a string
-// console.log("userId:", userId, typeof userId);  // Should be a string
-
-    try {
-        // Get user data
-        const userDocRef = doc(db, "Users", userId);
-        const userDoc = await getDoc(userDocRef);
-        if (!userDoc.exists()) {
-            toast.error("User not found.");
-            return;
-        }
-        const userData = userDoc.data();
-
-        // Check if the homeId exists
-        const homeDocRef = doc(db, "Homes", homeId);
-        const homeDoc = await getDoc(homeDocRef);
-        if (!homeDoc.exists()) {
-            toast.error("Home ID does not exist.");
-            return;
-        }
-
-        const homeData = homeDoc.data();
-        if (homeData.adminId === userId) {
-            toast.error("Admin cannot be added as a general user.");
-            return;
-        }
-        // Add the user to the generalUsers subcollection for the home
-        await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
-            userId: userId,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            email: userData.email,
-            phone: userData.phone,
-        });
-
-
-
-        // Update the user document to store the linked home ID
-        await setDoc(userDocRef, { homeId }, { merge: true });
-
-        toast.success("Account successfully linked to the home!");
-
-    } catch (error) {
-        console.error("Error linking user to home:", error);
-        toast.error("Failed to link account to home.");
-    }
-};
     useEffect(() => {
         if (progress === 100) {
             setUploadStatus("done"); // Set the status to done immediately
-            navigate("/ThankYou");   // Navigate immediately after the progress reaches 100%
+            setTimeout(() => navigate("/ThankYou"), 1500);
         }
     }, [progress]);  // This effect runs when `progress` changes
 
@@ -242,197 +240,197 @@ const linkUserToHome = async (userId, homeId) => {
             </div>
             <ToastContainer />
             <Components.RSSignUp userSignIn={signIn}>
-            <div className="right-section-file">
-                <h2 className="FileHeader">
-                    Upload Required Documents for Verification
-                </h2>
+                <div className="right-section-file">
+                    <h2 className="FileHeader">
+                        Upload Required Documents for Verification
+                    </h2>
 
-                <div className="upload-box">
-                    <h3 className="file-upload-header">Proof of identity (Emirates ID)</h3>
-                    {[0].map((index) => (
-                        <div key={index}>
-                            <input
-                                type="file"
-                                onChange={(e) => handleFileSelect(e, index)}
-                                style={{ display: "none" }}
-                            />
-                            {!selectedFiles[index] ? (
-                                <div className="container">
-                                    <div className="folder">
-                                        <div className="front-side">
-                                            <div className="tip"></div>
-                                            <div className="cover"></div>
+                    <div className="upload-box">
+                        <h3 className="file-upload-header">Proof of identity (Emirates ID)</h3>
+                        {[0].map((index) => (
+                            <div key={index}>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileSelect(e, index)}
+                                    style={{ display: "none" }}
+                                />
+                                {!selectedFiles[index] ? (
+                                    <div className="container">
+                                        <div className="folder">
+                                            <div className="front-side">
+                                                <div className="tip"></div>
+                                                <div className="cover"></div>
+                                            </div>
+                                            <div className="back-side cover"></div>
                                         </div>
-                                        <div className="back-side cover"></div>
+                                        <label className="custom-file-upload">
+                                            <input
+                                                type="file"
+                                                onChange={(e) => handleFileSelect(e, index)}
+                                            />
+                                            Choose a file
+                                        </label>
                                     </div>
-                                    <label className="custom-file-upload">
-                                        <input
-                                            type="file"
-                                            onChange={(e) => handleFileSelect(e, index)}
-                                        />
-                                        Choose a file
-                                    </label>
-                                </div>
-                            ) : (
-                                <div className="file-card">
-                                    <FaFilePdf className="file-icon" />
-                                    <span className="file-name">{selectedFiles[index].name}</span>
-                                    <button
-                                        className="close-btn"
-                                        onClick={() => handleClearFile(index)}
-                                    >
-                                        <IoIosCloseCircleOutline />
-                                    </button>
-                                </div>
-                            )}
-                            {uploadStatus === "uploading" && (
-                                <div className="progress-container">
-                                    <div className="progress-bar">
-                                        <div className="progress" style={{ width: `${progress}%` }}></div>
+                                ) : (
+                                    <div className="file-card">
+                                        <FaFilePdf className="file-icon" />
+                                        <span className="file-name">{selectedFiles[index].name}</span>
+                                        <button
+                                            className="close-btn"
+                                            onClick={() => handleClearFile(index)}
+                                        >
+                                            <IoIosCloseCircleOutline />
+                                        </button>
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
-
-                <div className="upload-box">
-                    <h3 className="file-upload-header">Proof of housing (Current Lease Agreement)</h3>
-                    {[1].map((index) => (
-                        <div key={index}>
-                            <input
-                                type="file"
-                                onChange={(e) => handleFileSelect(e, index)}
-                                style={{ display: "none" }}
-                            />
-                            {!selectedFiles[index] ? (
-                                <div className="container">
-                                    <div className="folder">
-                                        <div className="front-side">
-                                            <div className="tip"></div>
-                                            <div className="cover"></div>
+                                )}
+                                {uploadStatus === "uploading" && (
+                                    <div className="progress-container">
+                                        <div className="progress-bar">
+                                            <div className="progress" style={{ width: `${progress}%` }}></div>
                                         </div>
-                                        <div className="back-side cover"></div>
                                     </div>
-                                    <label className="custom-file-upload">
-                                        <input
-                                            type="file"
-                                            onChange={(e) => handleFileSelect(e, index)}
-                                        />
-                                        Choose a file
-                                    </label>
-                                </div>
-                            ) : (
-                                <div className="file-card">
-                                    <FaFilePdf className="file-icon" />
-                                    <span className="file-name">{selectedFiles[index].name}</span>
-                                    <button
-                                        className="close-btn"
-                                        onClick={() => handleClearFile(index)}
-                                    >
-                                        <IoIosCloseCircleOutline />
-                                    </button>
-                                </div>
-                            )}
-                            {uploadStatus === "uploading" && (
-                                <div className="progress-container">
-                                    <div className="progress-bar">
-                                        <div className="progress" style={{ width: `${progress}%` }}></div>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
-                </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
 
-                <div className="upload-box">
-                    <h3 className="file-upload-header">Utility bills with the same address as the lease</h3>
-                    {[2].map((index) => (
-                        <div key={index}>
-                            <input
-                                type="file"
-                                onChange={(e) => handleFileSelect(e, index)}
-                                style={{ display: "none" }}
-                            />
-                            {!selectedFiles[index] ? (
-                                <div className="container">
-                                    <div className="folder">
-                                        <div className="front-side">
-                                            <div className="tip"></div>
-                                            <div className="cover"></div>
+                    <div className="upload-box">
+                        <h3 className="file-upload-header">Proof of housing (Current Lease Agreement)</h3>
+                        {[1].map((index) => (
+                            <div key={index}>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileSelect(e, index)}
+                                    style={{ display: "none" }}
+                                />
+                                {!selectedFiles[index] ? (
+                                    <div className="container">
+                                        <div className="folder">
+                                            <div className="front-side">
+                                                <div className="tip"></div>
+                                                <div className="cover"></div>
+                                            </div>
+                                            <div className="back-side cover"></div>
                                         </div>
-                                        <div className="back-side cover"></div>
+                                        <label className="custom-file-upload">
+                                            <input
+                                                type="file"
+                                                onChange={(e) => handleFileSelect(e, index)}
+                                            />
+                                            Choose a file
+                                        </label>
                                     </div>
-                                    <label className="custom-file-upload">
-                                        <input
-                                            type="file"
-                                            onChange={(e) => handleFileSelect(e, index)}
-                                        />
-                                        Choose a file
-                                    </label>
-                                </div>
-                            ) : (
-                                <div className="file-card">
-                                    <FaFilePdf className="file-icon" />
-                                    <span className="file-name">{selectedFiles[index].name}</span>
-                                    <button
-                                        className="close-btn"
-                                        onClick={() => handleClearFile(index)}
-                                    >
-                                        <IoIosCloseCircleOutline />
-                                    </button>
-                                </div>
-                            )}
-                            {uploadStatus === "uploading" && (
-                                <div className="progress-container">
-                                    <div className="progress-bar">
-                                        <div className="progress" style={{ width: `${progress}%` }}></div>
+                                ) : (
+                                    <div className="file-card">
+                                        <FaFilePdf className="file-icon" />
+                                        <span className="file-name">{selectedFiles[index].name}</span>
+                                        <button
+                                            className="close-btn"
+                                            onClick={() => handleClearFile(index)}
+                                        >
+                                            <IoIosCloseCircleOutline />
+                                        </button>
                                     </div>
-                                </div>
-                            )}
-                        </div>
-                    ))}
+                                )}
+                                {uploadStatus === "uploading" && (
+                                    <div className="progress-container">
+                                        <div className="progress-bar">
+                                            <div className="progress" style={{ width: `${progress}%` }}></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="upload-box">
+                        <h3 className="file-upload-header">Utility bills with the same address as the lease</h3>
+                        {[2].map((index) => (
+                            <div key={index}>
+                                <input
+                                    type="file"
+                                    onChange={(e) => handleFileSelect(e, index)}
+                                    style={{ display: "none" }}
+                                />
+                                {!selectedFiles[index] ? (
+                                    <div className="container">
+                                        <div className="folder">
+                                            <div className="front-side">
+                                                <div className="tip"></div>
+                                                <div className="cover"></div>
+                                            </div>
+                                            <div className="back-side cover"></div>
+                                        </div>
+                                        <label className="custom-file-upload">
+                                            <input
+                                                type="file"
+                                                onChange={(e) => handleFileSelect(e, index)}
+                                            />
+                                            Choose a file
+                                        </label>
+                                    </div>
+                                ) : (
+                                    <div className="file-card">
+                                        <FaFilePdf className="file-icon" />
+                                        <span className="file-name">{selectedFiles[index].name}</span>
+                                        <button
+                                            className="close-btn"
+                                            onClick={() => handleClearFile(index)}
+                                        >
+                                            <IoIosCloseCircleOutline />
+                                        </button>
+                                    </div>
+                                )}
+                                {uploadStatus === "uploading" && (
+                                    <div className="progress-container">
+                                        <div className="progress-bar">
+                                            <div className="progress" style={{ width: `${progress}%` }}></div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {selectedFiles.every((file) => file !== null) && (
+                        <button className="upload-btn" onClick={handleUpload}>
+                            Upload
+                        </button>
+                    )}
+
                 </div>
-
-                {selectedFiles.every((file) => file !== null) && (
-                    <button className="upload-btn" onClick={handleUpload}>
-                        Upload
-                    </button>
-                )}
-
-            </div>
-        </Components.RSSignUp>
+            </Components.RSSignUp>
 
             {/* SignIn Form remains unchanged */}
             <Components.RSSignIn userSignIn={signIn}>
-            <div className="left-section-file">
-            <h2 className="FileHeader">Finalize Your Account Setup</h2>
+                <div className="left-section-file">
+                    <h2 className="FileHeader-fmaily">Finalize Your Account Setup</h2>
 
-            <div className="input-group">
-            <input  type="text"
-        className="input"
-        value={homeId}
-        onChange={(e) => setHomeId(e.target.value)}
-              required />
-            <label className="user-label">Home ID</label>
-          </div>
+                    <div className="input-group">
+                        <input type="text"
+                            className="input"
+                            value={homeId}
+                            onChange={(e) => setHomeId(e.target.value)}
+                            required />
+                        <label className="user-label">Home ID</label>
+                    </div>
 
-          <button className="RSButtonFile" onClick={() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
-    if (!user) {
-        toast.error("User not authenticated.");
-        return;
-    }
-    linkUserToHome(user.uid, homeId);
-}}>
-  Link Account
-</button>
+                    <button className="RSButtonFile" onClick={() => {
+                        const auth = getAuth();
+                        const user = auth.currentUser;
+                        if (!user) {
+                            toast.error("User not authenticated.");
+                            return;
+                        }
+                        linkUserToHome(user.uid, homeId);
+                    }}>
+                        Link Account
+                    </button>
 
 
 
-      </div>
-    </Components.RSSignIn>
+                </div>
+            </Components.RSSignIn>
 
 
             <Components.RSLRCoverBG userSignIn={signIn}>

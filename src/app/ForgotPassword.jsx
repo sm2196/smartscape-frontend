@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { app } from "./firebase"; // Import your Firebase app configuration
+
 
 
 const ForgotPassword = () => {
