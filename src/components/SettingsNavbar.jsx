@@ -80,7 +80,7 @@ export default function SettingsNavbar() {
     >
       <div className="tw:max-lg:flex tw:max-lg:h-10">
         <div className="tw:flex-col tw:mb-10 tw:max-lg:hidden">
-          <div className="tw:text-[clamp(2.5rem,6vw,3.5rem)] tw:font-light
+          <div className="tw:text-[clamp(2.5rem,3.5vw,3.5rem)] tw:font-light
           tw:text-[color:var(--text-primary)] tw:leading-[1.1] tw:mb-2"
           suppressHydrationWarning={true}>
             {timeString}
