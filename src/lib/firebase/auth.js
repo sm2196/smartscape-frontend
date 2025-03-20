@@ -19,13 +19,6 @@ function setAuthCookie() {
   }`
 }
 
-// Add these functions to your existing auth.js file
-
-// Clear auth cookie when user logs out
-function clearAuthCookie() {
-  document.cookie = "auth-session=; path=/; max-age=0; SameSite=Strict;"
-}
-
 // Update the signUpWithEmailAndPassword function to set isOnline to false by default
 export async function signUpWithEmailAndPassword(email, password) {
   try {

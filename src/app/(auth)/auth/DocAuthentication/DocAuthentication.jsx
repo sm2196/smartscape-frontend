@@ -1,27 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import * as Components from "../components/SignUpAndLogin"
-import emailjs from "emailjs-com"
-import { getAuth } from "firebase/auth"
-import { ToastContainer, toast } from "react-toastify"
-import { useRouter } from "next/navigation"
-import { FaFilePdf } from "react-icons/fa"
-import { IoIosCloseCircleOutline } from "react-icons/io"
-import { doc, setDoc, getDoc } from "firebase/firestore"
-import { db } from "@/lib/firebase/config"
+import { useState, useEffect } from "react";
+import * as Components from "../components/SignUpAndLogin";
+import { getAuth } from "firebase/auth";
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { FaFilePdf } from "react-icons/fa";
+import { IoIosCloseCircleOutline } from "react-icons/io";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase/config";
 
 // Simulate file upload progress
 const simulateUpload = (progressCallback) => {
-  let progress = 0
+  let progress = 0;
   const interval = setInterval(() => {
-    progress += 10
-    progressCallback(progress)
+    progress += 10;
+    progressCallback(progress);
     if (progress >= 100) {
-      clearInterval(interval)
+      clearInterval(interval);
     }
-  }, 500)
-}
+  }, 500);
+};
 
 const generateHomeId = () => {
   const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -30,145 +29,204 @@ const generateHomeId = () => {
     homeId += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return homeId;
-}
+};
 
 function FileUploading() {
-  const router = useRouter()
-  const [signIn, toggle] = useState(false)
-  const [selectedFiles, setSelectedFiles] = useState([null, null, null])
-  const [progress, setProgress] = useState(0)
-  const [uploadStatus, setUploadStatus] = useState("select")
-  const [homeId, setHomeId] = useState("")
+  const router = useRouter();
+  const [signIn, toggle] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([null, null, null]);
+  const [progress, setProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("select");
+  const [homeId, setHomeId] = useState("");
 
   useEffect(() => {
     if (uploadStatus === "uploading") {
-      simulateUpload(setProgress)
+      simulateUpload(setProgress);
     }
-  }, [uploadStatus])
+  }, [uploadStatus]);
 
   const handleFileSelect = (e, index) => {
-    const file = e.target.files[0]
+    const file = e.target.files[0];
     if (file && file.type !== "application/pdf") {
-      toast.error("Only PDF files are allowed.")
-      return
+      toast.error("Only PDF files are allowed.");
+      return;
     }
-    const newFiles = [...selectedFiles]
-    newFiles[index] = file
-    setSelectedFiles(newFiles)
-  }
+    const newFiles = [...selectedFiles];
+    newFiles[index] = file;
+    setSelectedFiles(newFiles);
+  };
 
   const handleClearFile = (index) => {
-    const newFiles = [...selectedFiles]
-    newFiles[index] = null
-    setSelectedFiles(newFiles)
-    setUploadStatus("select")
-    setProgress(0)
-  }
+    const newFiles = [...selectedFiles];
+    newFiles[index] = null;
+    setSelectedFiles(newFiles);
+    setUploadStatus("select");
+    setProgress(0);
+  };
 
-  const handleRegistrationComplete = async () => {
-    const auth = getAuth()
-    const user = auth.currentUser
+  // Update the handleUpload function to use the Next.js API route
+  const handleUpload = async () => {
+    if (!selectedFiles.every((file) => file !== null)) {
+      toast.error("Please select all required files.");
+      return;
+    }
+
+    setUploadStatus("uploading");
+    setProgress(0);
+
+    const auth = getAuth();
+    const user = auth.currentUser;
 
     if (!user) {
-      toast.error("User not authenticated.")
-      return
+      toast.error("User not authenticated.");
+      setUploadStatus("select");
+      return;
     }
-
-    const userEmail = user.email
 
     try {
-      await emailjs.send(
-        "service_bfv0h4h",
-        "template_vuyc74s",
-        {
-          to_name: user.displayName || "User",
-          to_email: userEmail,
-          from_name: "SmartScape",
-          message:
-            "Welcome to SmartScape! You have successfully registered. The admin will contact you shortly to link you to a household account.",
-        },
-        "hbWTAcvJCRfka3lwx",
-      )
+      // First set the user as admin and create home ID
+      await setUserAsAdmin(user.uid);
 
-      toast.success("Registration completed.")
-    } catch (error) {
-      console.error("Email sending error:", error)
-      toast.error("Error sending confirmation email.")
-    }
-  }
+      // Then send the email with documents
+      const userEmail = user.email;
+      const formData = new FormData();
+      formData.append("userId", user.uid);
+      formData.append("userEmail", userEmail);
+      formData.append("subject", "Documents Submission");
+      formData.append(
+        "text",
+        `Dear SmartScape Verification Team,
 
-  const handleUpload = async () => {
-    if (selectedFiles.every((file) => file !== null)) {
-      setUploadStatus("uploading")
-      setProgress(0)
+A user has submitted the required documents for verification. Please find the attached files for review. Kindly process the verification at your earliest convenience and update the system accordingly.
 
-      const auth = getAuth()
-      const user = auth.currentUser
+User Details:
+- User ID: ${user.uid}
+- User Email: ${userEmail}
 
-      if (!user) {
-        toast.error("User not authenticated.")
-        setUploadStatus("select")
-        return
-      }
+Thank you.
+
+Best regards,
+SmartScape System`
+      );
+
+      selectedFiles.forEach((file) => {
+        formData.append("documents", file);
+      });
 
       try {
-        await setUserAsAdmin(user.uid)
+        // Start progress animation
+        let currentProgress = 0;
+        const progressInterval = setInterval(() => {
+          // Only go up to 90% until we confirm the email was sent
+          if (currentProgress < 90) {
+            currentProgress += 10;
+            setProgress(currentProgress);
+          }
+        }, 300);
+
+        // Send the email with documents using native fetch API
+        const response = await fetch("/api/send-email", {
+          method: "POST",
+          body: formData,
+        });
+
+        // Clear the progress interval
+        clearInterval(progressInterval);
+
+        // Check if response is OK
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Server error response:", errorText);
+          throw new Error(
+            `Server responded with ${response.status}: ${response.statusText}`
+          );
+        }
+
+        // Try to parse the JSON response
+        let result;
+        try {
+          result = await response.json();
+        } catch (jsonError) {
+          console.error("Error parsing JSON response:", jsonError);
+          throw new Error("Invalid response from server. Please try again.");
+        }
+
+        if (result.success) {
+          // Complete the progress to 100%
+          setProgress(100);
+          toast.success("Documents successfully uploaded!");
+
+          // Wait a moment before redirecting
+          setTimeout(() => {
+            router.push("/auth/ThankYou");
+          }, 1500);
+        } else {
+          throw new Error(result.error || "Failed to send email");
+        }
       } catch (error) {
-        console.error("Error during upload:", error)
-        setUploadStatus("select")
+        console.error("Error sending email with documents:", error);
+        toast.error(`Error sending documents: ${error.message}`);
+        setUploadStatus("select");
+        setProgress(0);
       }
+    } catch (error) {
+      console.error("Error during upload:", error);
+      setUploadStatus("select");
+      toast.error("Error during upload. Please try again.");
     }
-  }
+  };
 
   const setUserAsAdmin = async (userId) => {
-    const homeId = generateHomeId()
+    const homeId = generateHomeId();
 
     try {
-      const userDocRef = doc(db, "Users", userId)
-      const userDoc = await getDoc(userDocRef)
+      const userDocRef = doc(db, "Users", userId);
+      const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) {
-        toast.error("User not found.")
-        return
+        toast.error("User not found.");
+        return;
       }
-      const userData = userDoc.data()
+      const userData = userDoc.data();
 
-      await setDoc(userDocRef, { isAdmin: true, homeId }, { merge: true })
+      await setDoc(userDocRef, { isAdmin: true, homeId }, { merge: true });
 
       await setDoc(doc(db, "Homes", homeId), {
         adminId: userId,
         firstName: userData.firstName,
         lastName: userData.lastName,
         phone: userData.phone,
-      })
+      });
 
-      toast.success("You are now an admin, and your smart home is ready to go!")
+      toast.success(
+        "You are now an admin, and your smart home is ready to go!"
+      );
     } catch (error) {
-      console.error("Error setting user as admin:", error)
-      toast.error("Failed to set admin status.")
+      console.error("Error setting user as admin:", error);
+      toast.error("Failed to set admin status.");
     }
-  }
+  };
 
   const linkUserToHome = async (userId, homeId) => {
     try {
-      const userDocRef = doc(db, "Users", userId)
-      const userDoc = await getDoc(userDocRef)
+      const userDocRef = doc(db, "Users", userId);
+      const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) {
-        toast.error("User not found.")
-        return
+        toast.error("User not found.");
+        return;
       }
-      const userData = userDoc.data()
+      const userData = userDoc.data();
 
-      const homeDocRef = doc(db, "Homes", homeId)
-      const homeDoc = await getDoc(homeDocRef)
+      const homeDocRef = doc(db, "Homes", homeId);
+      const homeDoc = await getDoc(homeDocRef);
       if (!homeDoc.exists()) {
-        toast.error("Home ID does not exist.")
-        return
+        toast.error("Home ID does not exist.");
+        return;
       }
 
-      const homeData = homeDoc.data()
+      const homeData = homeDoc.data();
       if (homeData.adminId === userId) {
-        toast.error("Admin cannot be added as a general user.")
-        return
+        toast.error("Admin cannot be added as a general user.");
+        return;
       }
 
       await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
@@ -177,31 +235,32 @@ function FileUploading() {
         lastName: userData.lastName,
         email: userData.email,
         phone: userData.phone,
-      })
+      });
 
-      await setDoc(userDocRef, { homeId }, { merge: true })
+      await setDoc(userDocRef, { homeId }, { merge: true });
 
-      toast.success("Account successfully linked to the home!")
+      toast.success("Account successfully linked to the home!");
     } catch (error) {
-      console.error("Error linking user to home:", error)
-      toast.error("Failed to link account to home.")
+      console.error("Error linking user to home:", error);
+      toast.error("Failed to link account to home.");
     }
-  }
+  };
 
+  // Remove or comment out this useEffect since we're handling navigation in handleUpload now
   useEffect(() => {
     if (progress === 100) {
-      setUploadStatus("done")
-      router.push("/auth/ThankYou")
+      setUploadStatus("done");
+      // Navigation is now handled in the handleUpload function
     }
-  }, [progress, router])
+  }, [progress]);
 
   useEffect(() => {
     if (uploadStatus === "done") {
-      setSelectedFiles([null, null, null])
-      setProgress(0)
-      setUploadStatus("select")
+      setSelectedFiles([null, null, null]);
+      setProgress(0);
+      setUploadStatus("select");
     }
-  }, [uploadStatus])
+  }, [uploadStatus]);
 
   return (
     <div className="RSUserSignUpLogIn">
@@ -211,13 +270,21 @@ function FileUploading() {
       <ToastContainer />
       <Components.RSSignUp $userSignIn={signIn}>
         <div className="right-section-file">
-          <h2 className="FileHeader">Upload Required Documents for Verification</h2>
+          <h2 className="FileHeader">
+            Upload Required Documents for Verification
+          </h2>
 
           <div className="upload-box">
-            <h3 className="file-upload-header">Proof of identity (Emirates ID)</h3>
+            <h3 className="file-upload-header">
+              Proof of identity (Emirates ID)
+            </h3>
             {[0].map((index) => (
               <div key={index}>
-                <input type="file" onChange={(e) => handleFileSelect(e, index)} style={{ display: "none" }} />
+                <input
+                  type="file"
+                  onChange={(e) => handleFileSelect(e, index)}
+                  style={{ display: "none" }}
+                />
                 {!selectedFiles[index] ? (
                   <div className="container">
                     <div className="folder">
@@ -228,15 +295,23 @@ function FileUploading() {
                       <div className="back-side cover"></div>
                     </div>
                     <label className="custom-file-upload">
-                      <input type="file" onChange={(e) => handleFileSelect(e, index)} />
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileSelect(e, index)}
+                      />
                       Choose a file
                     </label>
                   </div>
                 ) : (
                   <div className="file-card">
                     <FaFilePdf className="file-icon" />
-                    <span className="file-name">{selectedFiles[index].name}</span>
-                    <button className="close-btn" onClick={() => handleClearFile(index)}>
+                    <span className="file-name">
+                      {selectedFiles[index].name}
+                    </span>
+                    <button
+                      className="close-btn"
+                      onClick={() => handleClearFile(index)}
+                    >
                       <IoIosCloseCircleOutline />
                     </button>
                   </div>
@@ -244,7 +319,10 @@ function FileUploading() {
                 {uploadStatus === "uploading" && (
                   <div className="progress-container">
                     <div className="progress-bar">
-                      <div className="progress" style={{ width: `${progress}%` }}></div>
+                      <div
+                        className="progress"
+                        style={{ width: `${progress}%` }}
+                      ></div>
                     </div>
                   </div>
                 )}
@@ -253,10 +331,16 @@ function FileUploading() {
           </div>
 
           <div className="upload-box">
-            <h3 className="file-upload-header">Proof of housing (Current Lease Agreement)</h3>
+            <h3 className="file-upload-header">
+              Proof of housing (Current Lease Agreement)
+            </h3>
             {[1].map((index) => (
               <div key={index}>
-                <input type="file" onChange={(e) => handleFileSelect(e, index)} style={{ display: "none" }} />
+                <input
+                  type="file"
+                  onChange={(e) => handleFileSelect(e, index)}
+                  style={{ display: "none" }}
+                />
                 {!selectedFiles[index] ? (
                   <div className="container">
                     <div className="folder">
@@ -267,15 +351,23 @@ function FileUploading() {
                       <div className="back-side cover"></div>
                     </div>
                     <label className="custom-file-upload">
-                      <input type="file" onChange={(e) => handleFileSelect(e, index)} />
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileSelect(e, index)}
+                      />
                       Choose a file
                     </label>
                   </div>
                 ) : (
                   <div className="file-card">
                     <FaFilePdf className="file-icon" />
-                    <span className="file-name">{selectedFiles[index].name}</span>
-                    <button className="close-btn" onClick={() => handleClearFile(index)}>
+                    <span className="file-name">
+                      {selectedFiles[index].name}
+                    </span>
+                    <button
+                      className="close-btn"
+                      onClick={() => handleClearFile(index)}
+                    >
                       <IoIosCloseCircleOutline />
                     </button>
                   </div>
@@ -283,7 +375,10 @@ function FileUploading() {
                 {uploadStatus === "uploading" && (
                   <div className="progress-container">
                     <div className="progress-bar">
-                      <div className="progress" style={{ width: `${progress}%` }}></div>
+                      <div
+                        className="progress"
+                        style={{ width: `${progress}%` }}
+                      ></div>
                     </div>
                   </div>
                 )}
@@ -292,10 +387,16 @@ function FileUploading() {
           </div>
 
           <div className="upload-box">
-            <h3 className="file-upload-header">Utility bills with the same address as the lease</h3>
+            <h3 className="file-upload-header">
+              Utility bills with the same address as the lease
+            </h3>
             {[2].map((index) => (
               <div key={index}>
-                <input type="file" onChange={(e) => handleFileSelect(e, index)} style={{ display: "none" }} />
+                <input
+                  type="file"
+                  onChange={(e) => handleFileSelect(e, index)}
+                  style={{ display: "none" }}
+                />
                 {!selectedFiles[index] ? (
                   <div className="container">
                     <div className="folder">
@@ -306,15 +407,23 @@ function FileUploading() {
                       <div className="back-side cover"></div>
                     </div>
                     <label className="custom-file-upload">
-                      <input type="file" onChange={(e) => handleFileSelect(e, index)} />
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileSelect(e, index)}
+                      />
                       Choose a file
                     </label>
                   </div>
                 ) : (
                   <div className="file-card">
                     <FaFilePdf className="file-icon" />
-                    <span className="file-name">{selectedFiles[index].name}</span>
-                    <button className="close-btn" onClick={() => handleClearFile(index)}>
+                    <span className="file-name">
+                      {selectedFiles[index].name}
+                    </span>
+                    <button
+                      className="close-btn"
+                      onClick={() => handleClearFile(index)}
+                    >
                       <IoIosCloseCircleOutline />
                     </button>
                   </div>
@@ -322,7 +431,10 @@ function FileUploading() {
                 {uploadStatus === "uploading" && (
                   <div className="progress-container">
                     <div className="progress-bar">
-                      <div className="progress" style={{ width: `${progress}%` }}></div>
+                      <div
+                        className="progress"
+                        style={{ width: `${progress}%` }}
+                      ></div>
                     </div>
                   </div>
                 )}
@@ -343,20 +455,26 @@ function FileUploading() {
           <h2 className="FileHeader">Finalize Your Account Setup</h2>
 
           <div className="input-group">
-            <input type="text" className="input" value={homeId} onChange={(e) => setHomeId(e.target.value)} required />
+            <input
+              type="text"
+              className="input"
+              value={homeId}
+              onChange={(e) => setHomeId(e.target.value)}
+              required
+            />
             <label className="user-label">Home ID</label>
           </div>
 
           <button
             className="RSButtonFile"
             onClick={() => {
-              const auth = getAuth()
-              const user = auth.currentUser
+              const auth = getAuth();
+              const user = auth.currentUser;
               if (!user) {
-                toast.error("User not authenticated.")
-                return
+                toast.error("User not authenticated.");
+                return;
               }
-              linkUserToHome(user.uid, homeId)
+              linkUserToHome(user.uid, homeId);
             }}
           >
             Link Account
@@ -370,7 +488,8 @@ function FileUploading() {
             <img src="/nobg.png" alt="Logo" className="RSLogoImagee" />
             <h1 className="RSHeader">Want to be a general user?</h1>
             <p className="RSSliderText">
-              Please visit the following page to complete the registration process for your general user account.
+              Please visit the following page to complete the registration
+              process for your general user account.
             </p>
             <button className="RSButtonCover" onClick={() => toggle(true)}>
               Become A General User
@@ -381,7 +500,8 @@ function FileUploading() {
             <img src="/nobg.png" alt="Logo" className="RSLogoImage" />
             <h1 className="RSHeader">Want to be an admin?</h1>
             <p className="RSSliderText">
-              Please visit the following page and follow the instructions to complete your admin account setup.
+              Please visit the following page and follow the instructions to
+              complete your admin account setup.
             </p>
             <button className="RSButtonCover" onClick={() => toggle(false)}>
               Become An Admin
@@ -406,8 +526,7 @@ function FileUploading() {
         </Components.RSCoverPhone>
       </Components.RSLRCoverBGPhone>
     </div>
-  )
+  );
 }
 
-export default FileUploading
-
+export default FileUploading;

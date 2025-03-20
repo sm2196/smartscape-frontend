@@ -1,98 +1,102 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { FaArrowLeft } from "react-icons/fa"
-import { MdLockReset } from "react-icons/md"
-import { ToastContainer, toast } from "react-toastify"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react";
+import { FaArrowLeft } from "react-icons/fa";
+import { MdLockReset } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const OTPVerification = () => {
-  const router = useRouter()
+  const router = useRouter();
 
   // Get phone number from query parameter or localStorage
-  const storedPhone = typeof window !== "undefined" ? localStorage.getItem("phoneNumber") : null
-  const phoneNumber = storedPhone || "Placeholder Number"
+  const storedPhone =
+    typeof window !== "undefined" ? localStorage.getItem("phoneNumber") : null;
+  const phoneNumber = storedPhone || "Placeholder Number";
 
-  const [otp, setOtp] = useState(["", "", "", ""])
-  const [timeLeft, setTimeLeft] = useState(120)
-  const [isDisabled, setIsDisabled] = useState(false)
-  const [resendCooldown, setResendCooldown] = useState(0) // 30s resend cooldown
+  const [otp, setOtp] = useState(["", "", "", ""]);
+  const [timeLeft, setTimeLeft] = useState(120);
+  const [isDisabled, setIsDisabled] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0); // 30s resend cooldown
 
   useEffect(() => {
     if (phoneNumber !== "Placeholder Number") {
-      localStorage.setItem("phoneNumber", phoneNumber)
+      localStorage.setItem("phoneNumber", phoneNumber);
     }
-  }, [phoneNumber])
+  }, [phoneNumber]);
 
   useEffect(() => {
     if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000)
-      return () => clearTimeout(timer)
+      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
+      return () => clearTimeout(timer);
     } else {
-      setIsDisabled(true)
+      setIsDisabled(true);
     }
-  }, [timeLeft])
+  }, [timeLeft]);
 
   useEffect(() => {
     if (resendCooldown > 0) {
-      const cooldownTimer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000)
-      return () => clearTimeout(cooldownTimer)
+      const cooldownTimer = setTimeout(
+        () => setResendCooldown(resendCooldown - 1),
+        1000
+      );
+      return () => clearTimeout(cooldownTimer);
     }
-  }, [resendCooldown])
+  }, [resendCooldown]);
 
   const handleChange = (index, value) => {
     // Only allow numbers (0-9)
-    if (!/^[0-9]$/.test(value) && value !== "") return
+    if (!/^[0-9]$/.test(value) && value !== "") return;
 
-    const newOtp = [...otp]
-    newOtp[index] = value
-    setOtp(newOtp)
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
     // Focus on next input if value is entered
     if (value && index < 3) {
-      const nextInput = document.getElementById(`otp-${index + 1}`)
-      if (nextInput) nextInput.focus() // Check if nextInput exists
+      const nextInput = document.getElementById(`otp-${index + 1}`);
+      if (nextInput) nextInput.focus(); // Check if nextInput exists
     }
-  }
+  };
 
   const handleVerify = () => {
     if (isDisabled) {
-      toast.error("OTP expired! Please request a new code.")
-      return
+      toast.error("OTP expired! Please request a new code.");
+      return;
     }
     if (otp.includes("")) {
-      toast.error("Please enter all OTP digits.")
-      return
+      toast.error("Please enter all OTP digits.");
+      return;
     }
-    toast.success("Verification Complete")
+    toast.success("Verification Complete");
     setTimeout(() => {
-      router.push("/auth/DocAuthentication")
-    }, 1500)
-  }
+      router.push("/auth/DocAuthentication");
+    }, 1500);
+  };
 
   const handleResend = () => {
     if (resendCooldown > 0) {
-      toast.error("Please wait 30 seconds before generating a new OTP")
-      return // Prevent spamming resend
+      toast.error("Please wait 30 seconds before generating a new OTP");
+      return; // Prevent spamming resend
     }
-    setOtp(["", "", "", ""])
-    setTimeLeft(120)
-    setIsDisabled(false)
-    setResendCooldown(30) // Start 30s cooldown
-    toast.info("A new OTP has been sent!")
-    localStorage.setItem("phoneNumber", phoneNumber)
-  }
+    setOtp(["", "", "", ""]);
+    setTimeLeft(120);
+    setIsDisabled(false);
+    setResendCooldown(30); // Start 30s cooldown
+    toast.info("A new OTP has been sent!");
+    localStorage.setItem("phoneNumber", phoneNumber);
+  };
 
   const formatTime = () => {
-    const minutes = Math.floor(timeLeft / 60)
-    const seconds = timeLeft % 60
-    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
-  }
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
 
   const handleChangePhone = () => {
     // Navigate to the ChangePhoneNumber page
-    router.push("/auth/ChangePhoneNumber")
-  }
+    router.push("/auth/ChangePhoneNumber");
+  };
 
   return (
     <div className="RSUserSignUpLogInFU">
@@ -134,17 +138,24 @@ const OTPVerification = () => {
           This code expires in <b>{formatTime()}</b>
         </p>
 
-        <button className="RSButtonCoverOTP" onClick={handleVerify} disabled={isDisabled}>
+        <button
+          className="RSButtonCoverOTP"
+          onClick={handleVerify}
+          disabled={isDisabled}
+        >
           {isDisabled ? "OTP Expired" : "Verify"}
         </button>
 
         <a className="RSLinks" onClick={handleResend}>
           Didn't receive a code? Resend again
         </a>
+
+        <button className="ChangebuttonPhone" onClick={handleChangePhone}>
+          <FaArrowLeft className="changearrow" /> Change Phone Number
+        </button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default OTPVerification
-
+export default OTPVerification;

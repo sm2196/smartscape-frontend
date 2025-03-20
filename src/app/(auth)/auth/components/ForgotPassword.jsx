@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
-
 import { getAuth, sendPasswordResetEmail } from "firebase/auth"
 import { app } from "@/lib/firebase/config" // Import your Firebase app configuration
 
