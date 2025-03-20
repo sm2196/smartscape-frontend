@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { MdChevronRight, MdAdd, MdRemove, MdWifi } from "react-icons/md";
 import Button from "./RoomDeviceButton";
 import styles from "./RoomDeviceManagement.module.css";
-import { db } from "./firebaseConfig"; // Import the Firebase setup
+import db from "./firebaseConfig"; // Import the Firebase setup
 import {
   getFirestore,
   collection,
@@ -17,21 +17,28 @@ import {
 } from "firebase/firestore";
 
 const DeviceManagement = () => {
+  // State for managing popups
   const [popupType, setPopupType] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [newRoomName, setNewRoomName] = useState("");
+
+  // State for managing rooms and devices
   const [rooms, setRooms] = useState([]);
-  const [wifiEnabled, setWifiEnabled] = useState(false);
-  const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
-  const [newDeviceCategory, setNewDeviceCategory] = useState("");
-  const [newDeviceName, setNewDeviceName] = useState(""); // Add Devices
   const [newDevices, setDevices] = useState([]);
   const [selectedDevice, setSelectedDevice] = useState(null);
+
+  // State for network settings
+  const [wifiEnabled, setWifiEnabled] = useState(false);
+  const [bluetoothEnabled, setBluetoothEnabled] = useState(true);
+
+  // State for new device input
+  const [newDeviceCategory, setNewDeviceCategory] = useState("");
+  const [newDeviceName, setNewDeviceName] = useState(""); // Add Devices
 
   const db = getFirestore();
   const devicesCollectionRef = collection(db, "devices");
 
-  // Create a query to find the device by its name
+  // Query Firestore for a device by name
   const deviceQuery = query(
     devicesCollectionRef,
     where("name", "==", newDeviceName)
@@ -41,7 +48,7 @@ const DeviceManagement = () => {
     { name: "Network settings", type: "network", icon: MdWifi },
   ];
 
-  // Fetch room names from Firestore
+  // Fetch rooms from Firestore
   useEffect(() => {
     const fetchRooms = async () => {
       try {
@@ -71,12 +78,14 @@ const DeviceManagement = () => {
     fetchDevices();
   }, []);
 
+  // Open and close popup functions
   const openPopup = (type, room = null, device = null) => {
     setPopupType(type);
     if (room) setSelectedRoom(room);
     if (device) setSelectedDevice(device);
   };
 
+  // Close popup function
   const closePopup = () => {
     setPopupType(null);
     setSelectedRoom(null);
@@ -85,20 +94,22 @@ const DeviceManagement = () => {
     setNewDeviceName("");
   };
 
+  // Save room function
   const handleSaveRoom = async () => {
     if (newRoomName.trim() === "") {
       alert("Room name cannot be empty!");
       return;
     }
 
+    // Check if the room already exists
     if (rooms.includes(newRoomName.trim())) {
       alert("Room already exists!");
       return;
     }
 
+    // Add new room to Firestore
     try {
       const roomRef = collection(db, "rooms");
-      // Add new room to Firestore
       await addDoc(roomRef, { roomName: newRoomName.trim() });
       setRooms((prevRooms) => [...prevRooms, newRoomName.trim()]);
       closePopup();
@@ -107,12 +118,14 @@ const DeviceManagement = () => {
     }
   };
 
+  // Remove room function
   const handleRemoveRoom = async (roomName) => {
     try {
       const roomRef = collection(db, "rooms");
       const q = query(roomRef, where("roomName", "==", roomName));
       const querySnapshot = await getDocs(q);
 
+      // Check if the room exists
       if (querySnapshot.empty) {
         alert("Room not found!");
         return;
@@ -131,13 +144,14 @@ const DeviceManagement = () => {
     }
   };
 
-  // Inside the handleSaveDevice function
+  // Save device function
   const handleSaveDevice = async () => {
     if (!newDeviceName.trim()) {
       alert("Device name cannot be empty!");
       return;
     }
 
+    // Check if the device already exists
     if (!newDeviceCategory.trim()) {
       alert("Please select a room for the device!");
       return;
@@ -170,6 +184,7 @@ const DeviceManagement = () => {
       const deviceQuery = query(deviceRef, where("name", "==", deviceName));
       const querySnapshot = await getDocs(deviceQuery);
 
+      // Check if the device exists
       if (querySnapshot.empty) {
         alert("Device not found!");
         return;
@@ -191,6 +206,7 @@ const DeviceManagement = () => {
     }
   };
 
+  // Component to display a list of devices with buttons.
   const DevicesList = () => (
     <div>
       {devices.length > 0 ? (
@@ -209,8 +225,10 @@ const DeviceManagement = () => {
     </div>
   );
 
+  // Function to render the content of the popup based on the type.
   const renderPopupContent = () => {
     switch (popupType) {
+      // Add a case for the network popup
       case "network":
         return (
           <div>
@@ -251,6 +269,7 @@ const DeviceManagement = () => {
             </select>
           </div>
         );
+      // Add a case for the room popup
       case "room":
         return selectedRoom ? (
           <Button
@@ -273,6 +292,7 @@ const DeviceManagement = () => {
             ))}
           </div>
         );
+      // Add a case for the add room popup
       case "addRoom":
         return (
           <div>
@@ -293,6 +313,7 @@ const DeviceManagement = () => {
           </div>
         );
 
+      // Add a case for the add device popup
       case "addDevice":
         return (
           <div>
@@ -324,6 +345,7 @@ const DeviceManagement = () => {
           </div>
         );
 
+      // Add a case for the device popup
       case "device":
         return selectedDevice ? (
           <div>
@@ -351,6 +373,7 @@ const DeviceManagement = () => {
     }
   };
 
+  // Return the JSX for the component
   return (
     <div className={styles.deviceManagementContainer}>
       {/* Rooms Section */}
