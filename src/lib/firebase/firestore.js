@@ -270,29 +270,34 @@ export async function cleanupUserData(userId) {
     // Create a batch for atomic operations
     const batch = writeBatch(db)
 
-    // First, find and delete all rooms owned by this user
-    const roomsRef = collection(db, "Rooms")
-    const roomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", userId)))
-    const roomsSnapshot = await getDocs(roomsQuery)
+    // Only delete rooms and devices if the user is an admin
+    if (profile && profile.isAdmin === true) {
+      // Find and delete all rooms owned by this user
+      const roomsRef = collection(db, "Rooms")
+      const roomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", userId)))
+      const roomsSnapshot = await getDocs(roomsQuery)
 
-    // Store room IDs to delete associated devices
-    const roomIds = []
+      // Store room IDs to delete associated devices
+      const roomIds = []
 
-    // Add room deletions to batch
-    roomsSnapshot.forEach((roomDoc) => {
-      roomIds.push(roomDoc.id)
-      batch.delete(roomDoc.ref)
-    })
-
-    // Find and delete all devices that reference these rooms
-    const devicesRef = collection(db, "Devices")
-    for (const roomId of roomIds) {
-      const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
-      const devicesSnapshot = await getDocs(devicesQuery)
-
-      devicesSnapshot.forEach((deviceDoc) => {
-        batch.delete(deviceDoc.ref)
+      // Add room deletions to batch
+      roomsSnapshot.forEach((roomDoc) => {
+        roomIds.push(roomDoc.id)
+        batch.delete(roomDoc.ref)
       })
+
+      // Find and delete all devices that reference these rooms
+      const devicesRef = collection(db, "Devices")
+      for (const roomId of roomIds) {
+        const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
+        const devicesSnapshot = await getDocs(devicesQuery)
+
+        devicesSnapshot.forEach((deviceDoc) => {
+          batch.delete(deviceDoc.ref)
+        })
+      }
+    } else {
+      console.log("User is not an admin, skipping deletion of rooms and devices")
     }
 
     // If the user is an admin, handle their managed users
@@ -307,6 +312,7 @@ export async function cleanupUserData(userId) {
         batch.update(doc(db, "Users", managedUserId), { isOnline: false })
 
         // Delete managed user's rooms
+        const roomsRef = collection(db, "Rooms")
         const managedRoomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", managedUserId)))
         const managedRoomsSnapshot = await getDocs(managedRoomsQuery)
 
@@ -317,6 +323,7 @@ export async function cleanupUserData(userId) {
         })
 
         // Delete managed user's devices
+        const devicesRef = collection(db, "Devices")
         for (const roomId of managedRoomIds) {
           const managedDevicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
           const managedDevicesSnapshot = await getDocs(managedDevicesQuery)
