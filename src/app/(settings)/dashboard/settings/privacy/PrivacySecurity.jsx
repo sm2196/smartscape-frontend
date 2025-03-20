@@ -225,9 +225,11 @@ const PrivacySecurity = () => {
             ))}
           </div>
 
-          <button className="manage-btn" onClick={() => setIsThirdPartyOpen(true)}>
-            Manage Linked Apps
-          </button>
+          <div className="bottom-button-container">
+            <button className="manage-btn" onClick={() => setIsThirdPartyOpen(true)}>
+              Manage Linked Apps
+            </button>
+          </div>
         </div>
       </div>
 

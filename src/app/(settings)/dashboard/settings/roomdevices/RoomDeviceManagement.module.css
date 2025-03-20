@@ -3,6 +3,10 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 32px;
+  /* Add these properties to fix scrolling issues */
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .header {
@@ -24,6 +28,8 @@
 .content {
   display: grid;
   gap: 32px;
+  /* Add padding at the bottom to prevent content from being hidden */
+  padding-bottom: 80px;
 }
 
 .section {
@@ -31,6 +37,10 @@
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  /* Ensure proper spacing within sections */
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .sectionHeader {
@@ -205,6 +215,8 @@
   padding: 24px;
   box-sizing: border-box; /* Add this to include padding in width calculation */
   width: 100%; /* Ensure content respects container width */
+  overflow-y: auto; /* Allow scrolling if content is too tall */
+  max-height: 60vh; /* Limit height to prevent overflow */
 }
 
 .modalSubtitle {
@@ -426,6 +438,9 @@
 @media (max-width: 768px) {
   .container {
     padding: 16px;
+    /* Ensure proper height and scrolling on mobile */
+    height: calc(100vh - 64px); /* Account for header height */
+    overflow-y: auto;
   }
 
   .title {
@@ -439,6 +454,7 @@
   .modal {
     margin: 16px;
     max-height: calc(100vh - 32px);
+    width: calc(100% - 32px); /* Ensure modal doesn't overflow horizontally */
   }
 
   .modalFooter {
@@ -447,6 +463,18 @@
 
   .modalFooter button {
     width: 100%;
+  }
+
+  /* Fix the section header on mobile */
+  .sectionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .addButton {
+    width: 100%;
+    justify-content: center;
   }
 }
 

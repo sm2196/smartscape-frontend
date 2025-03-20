@@ -1,5 +1,5 @@
 import AdminSettings from "./AdminSettings";
 
-export default function NotificationPage() {
+export default function AdminSettingsPage() {
   return <AdminSettings />;
 }

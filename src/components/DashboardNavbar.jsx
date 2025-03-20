@@ -5,7 +5,6 @@ import {
   MdHome,
   MdInsertChart,
   MdLocalPolice,
-  MdOutlineDevicesOther,
   MdSettings,
   MdChat,
   MdMenu,
@@ -18,7 +17,6 @@ const navigation = [
   { name: "Home", href: "/dashboard", icon: MdHome },
   { name: "Consumption Analysis", href: "#", icon: MdInsertChart },
   { name: "Emergency Controls", href: "#", icon: MdLocalPolice },
-  { name: "Device Controls", href: "#", icon: MdOutlineDevicesOther },
   { name: "Customer Support", href: "#", icon: MdChat },
   { name: "Settings", href: "/dashboard/settings", icon: MdSettings },
 ];

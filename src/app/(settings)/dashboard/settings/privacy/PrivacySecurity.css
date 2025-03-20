@@ -3,6 +3,10 @@
   margin: auto;
   padding: 32px;
   max-width: 1400px;
+  /* Add these properties to fix scrolling issues */
+  overflow-y: auto;
+  height: 100%;
+  box-sizing: border-box;
 }
 
 .title {
@@ -244,8 +248,8 @@
   background-color: #1d4ed8;
 }
 
-/* Modal styles */
-.modal-overlay {
+/* Modal styles - shared across modal components */
+.modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -255,17 +259,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 50;
-  padding: 16px;
+  z-index: 1000;
+  padding: 1rem; /* Add padding to prevent modals from touching screen edges */
 }
 
 .modal {
-  background: white;
+  background-color: white;
   border-radius: 16px;
-  padding: 24px;
   width: 100%;
-  max-width: 400px;
-  position: relative;
+  max-width: 500px;
+  max-height: 90vh; /* Limit height on small screens */
+  overflow-y: auto;
+  animation: slideUp 0.3s ease-out;
 }
 
 .modal h3 {
@@ -376,6 +381,10 @@
 @media (max-width: 1023px) {
   .privacyContainer {
     padding: 16px;
+    /* Ensure proper height and scrolling on mobile */
+    height: calc(100vh - 64px); /* Account for header height */
+    overflow-y: auto;
+    padding-bottom: 80px; /* Add padding at the bottom to prevent content from being hidden */
   }
 
   .grid-container {
@@ -409,5 +418,16 @@
   .setting {
     padding: 10px 12px;
   }
+
+  /* Fix the Manage Linked Apps button positioning */
+  .manage-btn {
+    margin-bottom: 24px; /* Add margin to ensure it's not at the very bottom */
+  }
+}
+
+/* Add a container for the bottom button to ensure proper spacing */
+.bottom-button-container {
+  margin-bottom: 24px;
+  width: 100%;
 }
 

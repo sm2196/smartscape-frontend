@@ -4,6 +4,10 @@
   margin: 0 auto;
   padding: 24px;
   color: var(--text-primary);
+  /* Add these properties to fix scrolling issues */
+  height: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
 .pageHeader {
@@ -28,6 +32,8 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 24px;
+  /* Add padding at the bottom to prevent content from being hidden */
+  padding-bottom: 80px;
 }
 
 .categoryCard {
@@ -37,6 +43,10 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(210, 220, 245, 0.1);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Ensure proper spacing within cards */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .categoryCard:hover {
@@ -247,6 +257,9 @@
 @media (max-width: 768px) {
   .mainContent {
     padding: 16px;
+    /* Ensure proper height and scrolling on mobile */
+    height: calc(100vh - 64px); /* Account for header height */
+    overflow-y: auto;
   }
 
   .header {
@@ -255,6 +268,8 @@
 
   .notificationGrid {
     grid-template-columns: 1fr;
+    /* Add more bottom padding on mobile */
+    padding-bottom: 100px;
   }
 
   .categoryCard {

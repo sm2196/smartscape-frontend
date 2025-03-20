@@ -7,7 +7,17 @@ import { ToastContainer, toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 import { FaFilePdf } from "react-icons/fa";
 import { IoIosCloseCircleOutline } from "react-icons/io";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  updateDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  deleteField,
+} from "firebase/firestore";
 import { db } from "@/lib/firebase/config";
 
 // Simulate file upload progress
@@ -206,40 +216,48 @@ SmartScape System`
     }
   };
 
+  // Replace the existing linkUserToHome function with this updated version
   const linkUserToHome = async (userId, homeId) => {
     try {
+      // Check if the current user exists
       const userDocRef = doc(db, "Users", userId);
       const userDoc = await getDoc(userDocRef);
       if (!userDoc.exists()) {
         toast.error("User not found.");
         return;
       }
-      const userData = userDoc.data();
 
-      const homeDocRef = doc(db, "Homes", homeId);
-      const homeDoc = await getDoc(homeDocRef);
-      if (!homeDoc.exists()) {
+      // Find the admin user who has this homeId
+      const usersRef = collection(db, "Users");
+      const adminQuery = query(usersRef, where("homeId", "==", homeId));
+      const adminSnapshot = await getDocs(adminQuery);
+
+      if (adminSnapshot.empty) {
         toast.error("Home ID does not exist.");
         return;
       }
 
-      const homeData = homeDoc.data();
-      if (homeData.adminId === userId) {
+      // Get the admin document
+      const adminDoc = adminSnapshot.docs[0];
+      const adminId = adminDoc.id;
+
+      // Check if user is trying to add themselves as a general user
+      if (adminId === userId) {
         toast.error("Admin cannot be added as a general user.");
         return;
       }
 
-      await setDoc(doc(db, "Homes", homeId, "generalUsers", userId), {
-        userId: userId,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        email: userData.email,
-        phone: userData.phone,
+      // Update the user document with adminRef pointing to the admin
+      await updateDoc(userDocRef, {
+        adminPin: deleteField(),
+        adminRef: doc(db, "Users", adminId),
+        homeId: homeId,
       });
 
-      await setDoc(userDocRef, { homeId }, { merge: true });
-
       toast.success("Account successfully linked to the home!");
+      setTimeout(() => {
+        router.push("/auth");
+      }, 3000);
     } catch (error) {
       console.error("Error linking user to home:", error);
       toast.error("Failed to link account to home.");
