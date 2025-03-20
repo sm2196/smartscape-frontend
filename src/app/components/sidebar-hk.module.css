@@ -1,8 +1,8 @@
-.sidebar {
+.hksidebar {
   width: 250px;
   height: 100vh;
-  background-color: #0a1630;
-  color: #fffafa;
+  background-color: #0c1b36; /* Darker blue to match the screenshot */
+  color: #ffffff;
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -11,50 +11,57 @@
   top: 0;
   bottom: 0;
   overflow-y: auto;
+  z-index: 50;
 }
 
-.timeDisplay {
-  margin-bottom: 20px;
+.hktimeDisplay {
+  margin-bottom: 30px;
   text-align: center;
 }
 
-.currentTime {
-  font-size: 1.5rem;
+.hkcurrentTime {
+  font-size: 1.75rem;
   font-weight: bold;
+  margin-bottom: 2px;
 }
 
-.currentDate {
+.hkcurrentDate {
   font-size: 1rem;
 }
 
-.navMenu {
+.hknavMenu {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
 }
 
-.navLink {
+.hknavLink {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   padding: 10px;
   border-radius: 5px;
   text-decoration: none;
-  color: #fffafa;
+  color: #ffffff;
   transition: background-color 0.3s ease;
+  font-size: 1rem;
 }
 
-.navLink:hover {
+.hknavIcon {
+  font-size: 1.25rem;
+}
+
+.hknavLink:hover {
   background-color: #152447;
 }
 
-.active {
+.hkactive {
   background-color: #152447;
   font-weight: bold;
 }
 
 @media (max-width: 768px) {
-  .sidebar {
+  .hksidebar {
     width: 100%;
     height: auto;
     position: fixed;
@@ -62,22 +69,24 @@
     z-index: 1000;
   }
 
-  .timeDisplay {
+  .hktimeDisplay {
     display: none;
   }
 
-  .navMenu {
+  .hknavMenu {
     flex-direction: row;
     justify-content: space-around;
     overflow-x: auto;
   }
 
-  .navLink {
+  .hknavLink {
     flex-direction: column;
     text-align: center;
     font-size: 0.8rem;
   }
 }
+
+
 
 
 

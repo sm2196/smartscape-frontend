@@ -1,31 +1,55 @@
+.hkpageContainer {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
 .hkmainContent {
   flex-grow: 1;
-  padding: 2rem;
-  background-color: #fffafa;
+  padding: 2rem 2.5rem;
+  background-color: #ffffff;
   min-height: 100vh;
   margin-left: 250px; /* Width of the sidebar */
+  display: flex;
+  flex-direction: column;
+}
+
+.hkheader {
+  margin-bottom: 1.5rem;
+  padding-left: 1rem;
+}
+
+.hkemergencyTitle {
+  color: #0a1630;
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.hkcctvContainer {
+  margin-bottom: 2rem;
+  padding-left: 1rem;
 }
 
 .hkcctvGrid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  max-width: 1000px;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .hkcctvMain {
-  height: 300px;
-  background-color: #152447;
+  height: 360px;
+  background-color: #000;
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid #0a1630;
-  box-shadow: 0 4px 6px rgba(10, 22, 48, 0.1);
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .hkcctvSecondary {
   display: grid;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .hkcctvFeed {
@@ -35,31 +59,12 @@
 }
 
 .hkcctvFeedContainer {
-  background-color: #152447;
+  background-color: #000;
   border-radius: 8px;
-  height: 145px;
+  height: 175px;
   overflow: hidden;
-  border: 1px solid #0a1630;
-  box-shadow: 0 4px 6px rgba(10, 22, 48, 0.1);
-}
-
-.hkemergencyTitle {
-  color: #0a1630;
-  margin-bottom: 1.75rem;
-  font-size: 1.75rem;
-  font-weight: 600;
-}
-
-.hktimestamp {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  color: #fffafa;
-  background-color: rgba(21, 36, 71, 0.9);
-  padding: 6px 12px;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  border: 1px solid #d2dcf5;
+  position: relative;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .hkfeedContainer {
@@ -67,10 +72,31 @@
   height: 100%;
 }
 
+.hkcameraLabel {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(12, 27, 54, 0.8);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+
+.hkbuttonSection {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+}
+
 @media (max-width: 768px) {
   .hkmainContent {
     margin-left: 0;
     padding-top: 60px; /* Space for mobile sidebar */
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .hkcctvGrid {
@@ -82,9 +108,26 @@
   }
 
   .hkcctvFeedContainer {
-    height: 120px;
+    height: 150px;
+  }
+
+  .hkheader,
+  .hkcctvContainer,
+  .hkbuttonSection {
+    padding-left: 0;
   }
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

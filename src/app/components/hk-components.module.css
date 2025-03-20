@@ -1,57 +1,150 @@
-.hkbutton {
-  padding: 0.75rem 1.5rem; /* Reduced padding */
-  border-radius: 0.5rem;
+.hkemergencyPanel {
+  width: 100%;
+  max-width: 1200px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(10, 22, 48, 0.08);
+  padding: 1.5rem;
+  border: 1px solid #e9ecef;
+}
+
+.hkpanelHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.hkpanelHeader h2 {
+  font-size: 1.25rem;
   font-weight: 600;
-  transition: all 0.2s ease;
-  width: 12rem; /* Reduced from 16rem */
-  color: #fffafa;
-  background-color: #0a1630;
-  border: 1px solid #d2dcf5;
-  box-shadow: 0 2px 4px rgba(10, 22, 48, 0.1);
-  font-size: 0.875rem; /* Reduced from 1rem */
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.hkbutton:hover {
-  background-color: #152447;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(10, 22, 48, 0.2);
-}
-
-.hkemergencyButton {
-  background-color: #0a1630;
-}
-
-.hkemergencyButton:hover {
-  background-color: #152447;
-}
-
-.hkemergencyButtonActive {
-  background-color: #c4c4c4;
   color: #0a1630;
+  margin: 0;
 }
 
-.hkemergencyButtonActive:hover {
-  background-color: #a3a3a3;
-}
-
-.hkcontactButton {
-  background-color: #152447;
-}
-
-.hkcontactButton:hover {
-  background-color: #1a2e5c;
+.hkpanelIcon {
+  font-size: 1.5rem;
+  color: #e74c3c;
 }
 
 .hkbuttonContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 1.5rem;
-  max-width: 1000px; /* Match cctvGrid max-width */
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
 }
+
+.hkbutton {
+  padding: 0.875rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 14rem;
+  color: #fffafa;
+  background-color: #0a1630;
+  border: 1px solid #d2dcf5;
+  box-shadow: 0 2px 4px rgba(10, 22, 48, 0.1);
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.hkbutton:hover {
+  background-color: #152447;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(10, 22, 48, 0.2);
+}
+
+.hkbutton:active {
+  transform: translateY(0);
+}
+
+.hkbuttonIcon {
+  font-size: 1.25rem;
+}
+
+.hkemergencyButton,
+.hkcontactButton {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 180px;
+  font-weight: 500;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hkemergencyButton {
+  background-color: #e74c3c;
+  border: 1px solid #c0392b;
+  color: white;
+}
+
+.hkemergencyButton:hover {
+  background-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.hkemergencyButtonActive {
+  background-color: #2ecc71;
+  border: 1px solid #27ae60;
+  color: white;
+}
+
+.hkemergencyButtonActive:hover {
+  background-color: #27ae60;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.hkcontactButton {
+  background-color: #3498db;
+  border: 1px solid #2980b9;
+  color: white;
+}
+
+.hkcontactButton:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .hkbuttonContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hkemergencyButton,
+  .hkcontactButton {
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .hkbutton {
+    width: 100%;
+    max-width: 300px;
+  }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 

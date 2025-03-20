@@ -18,32 +18,36 @@ export function Sidebar() {
   const pathname = usePathname()
   const currentTime = new Date()
   const hours = currentTime.getHours() % 12 || 12 // Convert to 12-hour format
-  const minutes = currentTime.getMinutes()
+  const minutes = currentTime.getMinutes().toString().padStart(2, "0")
   const ampm = currentTime.getHours() >= 12 ? "pm" : "am"
-  const timeString = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${ampm}`
+  const timeString = `${hours}:${minutes} ${ampm}`
   const dateString = currentTime.toLocaleDateString("en-US", {
-    day: "2-digit",
     month: "long",
+    day: "numeric",
   })
 
   return (
-    <aside className={styles.sidebar}>
-      <div className={styles.timeDisplay}>
-        <div className={styles.currentTime}>{timeString}</div>
-        <div className={styles.currentDate}>{dateString}</div>
+    <div className={styles.hksidebar}>
+      <div className={styles.hktimeDisplay}>
+        <div className={styles.hkcurrentTime}>{timeString}</div>
+        <div className={styles.hkcurrentDate}>{dateString}</div>
       </div>
-      <nav className={styles.navMenu}>
+      <nav className={styles.hknavMenu}>
         {navigation.map((item) => {
           const isActive = pathname === item.href
           return (
-            <Link key={item.name} href={item.href} className={`${styles.navLink} ${isActive ? styles.active : ""}`}>
-              <item.icon />
-              {item.name}
+            <Link key={item.name} href={item.href} className={`${styles.hknavLink} ${isActive ? styles.hkactive : ""}`}>
+              <item.icon className={styles.hknavIcon} />
+              <span>{item.name}</span>
             </Link>
           )
         })}
       </nav>
-    </aside>
+    </div>
   )
 }
+
+
+
+
 
