@@ -216,9 +216,12 @@ export async function getProfilesByEmail(email) {
     const profiles = [userProfile]
     const isAdmin = userProfile.admin === true // Changed from admin to isAdmin
 
-    // If the user is an admin, get all profiles where adminId points to this user
+    // If the user is an admin, get all profiles where adminRef points to this user
     if (isAdmin) {
-      const managedUsersQuery = query(collection(db, usersCollection), where("adminId", "==", userProfile.id))
+      const managedUsersQuery = query(
+        collection(db, usersCollection),
+        where("adminRef", "==", doc(db, "Users", userProfile.id)),
+      )
       const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
       managedUsersSnapshot.forEach((doc) => {
@@ -229,17 +232,17 @@ export async function getProfilesByEmail(email) {
       })
     }
     // If the user is not an admin, get the admin profile and other users under the same admin
-    else if (userProfile.adminId) {
-      // Get the admin profile using DocumentReference
-      const adminDocRef = doc(db, usersCollection, userProfile.adminId)
-      const adminDocSnap = await getDoc(adminDocRef)
+    else if (userProfile.adminRef) {
+      // Get the admin profile using the adminRef DocumentReference
+      const adminRef = userProfile.adminRef
+      const adminDocSnap = await getDoc(adminRef)
 
       if (adminDocSnap.exists() && !profiles.some((p) => p.id === adminDocSnap.id)) {
         profiles.push({ id: adminDocSnap.id, ...adminDocSnap.data() })
       }
 
       // Get other users under the same admin
-      const sameAdminQuery = query(collection(db, usersCollection), where("adminId", "==", userProfile.adminId))
+      const sameAdminQuery = query(collection(db, usersCollection), where("adminRef", "==", adminRef))
       const sameAdminQuerySnapshot = await getDocs(sameAdminQuery)
 
       sameAdminQuerySnapshot.forEach((doc) => {
@@ -302,7 +305,7 @@ export async function cleanupUserData(userId) {
 
     // If the user is an admin, handle their managed users
     if (profile && profile.isAdmin === true) {
-      const managedUsersQuery = query(collection(db, "Users"), where("adminId", "==", userId))
+      const managedUsersQuery = query(collection(db, "Users"), where("adminRef", "==", doc(db, "Users", userId)))
       const managedUsersSnapshot = await getDocs(managedUsersQuery)
 
       for (const userDoc of managedUsersSnapshot.docs) {

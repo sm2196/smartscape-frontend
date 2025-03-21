@@ -1,0 +1,439 @@
+.SMicons-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.SMicons-container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-right: 1rem;
+}
+
+/* Icon Item Styles */
+.SMicon-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: transparent;
+}
+
+.SMicon-item:hover {
+  background-color: rgba(33, 42, 60, 0.1);
+  transform: translateY(-2px);
+}
+
+.SMicon-item.active {
+  background-color: rgba(33, 42, 60, 0.15);
+}
+
+.SMicon {
+  font-size: 1.3rem;
+  color: #212a3c;
+  transition: all 0.3s ease;
+}
+
+.SMicon-item:hover .SMicon {
+  color: #1a2942;
+  transform: scale(1.1);
+}
+
+/* Tooltip */
+.SMicon-tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background-color: #212a3c;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.SMicon-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px 5px 0 5px;
+  border-style: solid;
+  border-color: #212a3c transparent transparent transparent;
+}
+
+.SMicon-item:hover .SMicon-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Search Styles */
+.SMsearch-container {
+  position: relative;
+}
+
+.SMsearch-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -100px;
+  width: 300px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: SMdropdownFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.SMsearch-form {
+  display: flex;
+  padding: 1rem;
+  gap: 0.5rem;
+}
+
+.SMsearch-form input {
+  flex: 1;
+  padding: 0.8rem 1rem;
+  border: 2px solid #eee;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.SMsearch-form input:focus {
+  outline: none;
+  border-color: #212a3c;
+  box-shadow: 0 0 0 3px rgba(33, 42, 60, 0.1);
+}
+
+.SMsearch-button {
+  padding: 0.8rem;
+  background: #212a3c;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.SMsearch-button:hover {
+  background: #1a2942;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.SMsearch-suggestions {
+  border-top: 1px solid #eee;
+}
+
+.SMsuggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.SMsuggestion-item:hover {
+  background: #f8f9fa;
+  padding-left: 1.5rem;
+}
+
+.SMsuggestion-icon {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+/* Bookmark Styles */
+.SMbookmark-container {
+  position: relative;
+}
+
+.SMbookmark-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: -50px;
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: SMdropdownFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.SMbookmark-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
+}
+
+.SMbookmark-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #212a3c;
+  font-weight: 600;
+}
+
+.SMmanage-bookmarks {
+  padding: 0.4rem 0.8rem;
+  background: none;
+  border: 2px solid #212a3c;
+  border-radius: 6px;
+  color: #212a3c;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.SMmanage-bookmarks:hover {
+  background: #212a3c;
+  color: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.SMbookmark-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0.5rem 0;
+}
+
+.SMbookmark-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  color: #212a3c;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.SMbookmark-item:hover {
+  background: #f8f9fa;
+  padding-left: 1.5rem;
+}
+
+.SMbookmark-icon {
+  font-size: 1.1rem;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.SMbookmark-item:hover .SMbookmark-icon {
+  color: #212a3c;
+  transform: scale(1.1);
+}
+
+.SMno-bookmarks {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: #666;
+}
+
+.SMno-bookmarks-icon {
+  font-size: 2rem;
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+/* Profile Styles */
+.SMprofile-container {
+  position: relative;
+}
+
+.SMprofile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 280px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  animation: SMdropdownFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.SMprofile-header {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  background: #f8f9fa;
+}
+
+.SMprofile-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.SMprofile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.SMprofile-avatar:hover {
+  transform: scale(1.1);
+}
+
+.SMprofile-details h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #212a3c;
+  font-weight: 600;
+}
+
+.SMprofile-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.SMprofile-menu {
+  padding: 0.5rem 0;
+}
+
+.SMdropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.8rem 1rem;
+  color: #212a3c;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  width: 100%;
+  border: none;
+  background: none;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+}
+
+.SMdropdown-item:hover {
+  background: #f8f9fa;
+  padding-left: 1.5rem;
+}
+
+.SMdropdown-icon {
+  font-size: 1.1rem;
+  color: #666;
+  transition: all 0.3s ease;
+}
+
+.SMdropdown-item:hover .SMdropdown-icon {
+  color: #212a3c;
+  transform: scale(1.1);
+}
+
+.SMdropdown-divider {
+  height: 1px;
+  background-color: #eee;
+  margin: 0.5rem 0;
+}
+
+.SMlogout-btn {
+  color: #dc3545;
+}
+
+.SMlogout-btn:hover {
+  background-color: #fff5f5;
+}
+
+.SMlogout-btn:hover .SMdropdown-icon {
+  color: #dc3545;
+}
+
+/* Animations */
+@keyframes SMdropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar Styling */
+.SMbookmark-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.SMbookmark-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.SMbookmark-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.SMbookmark-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .SMicons-container {
+    gap: 1rem;
+  }
+
+  .SMsearch-dropdown,
+  .SMbookmark-dropdown,
+  .SMprofile-dropdown {
+    width: 250px;
+    right: -10px;
+  }
+
+  .SMsearch-form input {
+    padding: 0.6rem 0.8rem;
+  }
+
+  .SMicon-tooltip {
+    display: none;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .SMsearch-dropdown,
+  .SMbookmark-dropdown,
+  .SMprofile-dropdown {
+    animation: none;
+  }
+
+  .SMicon-item:hover {
+    transform: none;
+  }
+
+  .SMsearch-button:hover,
+  .SMmanage-bookmarks:hover {
+    transform: none;
+  }
+}
