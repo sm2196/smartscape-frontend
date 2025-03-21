@@ -59,7 +59,7 @@ function SMIcons() {
                   bookmarks.map(bookmark => (
                     <Link
                       key={bookmark.id}
-                      to={bookmark.url}
+                      href={bookmark.url}
                       className="SMbookmark-item"
                     >
                       <FaRegBookmark className="SMbookmark-icon" />
