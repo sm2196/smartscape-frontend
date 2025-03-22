@@ -15,9 +15,9 @@ import { usePathname } from "next/navigation";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: MdHome },
-  { name: "Consumption Analysis", href: "#", icon: MdInsertChart },
-  { name: "Emergency Controls", href: "#", icon: MdLocalPolice },
-  { name: "Customer Support", href: "#", icon: MdChat },
+  { name: "Consumption Analysis", href: "/dashboard/consumption", icon: MdInsertChart },
+  { name: "Emergency Controls", href: "/dashboard/emergency", icon: MdLocalPolice },
+  { name: "Customer Support", href: "/dashboard/support", icon: MdChat },
   { name: "Settings", href: "/dashboard/settings", icon: MdSettings },
 ];
 

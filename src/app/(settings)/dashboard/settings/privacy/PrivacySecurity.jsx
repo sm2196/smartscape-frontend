@@ -235,7 +235,7 @@ const PrivacySecurity = () => {
 
       {/* View All Modal */}
       {isThirdPartyOpen && (
-        <div className="modal-overlay">
+        <div className="modalOverlay">
           <div className="modal">
             <button className="close-btn" onClick={() => setIsThirdPartyOpen(false)}>
               ✖
@@ -264,7 +264,7 @@ const PrivacySecurity = () => {
 
       {/* Lockdown Modal  */}
       {isLockDownEnabled && (
-        <div className="modal-overlay">
+        <div className="modalOverlay">
           <div className="modal">
             <button className="close-btn" onClick={handleCloseModal}>
               ✖

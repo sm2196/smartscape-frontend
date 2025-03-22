@@ -1,32 +1,32 @@
 "use client"
 
-import { MdManageAccounts, MdSwitchAccount } from "react-icons/md"
+import { MdLock, MdDeleteForever } from "react-icons/md"
 import styles from "./AccountActions.module.css"
 
-export default function AccountActions({ onManageAccount, onSwitchAccount, isMobile = false }) {
+export default function AccountActions({ onDeleteAccount, onChangePassword }) {
   const accountActions = [
     {
-      icon: MdManageAccounts,
-      text: "Manage your account",
-      mobileText: "Manage",
-      onClick: onManageAccount,
+      icon: MdLock,
+      text: "Change Password",
+      onClick: onChangePassword,
+      className: "",
     },
     {
-      icon: MdSwitchAccount,
-      text: "Switch account",
-      mobileText: "Switch",
-      onClick: onSwitchAccount,
+      icon: MdDeleteForever,
+      text: "Delete Account",
+      onClick: onDeleteAccount,
+      className: styles.dangerAction,
     },
   ]
 
   return (
     <div className={styles.userIcons}>
-      {accountActions.map(({ icon: Icon, text, mobileText, onClick }) => (
-        <button key={text} className={styles.iconWithText} onClick={onClick}>
+      {accountActions.map(({ icon: Icon, text, onClick, className }) => (
+        <button key={text} className={`${styles.iconWithText} ${className || ""}`} onClick={onClick}>
           <div className={styles.iconWrapper}>
             <Icon size={24} />
           </div>
-          <span>{isMobile ? mobileText : text}</span>
+          <span>{text}</span>
         </button>
       ))}
     </div>

@@ -46,6 +46,19 @@
   font-weight: 500;
 }
 
+.dangerAction {
+  color: #e53935; /* Red color for danger */
+}
+
+.dangerAction .iconWrapper {
+  background-color: rgba(229, 57, 53, 0.1); /* Light red background */
+  color: #e53935; /* Red color for the icon */
+}
+
+.dangerAction span {
+  color: #e53935; /* Red color for the text */
+}
+
 @media (max-width: 1023px) {
   .userIcons {
     grid-template-columns: 1fr;

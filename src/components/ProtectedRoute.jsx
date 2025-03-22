@@ -18,7 +18,7 @@ export default function ProtectedRoute({ children }) {
     if (!loading && !userId) {
       // Clear all cache when logging out to prevent data leakage
       clearAllCache()
-      router.replace("/auth")
+      router.replace("/")
     }
   }, [user, loading, router])
 

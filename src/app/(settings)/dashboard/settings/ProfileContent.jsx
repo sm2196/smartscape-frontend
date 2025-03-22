@@ -25,8 +25,6 @@ import ProfileHeader from "./components/ProfileHeader"
 import AccountActions from "./components/AccountActions"
 import PersonalInfoSection from "./components/PersonalInfoSection"
 import EditFieldModal from "./components/EditFieldModal"
-import ManageAccountModal from "./components/ManageAccountModal"
-import SwitchAccountModal from "./components/SwitchAccountModal"
 import DeleteAccountModal from "./components/DeleteAccountModal"
 import SignOutModal from "./components/SignOutModal"
 import ChangePasswordModal from "./components/ChangePasswordModal"
@@ -61,6 +59,10 @@ export default function ProfileContent() {
   const [availableAccounts, setAvailableAccounts] = useState([])
   const [isDeleting, setIsDeleting] = useState(false)
   const [toast, setToast] = useState({ visible: false, message: "", type: "" })
+
+  // Add these state variables if they don't exist:
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false)
+  const [isDeleteAccountModalOpen, setIsDeleteAccountModalOpen] = useState(false)
 
   // Update the refreshProfile function to use caching
   const refreshProfile = useCallback(async () => {
@@ -162,7 +164,7 @@ export default function ProfileContent() {
               await signOutUser()
 
               // Redirect to auth page
-              router.replace("/auth")
+              router.replace("/")
             }
           } else {
             showToast(result.error || "Failed to complete email update", "error")
@@ -308,7 +310,7 @@ export default function ProfileContent() {
         clearAllAppData()
 
         // Redirect to login page with replace to prevent going back
-        router.replace("/auth")
+        router.replace("/")
       } else {
         console.error("Error signing out:", result.error)
         showToast("Failed to sign out. Please try again.", "error")
@@ -343,7 +345,7 @@ export default function ProfileContent() {
       clearAllAppData()
 
       // Immediately redirect to login page
-      router.replace("/auth")
+      router.replace("/")
 
       return { success: true }
     } catch (error) {
@@ -483,7 +485,7 @@ export default function ProfileContent() {
               clearRelatedCollectionsCache(CACHE_COLLECTIONS)
 
               // Redirect to auth page
-              router.replace("/auth")
+              router.replace("/")
             }, 1500)
           } else {
             // Update local state immediately
@@ -589,6 +591,33 @@ export default function ProfileContent() {
     )
   }
 
+  const handleOpenChangePasswordModal = () => {
+    setIsChangePasswordModalOpen(true)
+  }
+
+  const handleCloseChangePasswordModal = () => {
+    setIsChangePasswordModalOpen(false)
+  }
+
+  const handleOpenDeleteAccountModal = () => {
+    setIsDeleteAccountModalOpen(true)
+  }
+
+  const handleCloseDeleteAccountModal = () => {
+    setIsDeleteAccountModalOpen(false)
+  }
+
+  const handleDeleteAccount = async (password) => {
+    setManageAccountOpen(false)
+    setDeleteDialogOpen(true)
+    const result = await confirmDelete(password)
+    if (result.success) {
+      handleCloseDeleteAccountModal()
+    }
+  }
+
+  const isAdmin = profile?.isAdmin === true
+
   return (
     <main className={styles.profileMainContent}>
       <h1 className={styles.header}>Your Profile</h1>
@@ -615,8 +644,8 @@ export default function ProfileContent() {
 
       {/* Account Actions */}
       <AccountActions
-        onManageAccount={() => setManageAccountOpen(true)}
-        onSwitchAccount={() => setSwitchAccountOpen(true)}
+        onChangePassword={handleOpenChangePasswordModal}
+        onDeleteAccount={handleOpenDeleteAccountModal}
         isMobile={isMobile}
       />
 
@@ -641,38 +670,25 @@ export default function ProfileContent() {
         onSave={handleSaveField}
       />
 
-      {/* Manage Account Modal */}
-      <ManageAccountModal
-        isOpen={manageAccountOpen}
-        onClose={() => setManageAccountOpen(false)}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onChangePassword={handleChangePassword}
-      />
-
       {/* Change Password Modal */}
-      <ChangePasswordModal
-        isOpen={changePasswordOpen}
-        onClose={() => setChangePasswordOpen(false)}
-        onChangePassword={confirmChangePassword}
-      />
-
-      {/* Switch Account Modal */}
-      <SwitchAccountModal
-        isOpen={switchAccountOpen}
-        onClose={() => setSwitchAccountOpen(false)}
-        accounts={availableAccounts}
-        onSwitchAccount={handleSwitchAccount}
-      />
+      {isChangePasswordModalOpen && (
+        <ChangePasswordModal
+          isOpen={isChangePasswordModalOpen}
+          onClose={handleCloseChangePasswordModal}
+          onChangePassword={handleChangePassword}
+        />
+      )}
 
       {/* Delete Account Modal */}
-      <DeleteAccountModal
-        isOpen={deleteDialogOpen}
-        onClose={() => setDeleteDialogOpen(false)}
-        onDelete={confirmDelete}
-        isAdmin={profile?.isAdmin === true}
-        isDeleting={isDeleting}
-      />
+      {isDeleteAccountModalOpen && (
+        <DeleteAccountModal
+          isOpen={isDeleteAccountModalOpen}
+          onClose={handleCloseDeleteAccountModal}
+          onDelete={handleDeleteAccount}
+          isAdmin={isAdmin}
+          isDeleting={isDeleting}
+        />
+      )}
 
       {/* Sign Out Modal */}
       <SignOutModal isOpen={signOutDialogOpen} onClose={() => setSignOutDialogOpen(false)} onSignOut={confirmSignOut} />
