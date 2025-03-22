@@ -129,9 +129,6 @@ export async function updateProfile(userId, profileData) {
       }
     }
 
-    // Add timestamp for tracking when the profile was last updated
-    validatedData.updatedAt = new Date()
-
     // Update only if we have valid data
     if (Object.keys(validatedData).length > 0) {
       await updateDoc(userDocRef, validatedData)
@@ -171,7 +168,6 @@ export async function getProfileByUserId(userId) {
         isAdmin: profileData.admin === true,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
-        // Remove updatedAt
       }
 
       return { success: true, profile: formattedProfile }

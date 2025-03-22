@@ -206,8 +206,6 @@ export async function changeUserPassword(currentPassword, newPassword) {
     // Update the password change timestamp in Firestore
     const userDocRef = doc(db, "Users", user.uid)
     await updateDoc(userDocRef, {
-      // Remove passwordLastChanged: new Date(),
-      // Remove updatedAt: new Date(),
     })
 
     return { success: true }
@@ -301,7 +299,6 @@ export async function completeEmailUpdate(user, newEmail) {
     const userDocRef = doc(db, "Users", user.uid)
     await updateDoc(userDocRef, {
       email: user.email, // Use the email from Auth
-      // Remove updatedAt: new Date(),
     })
 
     // Clear all Firestore data cache

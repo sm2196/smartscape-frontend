@@ -200,13 +200,6 @@ SmartScape System`
 
       await setDoc(userDocRef, { isAdmin: true, homeId }, { merge: true });
 
-      await setDoc(doc(db, "Homes", homeId), {
-        adminId: userId,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
-        phone: userData.phone,
-      });
-
       toast.success(
         "You are now an admin, and your smart home is ready to go!"
       );

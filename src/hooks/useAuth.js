@@ -1,99 +1,16 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import { onAuthStateChanged } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/config"
-import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore"
-import { cacheUserInfo, getUserId } from "@/lib/cacheUtils"
+import { doc, updateDoc, onSnapshot } from "firebase/firestore"
+import { cacheUserInfo } from "@/lib/cacheUtils"
 
 export function useAuth() {
   const [user, setUser] = useState(null)
   const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
-  // Update the fetchProfile function to ensure it always gets fresh data
-  const fetchProfile = useCallback(async (userId) => {
-    try {
-      // Clear any existing cache for this user to ensure fresh data
-      if (typeof window !== "undefined") {
-        localStorage.removeItem(`smartscape_Users_${userId}`)
-        localStorage.removeItem(`smartscape_Users_${userId}_timestamp`)
-      }
-
-      const userDocRef = doc(db, "Users", userId)
-      const userDocSnap = await getDoc(userDocRef)
-
-      if (userDocSnap.exists()) {
-        // Format dates and add the id to the profile data
-        const profileData = userDocSnap.data()
-        const currentUser = auth.currentUser
-
-        // Convert Firestore timestamps to JS Dates if they exist
-        const formattedProfile = {
-          id: userId,
-          firstName: profileData.firstName || "",
-          lastName: profileData.lastName || "",
-          email: currentUser ? currentUser.email : "", // Get email directly from Auth
-          phone: profileData.phone || "",
-          verified: profileData.verified || false,
-          isAdmin: profileData.isAdmin === true,
-          profileImageUrl: profileData.profileImageUrl || null,
-          createdAt: profileData.createdAt?.toDate() || null,
-          updatedAt: profileData.updatedAt?.toDate() || new Date(),
-        }
-
-        setProfile(formattedProfile)
-        setError(null)
-
-        // Cache user information including admin status
-        if (currentUser) {
-          cacheUserInfo({
-            ...currentUser,
-            isAdmin: profileData.isAdmin === true,
-          })
-        }
-
-        // Cache the profile data
-        if (typeof window !== "undefined") {
-          try {
-            localStorage.setItem(`smartscape_Users_${userId}`, JSON.stringify(formattedProfile))
-            localStorage.setItem(`smartscape_Users_${userId}_timestamp`, Date.now().toString())
-          } catch (e) {
-            console.error("Error caching profile:", e)
-          }
-        }
-
-        return formattedProfile
-      } else {
-        console.log("No profile data found for this user")
-        setProfile(null)
-        setError("Profile data not found")
-        return null
-      }
-    } catch (err) {
-      console.error("Error fetching user profile:", err)
-      setProfile(null)
-      setError(`Failed to load profile: ${err.message}`)
-      return null
-    }
-  }, [])
-
-  // Replace the useEffect that checks for cached user ID with this improved version
-  // Check for cached user ID on initial load
-  useEffect(() => {
-    // Get user ID with priority from cache
-    const userId = getUserId(user)
-
-    if (userId && !user) {
-      // If we have a user ID but no user object yet,
-      // fetch the profile data using the ID and set loading to true
-      setLoading(true)
-      fetchProfile(userId)
-        .then(() => setLoading(false))
-        .catch(() => setLoading(false))
-    }
-  }, [fetchProfile, user])
 
   // Set up auth state listener
   useEffect(() => {
@@ -104,7 +21,6 @@ export function useAuth() {
       async (currentUser) => {
         if (currentUser) {
           setUser(currentUser)
-          await fetchProfile(currentUser.uid)
         } else {
           setUser(null)
           setProfile(null)
@@ -122,7 +38,7 @@ export function useAuth() {
     )
 
     return () => unsubscribe()
-  }, [fetchProfile])
+  }, [])
 
   // Set up real-time listener for profile updates
   useEffect(() => {
@@ -140,7 +56,13 @@ export function useAuth() {
           const formattedProfile = {
             ...profileData,
             id: user.uid,
+            firstName: profileData.firstName || "",
+            lastName: profileData.lastName || "",
             email: user.email, // Get email directly from Auth
+            phone: profileData.phone || "",
+            verified: profileData.verified || false,
+            isAdmin: profileData.isAdmin === true,
+            profileImageUrl: profileData.profileImageUrl || null,
             createdAt: profileData.createdAt?.toDate() || null,
           }
 
@@ -200,6 +122,6 @@ export function useAuth() {
     }
   }, [user])
 
-  return { user, profile, loading, error, fetchProfile }
+  return { user, profile, loading, error }
 }
 

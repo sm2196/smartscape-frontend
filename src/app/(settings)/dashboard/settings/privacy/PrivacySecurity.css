@@ -2,7 +2,6 @@
   width: 100%;
   margin: auto;
   padding: 32px;
-  max-width: 1400px;
   /* Add these properties to fix scrolling issues */
   overflow-y: auto;
   height: 100%;
@@ -129,7 +128,7 @@
 }
 
 .toggles:checked {
-  background-color: #2563eb;
+  background-color: #16a34a;
 }
 
 .toggles::before {
