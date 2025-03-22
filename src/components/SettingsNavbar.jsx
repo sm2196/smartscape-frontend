@@ -1,6 +1,6 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect } from "react"
 import {
   MdPerson,
   MdSecurity,
@@ -10,9 +10,18 @@ import {
   MdArrowBackIosNew,
   MdMenu,
   MdClose,
-} from "react-icons/md";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+} from "react-icons/md"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+
+// Add a function to check for cookies
+const getCookie = (name) => {
+  if (typeof document === "undefined") return null
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(";").shift()
+  return null
+}
 
 const navigation = [
   { name: "Profiles", href: "/dashboard/settings", icon: MdPerson },
@@ -21,10 +30,7 @@ const navigation = [
     href: "/dashboard/settings/privacy",
     icon: MdSecurity,
   },
-  { name: "Admin Settings",
-    href: "/dashboard/settings/admin",
-    icon: MdSettings
-  },
+  { name: "Admin Settings", href: "/dashboard/settings/admin", icon: MdSettings, adminOnly: true },
   {
     name: "Notifications",
     href: "/dashboard/settings/notifications",
@@ -34,40 +40,44 @@ const navigation = [
     name: "Rooms & Devices",
     href: "/dashboard/settings/roomdevices",
     icon: MdDevices,
+    adminOnly: true,
   },
   { name: "Dashboard", href: "/dashboard", icon: MdArrowBackIosNew },
-];
+]
 
 export default function SettingsNavbar() {
-  const pathname = usePathname();
-  const [time, setTime] = useState(new Date());
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname()
+  const [time, setTime] = useState(new Date())
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isGuestUser, setIsGuestUser] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(new Date());
-    }, 1000);
+      setTime(new Date())
+    }, 1000)
 
-    return () => clearInterval(interval);
-  }, []);
+    // Check if user is a guest user
+    const guestUserCookie = getCookie("guest-user")
+    setIsGuestUser(guestUserCookie === "true")
 
-  const hours = time.getHours() % 12 || 12;
-  const minutes = time.getMinutes();
-  const ampm = time.getHours() >= 12 ? "PM" : "AM";
+    return () => clearInterval(interval)
+  }, [])
 
-  const timeString = `${hours.toString().padStart(2, "0")}:${minutes
-    .toString()
-    .padStart(2, "0")} ${ampm}`;
+  const hours = time.getHours() % 12 || 12
+  const minutes = time.getMinutes()
+  const ampm = time.getHours() >= 12 ? "PM" : "AM"
+
+  const timeString = `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")} ${ampm}`
 
   const dateString = time.toLocaleDateString("en-AE", {
     weekday: "long",
     day: "numeric",
     month: "short",
-  });
+  })
 
   const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+    setIsMenuOpen(!isMenuOpen)
+  }
 
   return (
     <div
@@ -80,41 +90,54 @@ export default function SettingsNavbar() {
     >
       <div className="tw:max-lg:flex tw:max-lg:h-10">
         <div className="tw:flex-col tw:mb-10 tw:max-lg:hidden">
-          <div className="tw:text-[clamp(2.5rem,3.5vw,3.5rem)] tw:font-light
+          <div
+            className="tw:text-[clamp(2.5rem,3.5vw,3.5rem)] tw:font-light
           tw:text-[color:var(--text-primary)] tw:leading-[1.1] tw:mb-2"
-          suppressHydrationWarning={true}>
+            suppressHydrationWarning={true}
+          >
             {timeString}
           </div>
-          <div className="tw:text-[clamp(1rem,2vw,1.125rem)]
+          <div
+            className="tw:text-[clamp(1rem,2vw,1.125rem)]
           tw:text-[color:var(--text-secondary)]"
-          suppressHydrationWarning={true}>
+            suppressHydrationWarning={true}
+          >
             {dateString}
           </div>
         </div>
-        <button className="tw:hidden tw:max-lg:block tw:text-[color:var(--text-primary)]
-         tw:p-1 tw:bg-transparent tw:border-none" onClick={toggleMenu}>
+        <button
+          className="tw:hidden tw:max-lg:block tw:text-[color:var(--text-primary)]
+         tw:p-1 tw:bg-transparent tw:border-none"
+          onClick={toggleMenu}
+        >
           {isMenuOpen ? <MdClose size={24} /> : <MdMenu size={24} />}
         </button>
       </div>
-      <nav className={`tw:flex tw:flex-col tw:gap-2 tw:max-lg:mt-3 tw:max-lg:pb-3
-      ${isMenuOpen ? "tw:max-lg:block" : "tw:max-lg:hidden"}`}>
-        {navigation.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`tw:flex tw:items-center tw:gap-4 tw:text-[color:var(--text-primary)] tw:no-underline tw:transition-all tw:duration-300 tw:ease-[ease] tw:font-medium tw:px-4 tw:py-3 tw:rounded-xl tw:hover:bg-[color:#d2dcf50d]
+      <nav
+        className={`tw:flex tw:flex-col tw:gap-2 tw:max-lg:mt-3 tw:max-lg:pb-3
+      ${isMenuOpen ? "tw:max-lg:block" : "tw:max-lg:hidden"}`}
+      >
+        {navigation
+          .filter((item) => !isGuestUser || !item.adminOnly)
+          .map((item) => {
+            const isActive = pathname === item.href
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`tw:flex tw:items-center tw:gap-4 tw:text-[color:var(--text-primary)] tw:no-underline tw:transition-all tw:duration-300 tw:ease-[ease] tw:font-medium tw:px-4 tw:py-3 tw:rounded-xl tw:hover:bg-[color:#d2dcf50d]
 
-              tw:max-lg:text-lg tw:max-lg:min-h-[48px] tw:max-lg:p-4
-              ${isActive ? "tw:bg-[color:var(--active)]" : ""}`}
-              onClick={() => setIsMenuOpen(false)}>
-              <item.icon className="tw:text-2xl" />
-              <span className="tw:flex-1">{item.name}</span>
-            </Link>
-          );
-        })}
+                tw:max-lg:text-lg tw:max-lg:min-h-[48px] tw:max-lg:p-4
+                ${isActive ? "tw:bg-[color:var(--active)]" : ""}`}
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <item.icon className="tw:text-2xl" />
+                <span className="tw:flex-1">{item.name}</span>
+              </Link>
+            )
+          })}
       </nav>
     </div>
-  );
+  )
 }
+

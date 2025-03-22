@@ -7,7 +7,7 @@ import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input"
 import "react-phone-number-input/style.css"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth"
 import { auth, db } from "@/lib/firebase/config"
-import { setDoc, doc } from "firebase/firestore"
+import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { ToastContainer, toast } from "react-toastify"
 
 function SignupOrLogin() {
@@ -182,10 +182,28 @@ function SignupOrLogin() {
         toast.success("Login successful")
         console.log("User Login Successfully!!")
 
+        // Get user data from Firestore to check isAdmin status
+        const userDoc = await getDoc(doc(db, "Users", result.user.uid))
+        const userData = userDoc.data()
+
+        // Update the user document to include the email from Firebase Authentication
+        await updateDoc(doc(db, "Users", result.user.uid), {
+          email: result.user.email, // Get email directly from the authenticated user object
+        })
+        console.log("Updated user document with email field")
+
+
         // Set auth cookie
         document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
           window.location.protocol === "https:" ? "Secure;" : ""
         }`
+
+        // If user is not an admin, set guest-user cookie
+        if (userData && userData.isAdmin === false) {
+          document.cookie = `guest-user=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
+            window.location.protocol === "https:" ? "Secure;" : ""
+          }`
+        }
 
         // Use replace instead of push to prevent going back to login
         router.replace("/dashboard")

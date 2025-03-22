@@ -1,6 +1,5 @@
 .privacyContainer {
   width: 100%;
-  margin: auto;
   padding: 32px;
   /* Add these properties to fix scrolling issues */
   overflow-y: auto;

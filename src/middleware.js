@@ -5,7 +5,14 @@ export function middleware(request) {
   const path = request.nextUrl.pathname
 
   // Define public paths that don't require authentication
-  const isPublicPath = path.startsWith("/auth") || path === "/" || path === "/about" || path === "/services" || path === "/contact" || path === "/faq" || path === "/api/send-email"
+  const isPublicPath =
+    path.startsWith("/auth") ||
+    path === "/" ||
+    path === "/about" ||
+    path === "/services" ||
+    path === "/contact" ||
+    path === "/faq" ||
+    path === "/api/send-email"
 
   // Check for email verification redirect
   const url = new URL(request.url)
@@ -21,6 +28,17 @@ export function middleware(request) {
   // Check if the user is authenticated by looking for the auth cookie
   const authCookie = request.cookies.get("auth-session")?.value
   const isAuthenticated = !!authCookie
+
+  // Check if user is a guest user
+  const isGuestUser = request.cookies.get("guest-user")?.value === "true"
+
+  // Define admin-only paths
+  const isAdminOnlyPath = path === "/dashboard/settings/admin" || path === "/dashboard/settings/roomdevices"
+
+  // If the user is a guest and trying to access admin-only paths, redirect to settings
+  if (isAuthenticated && isGuestUser && isAdminOnlyPath) {
+    return NextResponse.redirect(new URL("/dashboard/settings", request.url))
+  }
 
   // If the path is protected and the user is not authenticated, redirect to login
   if (!isPublicPath && !isAuthenticated) {

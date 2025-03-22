@@ -12,6 +12,8 @@ import {
   MdContentCopy,
   MdClose,
   MdEmail,
+  MdAdminPanelSettings,
+  MdPerson,
 } from "react-icons/md"
 import styles from "./AdminSettings.module.css"
 import homeIdStyles from "../components/HomeIdCodeModal.module.css"
@@ -22,6 +24,7 @@ import { getDoc, doc, updateDoc } from "firebase/firestore"
 import { db } from "@/lib/firebase/config"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import { collection, query, where, getDocs } from "firebase/firestore"
 
 // Define cache constants for consistency
 const CACHE_COLLECTIONS = ["Users"]
@@ -31,16 +34,11 @@ const AdminSettings = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [pinDigits, setPinDigits] = useState(["", "", "", ""])
   const [errorMessage, setErrorMessage] = useState("")
-  const [familyMembers] = useState([
-    { name: "Chang", email: "chang@example.com", lastOnline: "2 hours ago", online: true },
-    { name: "Claire", email: "claire@example.com", lastOnline: "1 day ago", online: false },
-    { name: "Lovisa", email: "lovisa@example.com", lastOnline: "30 minutes ago", online: true },
-    { name: "Max", email: "max@example.com", lastOnline: "5 hours ago", online: false },
-    { name: "Mom", email: "mom@example.com", lastOnline: "3 days ago", online: true },
-  ])
+  const [familyMembers, setFamilyMembers] = useState([])
   const [permissions, setPermissions] = useState({
     "read electricity consumption levels": false,
     "read daily water consumption levels": false,
+    "read device temperature levels": false,
     "read device temperature levels": false,
     "control household devices": false,
   })
@@ -153,6 +151,104 @@ const AdminSettings = () => {
       console.log("Is creating PIN:", isCreatingPin)
     }
   }, [userData, isCreatingPin])
+
+  // Fetch family members from Firestore
+  useEffect(() => {
+    const fetchFamilyMembers = async () => {
+      if (!userId || !authenticated) return
+
+      try {
+        // First get the current user's data
+        const userDocRef = doc(db, "Users", userId)
+        const userDocSnap = await getDoc(userDocRef)
+
+        if (!userDocSnap.exists()) {
+          console.error("User document not found")
+          return
+        }
+
+        const userData = userDocSnap.data()
+        const isAdmin = userData.isAdmin === true
+
+        let members = []
+
+        // Add the current user as the first member
+        members.push({
+          id: userId,
+          name: `${userData.firstName || ""} ${userData.lastName || ""}`.trim(),
+          email: userData.email || "",
+          isAdmin: isAdmin,
+          online: userData.isOnline === true, // Explicitly check isOnline field
+        })
+
+        if (isAdmin) {
+          // If current user is admin, find all users with adminRef pointing to this user
+          const membersQuery = query(collection(db, "Users"), where("adminRef", "==", doc(db, "Users", userId)))
+
+          const querySnapshot = await getDocs(membersQuery)
+
+          // Add each family member to the array
+          for (const docSnap of querySnapshot.docs) {
+            const memberData = docSnap.data()
+            members.push({
+              id: docSnap.id,
+              name: `${memberData.firstName || ""} ${memberData.lastName || ""}`.trim(),
+              email: memberData.email || "", // Use email from Firestore
+              isAdmin: false,
+              online: memberData.isOnline === true,
+            })
+          }
+        } else if (userData.adminRef) {
+          // If current user is not admin, get the admin user
+          const adminRef = userData.adminRef
+          const adminDocSnap = await getDoc(adminRef)
+
+          if (adminDocSnap.exists()) {
+            const adminData = adminDocSnap.data()
+
+            // Add admin to the beginning of the array (replacing the current user)
+            members = [
+              {
+                id: adminDocSnap.id,
+                name: `${adminData.firstName || ""} ${adminData.lastName || ""}`.trim(),
+                email: adminData.email || "",
+                isAdmin: true,
+                online: adminData.isOnline === true, // Explicitly check isOnline field
+              },
+              ...members,
+            ]
+
+            // Get other family members under the same admin
+            const otherMembersQuery = query(collection(db, "Users"), where("adminRef", "==", adminRef))
+
+            const otherMembersSnapshot = await getDocs(otherMembersQuery)
+
+            for (const docSnap of otherMembersSnapshot.docs) {
+              // Skip the current user as they're already in the list
+              if (docSnap.id === userId) continue
+
+              const memberData = docSnap.data()
+              members.push({
+                id: docSnap.id,
+                name: `${memberData.firstName || ""} ${memberData.lastName || ""}`.trim(),
+                email: memberData.email || "",
+                isAdmin: false,
+                online: memberData.isOnline === true, // Explicitly check isOnline field
+              })
+            }
+          }
+        }
+
+        setFamilyMembers(members)
+      } catch (error) {
+        console.error("Error fetching family members:", error)
+      }
+    }
+
+    if (authenticated) {
+      fetchFamilyMembers()
+    }
+  }, [userId, authenticated, user])
 
   const handlePinSubmit = async (e) => {
     e.preventDefault()
@@ -400,8 +496,13 @@ const AdminSettings = () => {
                   </div>
                   <div className={styles.memberList}>
                     {familyMembers.map((member) => (
-                      <div key={member.name} className={styles.memberCard}>
+                      <div key={member.id} className={styles.memberCard}>
                         <div className={styles.memberAvatar}>
+                          {member.isAdmin ? (
+                            <MdAdminPanelSettings size={20} className={styles.adminIcon} />
+                          ) : (
+                            <MdPerson size={20} className={styles.guestIcon} />
+                          )}
                           <span>{member.name.charAt(0)}</span>
                         </div>
                         <div className={styles.memberInfo}>
@@ -480,9 +581,16 @@ const AdminSettings = () => {
                 </div>
                 <div className={styles.memberList}>
                   {familyMembers.map((member) => (
-                    <div key={member.name} className={styles.memberCard}>
+                    <div key={member.id} className={styles.memberCard}>
                       <div className={styles.memberInfo}>
-                        <span className={styles.memberName}>{member.name}</span>
+                        <div className={styles.memberNameWithIcon}>
+                          {member.isAdmin ? (
+                            <MdAdminPanelSettings size={20} className={styles.adminIcon} />
+                          ) : (
+                            <MdPerson size={20} className={styles.guestIcon} />
+                          )}
+                          <span className={styles.memberName}>{member.name}</span>
+                        </div>
                         <span className={styles.memberEmail}>{member.email}</span>
                       </div>
                       <div className={styles.memberActions}>

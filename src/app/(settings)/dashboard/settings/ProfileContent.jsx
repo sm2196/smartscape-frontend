@@ -68,16 +68,16 @@ export default function ProfileContent() {
 
   // Load profile data when available - this is the only place we update fieldValues now
   useEffect(() => {
-    if (profile && user) {
+    if (profile) {
       setFieldValues({
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
-        email: user.email || "", // Use user.email from Firebase Auth
+        email: profile.email || "",
         phone: profile.phone || "",
         governmentId: "Verified",
       })
     }
-  }, [profile, user])
+  }, [profile])
 
   // Display mapping for field names
   const displayMapping = {
@@ -87,18 +87,17 @@ export default function ProfileContent() {
     governmentId: "Government ID",
   }
 
-  // Update the personalInfoSections array to use user.email directly
+  // Update the personalInfoSections array to use profile.email
   const personalInfoSections = [
     {
       title: displayMapping.name,
-      // Ensure we're displaying the exact values from the database, not concatenating them incorrectly
       value: `${fieldValues.firstName} ${fieldValues.lastName}`,
       action: "Edit",
       field: "name",
     },
     {
       title: displayMapping.email,
-      value: user?.email || fieldValues.email, // Prioritize user.email
+      value: fieldValues.email || "",
       action: "Edit",
       field: "email",
     },
@@ -215,7 +214,7 @@ export default function ProfileContent() {
           // Clear all cache to ensure fresh data on next load
           clearRelatedCollectionsCache(CACHE_COLLECTIONS)
         } else {
-          throw new Error(result.error || "Failed to update name")
+          showToast(result.error || "Failed to update name", "error")
         }
       } else if (editingField === "phone") {
         // Check if phone is unchanged
@@ -227,7 +226,7 @@ export default function ProfileContent() {
 
         // Validate phone number before saving
         if (value && !isValidPhoneNumber(value)) {
-          throw new Error("Please enter a valid phone number")
+          showToast("Please enter a valid phone number", "error")
         }
 
         // Use getUserId instead of directly accessing user.uid
@@ -248,11 +247,11 @@ export default function ProfileContent() {
           // Clear all cache to ensure fresh data on next load
           clearRelatedCollectionsCache(CACHE_COLLECTIONS)
         } else {
-          throw new Error(result.error || "Failed to update phone number")
+          showToast(result.error || "Failed to update phone number", "error")
         }
       } else if (editingField === "email") {
         // Check if email is unchanged
-        if (value === user.email || value === fieldValues.email) {
+        if (value === fieldValues.email) {
           showToast("No changes were made to your email address", "info")
           setEditingField(null)
           return
@@ -295,7 +294,7 @@ export default function ProfileContent() {
             setEditingField(null)
             return
           }
-          throw new Error(result.error || "Failed to update email")
+          showToast(result.error || "Failed to update email", "error")
         }
       }
     } catch (error) {
@@ -417,13 +416,7 @@ export default function ProfileContent() {
         onClose={() => setEditingField(null)}
         field={editingField}
         fieldDisplayName={editingField ? displayMapping[editingField] : ""}
-        initialValue={
-          editingField === "email"
-            ? user?.email
-            : editingField && editingField !== "name"
-              ? fieldValues[editingField]
-              : ""
-        }
+        initialValue={editingField && editingField !== "name" ? fieldValues[editingField] : ""}
         initialFirstName={fieldValues.firstName}
         initialLastName={fieldValues.lastName}
         onSave={handleSaveField}

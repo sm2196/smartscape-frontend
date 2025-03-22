@@ -46,6 +46,22 @@
   color: #dc2626;
 }
 
+/* Add these styles for the admin and guest icons */
+.adminIcon {
+  color: #4f46e5;
+  margin-right: 8px;
+}
+
+.guestIcon {
+  color: #6b7280;
+  margin-right: 8px;
+}
+
+.memberNameWithIcon {
+  display: flex;
+  align-items: center;
+}
+
 /* Rest of the CSS remains the same */
 .container {
   width: 100%;
@@ -549,17 +565,29 @@
 
 /* Mobile styles */
 .memberAvatar {
-  width: 40px;
-  height: 40px;
+  position: relative;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background-color: var(--oxford-blue);
-  color: white;
+  background-color: #e5e7eb;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  font-size: 1.25rem;
+  font-weight: 600;
+  color: #4b5563;
+  margin-right: 12px;
   flex-shrink: 0;
+}
+
+.memberAvatar .adminIcon,
+.memberAvatar .guestIcon {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background-color: white;
+  border-radius: 50%;
+  padding: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .mobileContent {

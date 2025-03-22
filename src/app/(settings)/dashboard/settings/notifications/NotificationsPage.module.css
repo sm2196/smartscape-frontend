@@ -1,58 +1,164 @@
 .mainContent {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 24px;
-  color: var(--text-primary);
-  /* Add these properties to fix scrolling issues */
+  color: #333;
   height: 100%;
   overflow-y: auto;
   box-sizing: border-box;
+  position: relative;
+  background-color: #f8f9fa;
 }
 
 .pageHeader {
-  margin-bottom: 32px;
-  position: relative;
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Fix the header icon (bell) that looks squashed */
+.headerIcon {
+  font-size: 32px;
+  color: #6366f1;
+  background-color: rgba(99, 102, 241, 0.1);
+  padding: 12px;
+  border-radius: 50%;
+  min-width: 32px;
+  min-height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .header {
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 8px;
-  color: var(--oxford-blue);
+  color: #333;
 }
 
 .description {
   font-size: 16px;
-  color: #4a5568;
-  max-width: 600px;
+  color: #666;
 }
 
+/* Improve spacing in category navigation */
+.categoryNav {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0; /* Increased margin top and bottom */
+  overflow-x: auto;
+  padding: 4px 0 12px 0; /* Added padding top */
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 transparent;
+}
+
+.categoryNav::-webkit-scrollbar {
+  height: 4px;
+}
+
+.categoryNav::-webkit-scrollbar-thumb {
+  background-color: #6366f1;
+  border-radius: 4px;
+}
+
+.categoryTab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: white;
+  color: #666;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.categoryTab:hover {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.utilitiesTab {
+  color: #3b82f6;
+}
+
+.devicesTab {
+  color: #8b5cf6;
+}
+
+.securityTab {
+  color: #ef4444;
+}
+
+.maintenanceTab {
+  color: #10b981;
+}
+
+.activeTab {
+  background-color: #6366f1;
+  color: white !important;
+  border-color: #6366f1;
+}
+
+/* Increase spacing between category cards */
 .notificationGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 24px;
-  /* Add padding at the bottom to prevent content from being hidden */
+  gap: 32px; /* Increased from 24px */
   padding-bottom: 80px;
+  margin-top: 16px; /* Added margin-top for better spacing */
 }
 
+/* Add more breathing room between category sections */
 .categoryCard {
-  background-color: var(--space-cadet);
+  background-color: white;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(210, 220, 245, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eaeaea;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-  /* Ensure proper spacing within cards */
   display: flex;
   flex-direction: column;
   gap: 16px;
+  height: 100%;
+  overflow: hidden;
+  margin-bottom: 8px; /* Added margin-bottom */
+}
+
+.utilitiesCard {
+  border-top: 4px solid #3b82f6;
+}
+
+.devicesCard {
+  border-top: 4px solid #8b5cf6;
+}
+
+.securityCard {
+  border-top: 4px solid #ef4444;
+}
+
+.maintenanceCard {
+  border-top: 4px solid #10b981;
 }
 
 .categoryCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-  background-color: var(--oxford-blue);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
 }
 
 .categoryHeader {
@@ -61,94 +167,327 @@
   gap: 12px;
   margin-bottom: 24px;
   padding-bottom: 16px;
-  border-bottom: 1px solid rgba(210, 220, 245, 0.1);
+  border-bottom: 1px solid #eaeaea;
+}
+
+.utilitiesHeader svg {
+  color: #3b82f6;
+}
+
+.devicesHeader svg {
+  color: #8b5cf6;
+}
+
+.securityHeader svg {
+  color: #ef4444;
+}
+
+.maintenanceHeader svg {
+  color: #10b981;
 }
 
 .categoryHeader h2 {
   font-size: 18px;
   font-weight: 600;
   margin: 0;
-  color: var(--text-primary);
-}
-
-.categoryHeader svg {
-  color: var(--lavender);
+  color: #333;
 }
 
 .notificationList {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
 
+/* Enhanced push-in/push-out notification item styles with darker shadows */
 .notificationItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 0;
+  padding: 16px;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 8px;
+}
+
+/* Disabled state - pushed out with stronger shadow */
+.notificationItem.disabled {
+  background-color: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  transform: translateY(0);
+  border-bottom-color: #d0d0d0;
+  border-right-color: #d0d0d0;
+}
+
+/* Enabled state - pushed in with darker inset shadow */
+.notificationItem.enabled {
+  background-color: #f5f7fa;
+  box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.16), inset 0 1px 2px rgba(0, 0, 0, 0.23);
+  transform: translateY(2px);
+  border-top-color: #d0d0d0;
+  border-left-color: #d0d0d0;
+}
+
+/* Enhanced hover effects */
+.notificationItem.disabled:hover {
+  background-color: #f8f8f8;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.notificationItem.enabled:hover {
+  background-color: #edf2f7;
+  box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Enhanced active/pressed state */
+.notificationItem:active {
+  transform: translateY(3px);
+  transition: all 0.1s ease;
 }
 
 .notificationInfo {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  align-items: center; /* Change from flex-start to center */
+  gap: 16px;
+  flex: 1;
 }
 
-.notificationIcon {
-  color: var(--lavender);
-}
-
-/* Modern toggle switch */
-.toggleButton {
+/* Adjust the notificationIconWrapper to ensure proper vertical alignment */
+.notificationIconWrapper {
+  padding: 10px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
+  justify-content: center;
+  transition: all 0.3s ease;
+  background-color: rgba(99, 102, 241, 0.1);
+  align-self: center; /* Add this to ensure icon stays centered */
 }
 
-.toggleTrack {
-  position: relative;
-  display: inline-block;
-  width: 44px;
-  height: 24px;
-  background-color: rgba(210, 220, 245, 0.1);
-  border-radius: 24px;
-  transition: all 0.2s ease;
+/* Enhanced icon styles */
+.utilitiesIcon {
+  background-color: rgba(59, 130, 246, 0.1);
 }
 
-.toggleThumb {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 20px;
-  height: 20px;
-  background-color: var(--text-primary);
-  border-radius: 50%;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.utilitiesIcon .notificationIcon {
+  color: #3b82f6;
 }
 
-.toggleButton.on .toggleTrack {
-  background-color: var(--lavender);
+.devicesIcon {
+  background-color: rgba(139, 92, 246, 0.1);
 }
 
-.toggleButton.on .toggleThumb {
-  transform: translateX(20px);
-  background-color: var(--oxford-blue);
+.devicesIcon .notificationIcon {
+  color: #8b5cf6;
 }
 
-.toggleStatus {
-  font-size: 14px;
-  font-weight: 500;
-  min-width: 28px;
-  color: var(--text-secondary);
+.securityIcon {
+  background-color: rgba(239, 68, 68, 0.1);
 }
 
-.toggleButton.on .toggleStatus {
-  color: var(--lavender);
+.securityIcon .notificationIcon {
+  color: #ef4444;
+}
+
+.maintenanceIcon {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.maintenanceIcon .notificationIcon {
+  color: #10b981;
+}
+
+/* Enhanced icon styles for enabled state */
+.iconEnabled {
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+}
+
+/* Contextual icon animations for different notification types */
+
+/* Power/Electricity animation - pulsating zap effect */
+.powerAnimation {
+  animation: powerZap 1.5s infinite;
+}
+
+@keyframes powerZap {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+  75% {
+    transform: scale(0.9);
+    opacity: 1;
+  }
+}
+
+/* Water animation - dripping/flowing effect */
+.waterAnimation {
+  animation: waterDrip 2s infinite;
+}
+
+@keyframes waterDrip {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+  75% {
+    transform: translateY(-1px);
+  }
+}
+
+/* Device animation - signal/connection effect */
+.deviceAnimation {
+  animation: deviceSignal 2s infinite;
+}
+
+@keyframes deviceSignal {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  50% {
+    transform: scale(1) rotate(0deg);
+  }
+  75% {
+    transform: scale(1.1) rotate(-5deg);
+  }
+}
+
+/* Update animation - rotating refresh effect */
+.updateAnimation {
+  animation: updateRotate 3s infinite linear;
+}
+
+@keyframes updateRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Security animation - scanning/alert effect */
+.securityAnimation {
+  animation: securityScan 2s infinite;
+}
+
+@keyframes securityScan {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.15);
+    filter: brightness(1.2);
+  }
+}
+
+/* Battery animation - charging effect */
+.batteryAnimation {
+  animation: batteryCharge 1.5s infinite;
+}
+
+@keyframes batteryCharge {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* WiFi animation - wave/signal effect */
+.wifiAnimation {
+  animation: wifiWave 2s infinite;
+}
+
+@keyframes wifiWave {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  75% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+/* Home animation - transition effect */
+.homeAnimation {
+  animation: homeTransition 3s infinite;
+}
+
+@keyframes homeTransition {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+/* Maintenance animation - gear rotation effect */
+.maintenanceAnimation {
+  animation: maintenanceGear 4s infinite linear;
+}
+
+@keyframes maintenanceGear {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.notificationText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.notificationName {
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+}
+
+.notificationDescription {
+  font-size: 13px;
+  color: #666;
+  line-height: 1.4;
 }
 
 /* Loading state styles */
@@ -164,15 +503,15 @@
 .loadingSpinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(210, 220, 245, 0.1);
+  border: 3px solid #e5e7eb;
   border-radius: 50%;
-  border-top-color: var(--oxford-blue);
+  border-top-color: #6366f1;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 16px;
 }
 
 .loadingText {
-  color: black;
+  color: #333;
 }
 
 @keyframes spin {
@@ -207,8 +546,8 @@
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background-color: var(--lavender);
-  color: var(--oxford-blue);
+  background-color: #6366f1;
+  color: white;
   border: none;
   border-radius: 12px;
   font-weight: 500;
@@ -217,7 +556,7 @@
 }
 
 .retryButton:hover {
-  background-color: rgba(210, 220, 245, 0.8);
+  background-color: #4f46e5;
   transform: translateY(-1px);
 }
 
@@ -230,22 +569,19 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 16px;
-  background-color: var(--lavender);
-  color: var(--oxford-blue);
-  border: none;
+  padding: 10px 16px;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #eaeaea;
   border-radius: 8px;
   font-weight: 500;
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;
-  position: absolute;
-  right: 0;
-  top: 0;
 }
 
 .refreshButton:hover {
-  background-color: rgba(210, 220, 245, 0.8);
+  background-color: #e5e7eb;
   transform: translateY(-1px);
 }
 
@@ -253,44 +589,137 @@
   transform: translateY(0);
 }
 
-/* Responsive styles */
+/* Demo notification styles */
+.demoNotification {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  border-left: 4px solid #ef4444;
+  max-width: 400px;
+  width: 90%;
+  z-index: 1000;
+}
+
+.demoNotificationIcon {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.demoNotificationContent {
+  flex: 1;
+}
+
+.demoNotificationContent h3 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #333;
+}
+
+.demoNotificationContent p {
+  font-size: 14px;
+  margin: 0;
+  color: #666;
+}
+
+/* Responsive improvements */
 @media (max-width: 768px) {
   .mainContent {
     padding: 16px;
-    /* Ensure proper height and scrolling on mobile */
-    height: calc(100vh - 64px); /* Account for header height */
+    height: calc(100vh - 64px);
     overflow-y: auto;
   }
 
-  .header {
-    font-size: 24px;
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    margin-bottom: 16px; /* Reduced from 24px */
+  }
+
+  .headerContent {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .headerIcon {
+    font-size: 24px; /* Smaller on mobile */
+    padding: 10px;
+    min-width: 24px;
+    min-height: 24px;
   }
 
   .notificationGrid {
     grid-template-columns: 1fr;
-    /* Add more bottom padding on mobile */
+    gap: 24px; /* Slightly smaller gap on mobile but still larger than original */
     padding-bottom: 100px;
   }
 
+  /* Add significant margin between category cards on mobile */
   .categoryCard {
     padding: 20px;
+    margin-bottom: 32px; /* Add substantial space between cards */
+    position: relative; /* For proper spacing */
   }
 
-  .toggleStatus {
+  /* Add extra space after specific category types */
+  .utilitiesCard,
+  .devicesCard,
+  .securityCard {
+    margin-bottom: 40px; /* Even more space between main category sections */
+  }
+
+  /* Add a visual separator between categories */
+  .categoryCard::after {
+    content: "";
+    position: absolute;
+    bottom: -16px;
+    left: 10%;
+    width: 80%;
+    height: 1px;
+    background-color: #eaeaea;
+  }
+
+  /* Remove the separator from the last card */
+  .categoryCard:last-child::after {
+    display: none;
+  }
+
+  /* Add more space between category tabs on mobile */
+  .categoryTab {
+    padding: 10px 14px;
     font-size: 13px;
+    margin-right: 4px;
   }
 
-  .refreshButton {
-    position: static;
-    margin-top: 16px;
-    width: 100%;
-    justify-content: center;
+  /* Ensure notification items have proper spacing on mobile */
+  .notificationItem {
+    padding: 14px;
+    margin-bottom: 12px;
   }
 
-  .pageHeader {
+  /* Improve notification list spacing */
+  .notificationList {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    gap: 12px;
+    padding: 4px;
   }
 }
 
