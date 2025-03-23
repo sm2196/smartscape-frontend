@@ -405,16 +405,18 @@ const BlindsControls = ({ initialState = "Closed", onUpdate }) => {
 }
 
 const SpeakerControls = ({ initialState = "Off", onUpdate }) => {
-  const [isOn, setIsOn] = useState(!initialState.includes("Battery"))
+  // Fix: Correctly determine if the speaker is on based on the initialState
+  const [isOn, setIsOn] = useState(initialState === "On")
   const [volume, setVolume] = useState(50)
 
   const handleToggle = () => {
     const newState = !isOn
     setIsOn(newState)
     onUpdate({
-      status: newState ? "On" : initialState,
+      status: newState ? "On" : "Off",
       isActive: newState,
-      statusColor: initialState.includes("Battery") ? "statusPink" : "",
+      // Preserve battery status in the status if it exists
+      statusColor: initialState.includes("Battery") ? "" : newState ? "statusPink" : "",
     })
   }
 

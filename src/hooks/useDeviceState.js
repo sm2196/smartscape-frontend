@@ -33,4 +33,3 @@ export function useDeviceState(deviceId, initialState) {
 
   return [state, updateState, initialized]
 }
-

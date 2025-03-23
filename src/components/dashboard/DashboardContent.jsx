@@ -259,6 +259,9 @@ export function DashboardContent() {
         />
       </RoomSection>
 
+      <div className="custom-padding" />
+
+
       <div className={styles.actionBar}>
         <button className={styles.actionButton} onClick={turnOffLightsAndFans}>
           <FaPowerOff />
@@ -268,10 +271,10 @@ export function DashboardContent() {
           <MdTv />
           Turn Off TV and Speakers
         </button>
-        {/* <button className={styles.actionButton} onClick={turnOnHighVoltageDevices}>
+        <button className={styles.actionButton} onClick={turnOnHighVoltageDevices}>
           <MdBolt />
           Test Peak Hour Alert
-        </button> */}
+        </button>
       </div>
 
       {/* Voltage Alert */}
