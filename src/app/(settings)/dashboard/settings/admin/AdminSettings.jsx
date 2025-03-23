@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react"
 import {
   MdDescription,
-  MdPeople,
   MdShield,
   MdHome,
   MdSavings,
@@ -20,35 +19,35 @@ import homeIdStyles from "../components/HomeIdCodeModal.module.css"
 import { useAuth } from "@/hooks/useAuth"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
 import { saveRelatedCollectionsToCache, clearRelatedCollectionsCache } from "@/lib/cacheUtils"
-import { getDoc, doc, updateDoc } from "firebase/firestore"
+import { getDoc, doc, updateDoc, collection, query, where, getDocs } from "firebase/firestore"
 import { db } from "@/lib/firebase/config"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { collection, query, where, getDocs } from "firebase/firestore"
 
 // Define cache constants for consistency
 const CACHE_COLLECTIONS = ["Users"]
 const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
+
+// Define available permissions
+const AVAILABLE_PERMISSIONS = [
+  "read electricity consumption levels",
+  "read daily water consumption levels",
+  "read device temperature levels",
+  "control household devices",
+]
 
 const AdminSettings = () => {
   const [authenticated, setAuthenticated] = useState(false)
   const [pinDigits, setPinDigits] = useState(["", "", "", ""])
   const [errorMessage, setErrorMessage] = useState("")
   const [familyMembers, setFamilyMembers] = useState([])
-  const [permissions, setPermissions] = useState({
-    "read electricity consumption levels": false,
-    "read daily water consumption levels": false,
-    "read device temperature levels": false,
-    "read device temperature levels": false,
-    "control household devices": false,
-  })
-  const [isMobile, setIsMobile] = useState(false)
-  const [activeTab, setActiveTab] = useState("family")
+  const [enabledPermissions, setEnabledPermissions] = useState([])
   const [showHomeIdModal, setShowHomeIdModal] = useState(false)
   const [copied, setCopied] = useState(false)
   const [isCreatingPin, setIsCreatingPin] = useState(false)
   const [homeId, setHomeId] = useState("")
   const [adminPin, setAdminPin] = useState(null)
+  const [isSavingPermissions, setIsSavingPermissions] = useState(false)
 
   // Get the current user
   const { user } = useAuth()
@@ -58,7 +57,6 @@ const AdminSettings = () => {
   const {
     data: userData,
     loading: dataLoading,
-    updateData,
   } = useFirestoreData("Users", userId, {
     localStorageCache: true,
     cacheDuration: CACHE_EXPIRATION,
@@ -83,6 +81,13 @@ const AdminSettings = () => {
           setHomeId(freshUserData.homeId || "")
           setAdminPin(freshUserData.adminPin)
           setIsCreatingPin(!freshUserData.adminPin)
+
+          // Set enabled permissions from Firestore
+          if (freshUserData.enabledPermissions && Array.isArray(freshUserData.enabledPermissions)) {
+            setEnabledPermissions(freshUserData.enabledPermissions)
+          } else {
+            setEnabledPermissions([])
+          }
 
           // Force clear and update cache
           clearRelatedCollectionsCache(CACHE_COLLECTIONS)
@@ -119,6 +124,13 @@ const AdminSettings = () => {
           setHomeId(freshData.homeId || "")
           setAdminPin(freshData.adminPin)
           setIsCreatingPin(!freshData.adminPin)
+
+          // Set enabled permissions from Firestore
+          if (freshData.enabledPermissions && Array.isArray(freshData.enabledPermissions)) {
+            setEnabledPermissions(freshData.enabledPermissions)
+          } else {
+            setEnabledPermissions([])
+          }
         }
       } catch (error) {
         console.error("Error in direct Firestore fetch:", error)
@@ -135,20 +147,15 @@ const AdminSettings = () => {
   }, [userId])
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth <= 1023)
-    }
-
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
-
-  useEffect(() => {
     if (userData) {
       console.log("User data loaded:", userData)
       console.log("Admin PIN:", userData.adminPin)
       console.log("Is creating PIN:", isCreatingPin)
+
+      // Set enabled permissions from userData if available
+      if (userData.enabledPermissions && Array.isArray(userData.enabledPermissions)) {
+        setEnabledPermissions(userData.enabledPermissions)
+      }
     }
   }, [userData, isCreatingPin])
 
@@ -314,6 +321,48 @@ const AdminSettings = () => {
     setTimeout(() => setCopied(false), 2000)
   }
 
+  // Toggle permission and update Firestore
+  const togglePermission = async (permission) => {
+    try {
+      setIsSavingPermissions(true)
+
+      // Update local state first for immediate UI feedback
+      let updatedPermissions = [...enabledPermissions]
+
+      if (updatedPermissions.includes(permission)) {
+        // Remove permission if it exists
+        updatedPermissions = updatedPermissions.filter((p) => p !== permission)
+      } else {
+        // Add permission if it doesn't exist
+        updatedPermissions.push(permission)
+      }
+
+      setEnabledPermissions(updatedPermissions)
+
+      // Update Firestore
+      const userDocRef = doc(db, "Users", userId)
+      await updateDoc(userDocRef, {
+        enabledPermissions: updatedPermissions,
+      })
+
+      // Update cache
+      if (userData) {
+        const updatedUserData = { ...userData, enabledPermissions: updatedPermissions }
+        saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedUserData])
+      }
+
+      toast.success("Permissions updated successfully")
+    } catch (error) {
+      console.error("Error updating permissions:", error)
+      toast.error("Failed to update permissions")
+
+      // Revert to previous state if there was an error
+      fetchUserData(true)
+    } finally {
+      setIsSavingPermissions(false)
+    }
+  }
+
   if (dataLoading) {
     return (
       <div className={styles.pinContainer}>
@@ -368,20 +417,6 @@ const AdminSettings = () => {
       </div>
     )
   }
-
-  const togglePermission = (perm) => {
-    setPermissions((prev) => ({ ...prev, [perm]: !prev[perm] }))
-  }
-
-  const InfoCard = ({ icon: Icon, title, children, color }) => (
-    <div className={`${styles.infoCard} ${styles[color]}`}>
-      <div className={styles.infoCardHeader}>
-        <Icon size={24} />
-        <h3>{title}</h3>
-      </div>
-      {children}
-    </div>
-  )
 
   // Home ID Modal
   const HomeIdModal = () => {
@@ -442,189 +477,107 @@ const AdminSettings = () => {
 
       <div className={styles.content}>
         <div className={styles.topSection}>
-          <InfoCard icon={MdDescription} title="Account License" color="blue">
-            <p>License Number ******678</p>
-            <p>Expiry Date 13/02/2025</p>
-            <button className={styles.actionButton}>
-              <MdDescription size={16} />
-              Terms and Conditions
-            </button>
-          </InfoCard>
-
-          <InfoCard icon={MdHome} title="House Info" color="gray">
-            <p>
-              Building 22, Flat 9, Barsha building
-              <br />
-              Green Street, Dubai, UAE
-            </p>
-          </InfoCard>
-
-          <InfoCard icon={MdSavings} title="Monthly Savings" color="green">
-            <div className={styles.savingsAmount}>$1,250</div>
-            <p className={styles.updatedText}>Updated 2 hours ago</p>
-          </InfoCard>
-        </div>
-
-        {isMobile ? (
-          <div className={styles.mobileContent}>
-            <nav className={styles.tabs}>
-              <button
-                className={`${styles.tab} ${activeTab === "family" ? styles.activeTab : ""}`}
-                onClick={() => setActiveTab("family")}
-              >
-                <MdPeople size={20} />
-                Family Members
+          <div className={styles.infoCard}>
+            <div className={styles.infoCardHeader}>
+              <MdDescription size={24} />
+              <h3>Account License</h3>
+            </div>
+            <div className={styles.infoCardContent}>
+              <p>License Number ******678</p>
+              <p>Expiry Date 13/02/2025</p>
+              <button className={styles.actionButton}>
+                <MdDescription size={16} />
+                Terms and Conditions
               </button>
-              <button
-                className={`${styles.tab} ${activeTab === "permissions" ? styles.activeTab : ""}`}
-                onClick={() => setActiveTab("permissions")}
-              >
-                <MdShield size={20} />
-                Permissions
-              </button>
-            </nav>
-
-            <div className={styles.tabContent}>
-              {activeTab === "family" ? (
-                <div className={styles.familySection}>
-                  <div className={styles.sectionHeader}>
-                    <h2>Family Members</h2>
-                    <button className={styles.addMemberButton} onClick={() => setShowHomeIdModal(true)}>
-                      <MdPersonAdd size={20} />
-                      Add Member
-                    </button>
-                  </div>
-                  <div className={styles.memberList}>
-                    {familyMembers.map((member) => (
-                      <div key={member.id} className={styles.memberCard}>
-                        <div className={styles.memberAvatar}>
-                          {member.isAdmin ? (
-                            <MdAdminPanelSettings size={20} className={styles.adminIcon} />
-                          ) : (
-                            <MdPerson size={20} className={styles.guestIcon} />
-                          )}
-                          <span>{member.name.charAt(0)}</span>
-                        </div>
-                        <div className={styles.memberInfo}>
-                          <span className={styles.memberName}>{member.name}</span>
-                          <span className={styles.memberEmail}>{member.email}</span>
-                          <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
-                            <span className={styles.statusDot} />
-                            {member.online ? "Online" : "Offline"}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                <div className={styles.permissionsSection}>
-                  <h2>Permissions</h2>
-                  <div className={styles.permissionsList}>
-                    {Object.entries(permissions).map(([perm, value]) => (
-                      <div key={perm} className={styles.permissionItem}>
-                        <span>Allow SmartScape to {perm}</span>
-                        <button
-                          className={`${styles.toggleButton} ${value ? styles.active : ""}`}
-                          onClick={() => togglePermission(perm)}
-                        >
-                          <div className={styles.toggleHandle} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className={styles.mobileDocumentsSection}>
-                    <h2>Verified Documents</h2>
-                    <div className={styles.documentGrid}>
-                      {[
-                        "Property Ownership",
-                        "ID Verification",
-                        "Utility Bills",
-                        "Insurance Documents",
-                        "Smart Device Registration",
-                      ].map((doc) => (
-                        <div key={doc} className={styles.documentCard}>
-                          <MdCheck className={styles.verifiedIcon} size={20} />
-                          <span>{doc}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className={styles.supportSection}>
-                    <h2>24/7 Support</h2>
-                    <p>Our dedicated support team is available round the clock</p>
-                    <div className={styles.supportEmail}>
-                      <MdEmail size={20} />
-                      smartscape.grp15@gmail.com
-                    </div>
-                    <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
-                      Contact Support
-                    </a>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
-        ) : (
-          // Desktop view
-          <div className={styles.desktopContent}>
-            <div className={styles.mainSection}>
-              <div className={styles.familySection}>
-                <div className={styles.sectionHeader}>
-                  <h2>Family Members</h2>
-                  <button className={styles.addMemberButton} onClick={() => setShowHomeIdModal(true)}>
-                    <MdPersonAdd size={20} />
-                    Add Member
-                  </button>
-                </div>
-                <div className={styles.memberList}>
-                  {familyMembers.map((member) => (
-                    <div key={member.id} className={styles.memberCard}>
-                      <div className={styles.memberInfo}>
-                        <div className={styles.memberNameWithIcon}>
-                          {member.isAdmin ? (
-                            <MdAdminPanelSettings size={20} className={styles.adminIcon} />
-                          ) : (
-                            <MdPerson size={20} className={styles.guestIcon} />
-                          )}
-                          <span className={styles.memberName}>{member.name}</span>
-                        </div>
-                        <span className={styles.memberEmail}>{member.email}</span>
-                      </div>
-                      <div className={styles.memberActions}>
-                        <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
-                          <span className={styles.statusDot} />
-                          {member.online ? "Online" : "Offline"}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
 
-              <div className={styles.permissionsSection}>
-                <h2>Permissions</h2>
-                <div className={styles.permissionsList}>
-                  {Object.entries(permissions).map(([perm, value]) => (
-                    <div key={perm} className={styles.permissionItem}>
-                      <span>Allow SmartScape to {perm}</span>
-                      <button
-                        className={`${styles.toggleButton} ${value ? styles.active : ""}`}
-                        onClick={() => togglePermission(perm)}
-                      >
-                        <div className={styles.toggleHandle} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          <div className={styles.infoCard}>
+            <div className={styles.infoCardHeader}>
+              <MdHome size={24} />
+              <h3>House Info</h3>
             </div>
+            <div className={styles.infoCardContent}>
+              <p>
+                Building 22, Flat 9, Barsha building
+                <br />
+                Green Street, Dubai, UAE
+              </p>
+            </div>
+          </div>
 
-            <aside className={styles.sidebar}>
-              <div className={styles.documentsSection}>
-                <h2>Verified Documents</h2>
+          <div className={styles.infoCard}>
+            <div className={styles.infoCardHeader}>
+              <MdSavings size={24} />
+              <h3>Monthly Savings</h3>
+            </div>
+            <div className={styles.infoCardContent}>
+              <div className={styles.savingsAmount}>$1,250</div>
+              <p className={styles.updatedText}>Updated 2 hours ago</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.mainContent}>
+          <div className={styles.leftColumn}>
+            <section className={styles.section}>
+              <div className={styles.sectionHeader}>
+                <h2>Family Members</h2>
+                <button className={styles.addMemberButton} onClick={() => setShowHomeIdModal(true)}>
+                  <MdPersonAdd size={20} />
+                  Add Member
+                </button>
+              </div>
+              <div className={styles.memberList}>
+                {familyMembers.map((member) => (
+                  <div key={member.id} className={styles.memberCard}>
+                    <div className={styles.memberInfo}>
+                      <div className={styles.memberNameWithIcon}>
+                        {member.isAdmin ? (
+                          <MdAdminPanelSettings size={20} className={styles.adminIcon} />
+                        ) : (
+                          <MdPerson size={20} className={styles.guestIcon} />
+                        )}
+                        <span className={styles.memberName}>{member.name}</span>
+                      </div>
+                      <span className={styles.memberEmail}>{member.email}</span>
+                    </div>
+                    <div className={styles.memberActions}>
+                      <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
+                        <span className={styles.statusDot}></span>
+                        {member.online ? "Online" : "Offline"}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className={styles.section}>
+              <h2>Permissions</h2>
+              <div className={styles.permissionsList}>
+                {AVAILABLE_PERMISSIONS.map((permission) => (
+                  <div key={permission} className={styles.permissionItem}>
+                    <span>Allow SmartScape to {permission}</span>
+                    <label className={styles.toggleSwitch}>
+                      <input
+                        type="checkbox"
+                        checked={enabledPermissions.includes(permission)}
+                        onChange={() => togglePermission(permission)}
+                        disabled={isSavingPermissions}
+                      />
+                      <span className={styles.toggleSlider}></span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </div>
+
+          <div className={styles.rightColumn}>
+            <section className={styles.section}>
+              <h2>Verified Documents</h2>
+              <div className={styles.documentsList}>
                 {[
                   "Property Ownership",
                   "ID Verification",
@@ -638,21 +591,21 @@ const AdminSettings = () => {
                   </div>
                 ))}
               </div>
+            </section>
 
-              <div className={styles.supportSection}>
-                <h2>24/7 Support</h2>
-                <p>Our dedicated support team is available round the clock</p>
-                <div className={styles.supportEmail}>
-                  <MdEmail size={20} />
-                  smartscape.grp15@gmail.com
-                </div>
-                <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
-                  Contact Support
-                </a>
+            <section className={styles.section}>
+              <h2>24/7 Support</h2>
+              <p>Our dedicated support team is available round the clock</p>
+              <div className={styles.supportEmail}>
+                <MdEmail size={20} />
+                smartscape.grp15@gmail.com
               </div>
-            </aside>
+              <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
+                Contact Support
+              </a>
+            </section>
           </div>
-        )}
+        </div>
       </div>
 
       {/* Home ID Modal */}
