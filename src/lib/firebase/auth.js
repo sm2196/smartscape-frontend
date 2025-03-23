@@ -9,7 +9,7 @@ import {
   verifyBeforeUpdateEmail,
 } from "firebase/auth"
 import { auth, db } from "./config"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc, getDoc } from "firebase/firestore"
 import { clearAuthData, clearAllAppData } from "../clearAppData"
 
 // Add this helper function at the top of the file
@@ -17,6 +17,17 @@ function setAuthCookie() {
   document.cookie = `auth-session=true; path=/; max-age=${7 * 24 * 60 * 60}; SameSite=Strict; ${
     window.location.protocol === "https:" ? "Secure;" : ""
   }`
+}
+
+// Helper function to check if a response is HTML
+function isHtmlResponse(text) {
+  return (
+    text.trim().startsWith("<!DOCTYPE html>") ||
+    text.trim().startsWith("<html") ||
+    text.includes("</html>") ||
+    text.includes("<script") ||
+    text.includes("<body")
+  )
 }
 
 // Update the signUpWithEmailAndPassword function to set isOnline to false by default
@@ -123,7 +134,7 @@ export function getCurrentUser() {
   return auth.currentUser
 }
 
-// Update the deleteUserAccount function
+// Update the deleteUserAccount function to use the Admin SDK API
 export async function deleteUserAccount(password) {
   try {
     const user = auth.currentUser
@@ -137,7 +148,6 @@ export async function deleteUserAccount(password) {
       await reauthenticateWithCredential(user, credential)
     } catch (error) {
       // Return early if password verification fails
-      // This prevents any data deletion
       if (error.code === "auth/wrong-password" || error.code === "auth/invalid-credential") {
         return { success: false, error: "Current password is incorrect" }
       }
@@ -147,7 +157,106 @@ export async function deleteUserAccount(password) {
       return { success: false, error: "Authentication failed. Please check your current password." }
     }
 
-    // Attempt to clean up user data first
+    // Check if user is an admin by directly querying Firestore
+    let isAdmin = false
+    try {
+      const userDocRef = doc(db, "Users", user.uid)
+      const userDoc = await getDoc(userDocRef)
+      if (userDoc.exists()) {
+        // Check specifically for isAdmin field, not admin
+        isAdmin = userDoc.data().isAdmin === true
+        console.log("User admin status:", isAdmin)
+      }
+    } catch (error) {
+      console.error("Error checking admin status:", error)
+    }
+
+    // If user is an admin, delete managed users first
+    if (isAdmin) {
+      console.log("User is an admin. Deleting managed users first...")
+
+      try {
+        // First delete managed users from Firestore including their rooms and devices
+        const { deleteManagedUsers } = require("./firestore")
+        const firestoreResult = await deleteManagedUsers(user.uid)
+        console.log(`Successfully deleted ${firestoreResult.count} managed users from Firestore`)
+
+        // Now delete managed users from Authentication using the Admin SDK
+        if (firestoreResult.userIds && firestoreResult.userIds.length > 0) {
+          console.log(`Attempting to delete ${firestoreResult.userIds.length} managed users from Authentication`)
+
+          try {
+            // Get ID token for authentication with the Admin SDK API
+            const idToken = await user.getIdToken(true) // Force refresh to get a fresh token
+
+            // Call the Admin SDK API to delete managed users with improved error handling
+            const response = await fetch("/api/auth/delete-managed-users", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                // Add cache control headers to prevent caching
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                Pragma: "no-cache",
+                Expires: "0",
+              },
+              body: JSON.stringify({
+                idToken,
+                adminUserId: user.uid,
+                managedUserIds: firestoreResult.userIds, // Pass the specific user IDs to delete
+              }),
+              // Add credentials to ensure cookies are sent
+              credentials: "same-origin",
+            })
+
+            // Check if response is OK
+            if (!response.ok) {
+              console.error(`Server responded with status: ${response.status}`)
+              // Try to get the response text for debugging
+              const errorText = await response.text()
+              console.error("Error response:", errorText.substring(0, 200) + "...")
+              throw new Error(`Server responded with status: ${response.status}`)
+            }
+
+            // Parse the response as JSON with better error handling
+            let result
+            try {
+              const responseText = await response.text()
+
+              // Check if the response is HTML instead of JSON
+              if (isHtmlResponse(responseText)) {
+                console.error("Received HTML response instead of JSON:", responseText.substring(0, 200) + "...")
+                // Continue with account deletion even if managed user deletion fails
+                console.log("Continuing with account deletion despite HTML response")
+              } else {
+                // Try to parse as JSON
+                result = JSON.parse(responseText)
+
+                if (result.success) {
+                  console.log(`Successfully deleted ${result.count} managed users from Authentication`)
+                } else {
+                  console.error("Error deleting managed users:", result.error)
+                  // Continue with account deletion even if managed user deletion fails
+                }
+              }
+            } catch (jsonError) {
+              console.error("Error parsing response:", jsonError)
+              // Continue with account deletion even if managed user deletion fails
+              console.log("Continuing with account deletion despite parsing error")
+            }
+          } catch (error) {
+            console.error("Error deleting managed users from Authentication:", error)
+            // Continue with account deletion even if managed user deletion fails
+          }
+        } else {
+          console.log("No managed users to delete from Authentication")
+        }
+      } catch (error) {
+        console.error("Error deleting managed users:", error)
+        // Continue with account deletion even if managed user deletion fails
+      }
+    }
+
+    // Attempt to clean up user data
     try {
       const { cleanupUserData } = require("./firestore")
       await cleanupUserData(user.uid)
@@ -159,9 +268,15 @@ export async function deleteUserAccount(password) {
     // Clear all application data
     clearAllAppData()
 
-    // Proceed with user deletion regardless of cleanup success
-    await deleteUser(user)
-    return { success: true }
+    // Delete the user account directly using client-side Firebase Auth
+    try {
+      await deleteUser(user)
+      console.log("Successfully deleted user account using client-side Firebase Auth")
+      return { success: true }
+    } catch (error) {
+      console.error("Error deleting user account:", error)
+      return { success: false, error: error.message || "Failed to delete account" }
+    }
   } catch (error) {
     console.error("Error deleting user account:", error)
     return { success: false, error: error.code || "auth/unknown" }
@@ -205,8 +320,7 @@ export async function changeUserPassword(currentPassword, newPassword) {
 
     // Update the password change timestamp in Firestore
     const userDocRef = doc(db, "Users", user.uid)
-    await updateDoc(userDocRef, {
-    })
+    await updateDoc(userDocRef, {})
 
     return { success: true }
   } catch (error) {

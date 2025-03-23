@@ -133,6 +133,7 @@ function SignupOrLogin() {
         const userData = {
           firstName: fname || "",
           lastName: lname || "",
+          email: email || "",
           phone: phoneValue || "",
           isAdmin: false,
           isOnline: false,

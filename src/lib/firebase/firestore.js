@@ -165,7 +165,8 @@ export async function getProfileByUserId(userId) {
         email: currentUser ? currentUser.email : "",
         phone: profileData.phone || "",
         verified: profileData.verified || false,
-        isAdmin: profileData.admin === true,
+        // Check specifically for isAdmin field, not admin
+        isAdmin: profileData.isAdmin === true,
         profileImageUrl: profileData.profileImageUrl || null,
         createdAt: profileData.createdAt?.toDate() || null,
       }
@@ -348,6 +349,82 @@ export async function cleanupUserData(userId) {
     console.error("Error in cleanup:", error)
     // Return success anyway to ensure the auth account gets deleted
     return { success: true }
+  }
+}
+
+// New function to delete all managed users for an admin
+export async function deleteManagedUsers(adminUserId) {
+  try {
+    console.log(`Starting deletion of managed users for admin: ${adminUserId}`)
+
+    // Find all users managed by this admin
+    const managedUsersQuery = query(
+      collection(db, usersCollection),
+      where("adminRef", "==", doc(db, "Users", adminUserId)),
+    )
+
+    const managedUsersSnapshot = await getDocs(managedUsersQuery)
+
+    if (managedUsersSnapshot.empty) {
+      console.log("No managed users found for this admin")
+      return { success: true, count: 0, userIds: [] }
+    }
+
+    console.log(`Found ${managedUsersSnapshot.size} managed users to delete`)
+
+    // Create a batch for atomic operations
+    const batch = writeBatch(db)
+    const managedUserIds = []
+
+    // Add all managed users to the batch for deletion
+    managedUsersSnapshot.forEach((userDoc) => {
+      const managedUserId = userDoc.id
+      managedUserIds.push(managedUserId)
+      batch.delete(userDoc.ref)
+      console.log(`Added managed user ${managedUserId} to deletion batch`)
+    })
+
+    // For each managed user, delete their rooms and devices
+    for (const managedUserId of managedUserIds) {
+      // Find and delete all rooms owned by this managed user
+      const roomsRef = collection(db, "Rooms")
+      const roomsQuery = query(roomsRef, where("userRef", "==", doc(db, "Users", managedUserId)))
+      const roomsSnapshot = await getDocs(roomsQuery)
+
+      // Store room IDs to delete associated devices
+      const roomIds = []
+
+      // Add room deletions to batch
+      roomsSnapshot.forEach((roomDoc) => {
+        roomIds.push(roomDoc.id)
+        batch.delete(roomDoc.ref)
+        console.log(`Added room ${roomDoc.id} to deletion batch`)
+      })
+
+      // Find and delete all devices that reference these rooms
+      const devicesRef = collection(db, "Devices")
+      for (const roomId of roomIds) {
+        const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", roomId)))
+        const devicesSnapshot = await getDocs(devicesQuery)
+
+        devicesSnapshot.forEach((deviceDoc) => {
+          batch.delete(deviceDoc.ref)
+          console.log(`Added device ${deviceDoc.id} to deletion batch`)
+        })
+      }
+    }
+
+    // Commit all the batch operations
+    await batch.commit()
+    console.log(`Successfully deleted ${managedUserIds.length} managed users and their data`)
+
+    // Clear all cache to ensure fresh data
+    clearAllCache()
+
+    return { success: true, count: managedUserIds.length, userIds: managedUserIds }
+  } catch (error) {
+    console.error("Error deleting managed users:", error)
+    return { success: false, error: error.message }
   }
 }
 

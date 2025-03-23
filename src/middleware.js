@@ -11,8 +11,7 @@ export function middleware(request) {
     path === "/about" ||
     path === "/services" ||
     path === "/contact" ||
-    path === "/faq" ||
-    path === "/api/send-email"
+    path === "/faq"
 
   // Check for email verification redirect
   const url = new URL(request.url)
@@ -45,8 +44,8 @@ export function middleware(request) {
     return NextResponse.redirect(new URL("/auth", request.url))
   }
 
-  // If the user is authenticated and trying to access login page, redirect to dashboard
-  if (isAuthenticated && isPublicPath) {
+  // If the user is authenticated and trying to access the auth page, redirect to dashboard
+  if (isAuthenticated && path.startsWith("/auth")) {
     return NextResponse.redirect(new URL("/dashboard", request.url))
   }
 
@@ -63,8 +62,9 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - public files (public directory)
+     * - api routes (API endpoints)
      */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|api/|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 }
 

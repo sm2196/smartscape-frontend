@@ -104,7 +104,7 @@ function SMIcons() {
           {isProfileOpen && (
             <div className="SMprofile-dropdown">
               <div className="SMprofile-menu">
-                <Link href="/login" className="SMdropdown-item">
+                <Link href="/auth" className="SMdropdown-item">
                   <FaRegUser className="SMdropdown-icon" />
                   <span>Login</span>
                 </Link>
