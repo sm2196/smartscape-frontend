@@ -1,0 +1,189 @@
+.navbar {
+  width: 260px;
+  background: linear-gradient(180deg, #0a1630 9%, #152447 100%);
+  padding: 32px;
+  border-right: 1px solid rgba(210, 220, 245, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: relative;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-y: hidden; /* Hide scrollbar */
+}
+
+.timeDisplay {
+  margin-bottom: 2.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.currentTime {
+  font-size: 4rem;
+  font-weight: 300;
+  color: white;
+  line-height: 1.1;
+}
+
+.ampm {
+  font-size: 2.5rem;
+  display: block;
+  margin-top: -10px;
+  color: white;
+}
+
+.currentDate {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin-top: 0.5rem;
+}
+
+.navMenu {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 40px;
+  flex: 1; /* Take up available space */
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Icon and text styles for nav items */
+.icon {
+  display: inline-block;
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.navText {
+  display: inline-block;
+  flex: 1;
+}
+
+.navLink:hover {
+  background-color: rgba(210, 220, 245, 0.05);
+}
+
+.navLink.active {
+  background-color: rgba(210, 220, 245, 0.1);
+  color: #ffffff;
+}
+
+.navLink.active .icon {
+  color: #ffffff;
+}
+
+/* Hide menu toggle by default */
+.menuToggle {
+  display: none;
+}
+
+.mobileHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.weatherContainer {
+  margin-top: auto;
+  margin-bottom: 32px; /* Add bottom margin */
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+  .navbar {
+    width: 100%;
+    padding: 8px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    height: auto;
+    min-height: 56px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .navbar.menuOpen {
+    height: 100vh;
+    overflow-y: auto;
+  }
+
+  .mobileHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 40px;
+  }
+
+  .menuToggle {
+    display: block;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 4px;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  }
+
+  .timeDisplay {
+    margin-bottom: 0;
+  }
+
+  .currentTime {
+    font-size: 2.5rem;
+  }
+
+  .ampm {
+    font-size: 1.5rem;
+    margin-top: 0;
+  }
+
+  .currentDate {
+    font-size: 1rem;
+    margin-top: 0;
+  }
+
+  .navMenu {
+    display: none;
+    margin-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .navMenu.show {
+    display: flex;
+  }
+
+  .navLink {
+    font-size: 18px; /* Increased font size */
+    padding: 16px; /* Increased padding */
+    min-height: 48px; /* Minimum touch target size */
+  }
+
+  .icon {
+    font-size: 24px; /* Increased icon size */
+    min-width: 24px; /* Ensure consistent width */
+  }
+
+  .navText {
+    font-size: 16px; /* Explicit font size for nav text */
+    margin-left: 16px; /* Add space after icon */
+  }
+
+  .weatherContainer {
+    display: none;
+  }
+}
+
