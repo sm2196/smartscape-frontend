@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { MdClose } from "react-icons/md"
+import { MdClose, MdAccessTime, MdPerson } from "react-icons/md"
 import styles from "./DeviceControlPopup.module.css"
 
 // Device-specific control components
@@ -80,6 +80,227 @@ const LightControls = ({ initialState = "Off", onUpdate }) => {
         />
         <span>{brightness}%</span>
       </div>
+    </div>
+  )
+}
+
+// Update the MotionControls component to simplify the layout
+const MotionControls = ({ initialState = "11 minutes ago", onUpdate }) => {
+  // Generate random motion events with timestamps
+  const [motionEvents, setMotionEvents] = useState([])
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [showAllEvents, setShowAllEvents] = useState(false)
+
+  useEffect(() => {
+    // Generate random motion events
+    const now = new Date()
+    const events = []
+
+    // Create 8 random events within the last 24 hours
+    for (let i = 0; i < 8; i++) {
+      const minutesAgo = Math.floor(Math.random() * 1440) // Random minutes within 24 hours
+      const eventTime = new Date(now.getTime() - minutesAgo * 60000)
+
+      events.push({
+        id: i,
+        time: eventTime,
+        minutesAgo: minutesAgo,
+      })
+    }
+
+    // Sort by most recent first
+    events.sort((a, b) => a.minutesAgo - b.minutesAgo)
+
+    setMotionEvents(events)
+  }, [])
+
+  const formatTimeAgo = (minutes) => {
+    if (minutes < 60) {
+      return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`
+    } else if (minutes < 1440) {
+      const hours = Math.floor(minutes / 60)
+      return `${hours} hour${hours !== 1 ? "s" : ""} ago`
+    } else {
+      const days = Math.floor(minutes / 1440)
+      return `${days} day${days !== 1 ? "s" : ""} ago`
+    }
+  }
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  }
+
+  const handleNotificationsToggle = () => {
+    setNotificationsEnabled(!notificationsEnabled)
+    onUpdate({
+      status: motionEvents[0] ? formatTimeAgo(motionEvents[0].minutesAgo) : initialState,
+      notificationsEnabled: !notificationsEnabled,
+    })
+  }
+
+  const toggleShowAllEvents = () => {
+    setShowAllEvents(!showAllEvents)
+  }
+
+  // Display only the first 4 events or all if showAllEvents is true
+  const displayedEvents = showAllEvents
+    ? motionEvents.filter((e) => e.minutesAgo < 1440) // Only today's events
+    : motionEvents.slice(0, 4)
+
+  return (
+    <div className={styles.controlsContainer}>
+      <h3 className={styles.controlTitle}>Motion History</h3>
+
+      <div className={styles.motionSettings}>
+        <div className={styles.toggleContainer}>
+          <span>Notifications</span>
+          <button
+            className={`${styles.toggleButton} ${notificationsEnabled ? styles.active : ""}`}
+            onClick={handleNotificationsToggle}
+          >
+            {notificationsEnabled ? "On" : "Off"}
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.motionEventsList}>
+        {displayedEvents.map((event) => (
+          <div key={event.id} className={styles.motionEvent}>
+            <div className={styles.motionEventIcon}>
+              <MdAccessTime />
+            </div>
+            <div className={styles.motionEventDetails}>
+              <div className={styles.motionEventTime}>
+                {formatTime(event.time)} • {formatTimeAgo(event.minutesAgo)}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {motionEvents.filter((e) => e.minutesAgo < 1440).length > 4 && (
+        <button className={styles.showMoreButton} onClick={toggleShowAllEvents}>
+          {showAllEvents ? "Show less" : "Show more"}
+        </button>
+      )}
+
+      <div className={styles.motionSummary}>
+        <span>Total events today: {motionEvents.filter((e) => e.minutesAgo < 1440).length}</span>
+      </div>
+    </div>
+  )
+}
+
+// Add this new RecyclingControls component after the MotionControls component
+
+const RecyclingControls = ({ initialState = "In 5 Days", onUpdate }) => {
+  // Generate recycling schedule
+  const [schedule, setSchedule] = useState([])
+  const [remindersEnabled, setRemindersEnabled] = useState(true)
+
+  // Recycling types with their colors only
+  const recyclingTypes = [
+    { id: "general", name: "General", color: "#888888" },
+    { id: "plastic", name: "Plastic", color: "#3b82f6" },
+    { id: "paper", name: "Paper", color: "#10b981" },
+    { id: "glass", name: "Glass", color: "#06b6d4" },
+    { id: "garden", name: "Garden", color: "#84cc16" },
+  ]
+
+  useEffect(() => {
+    // Generate a simplified recycling schedule
+    const now = new Date()
+    const scheduleItems = []
+
+    // Create next 3 recycling days (reduced from 5)
+    for (let i = 0; i < 3; i++) {
+      // Add days to current date (starting with the days mentioned in initialState)
+      const daysToAdd =
+        i === 0 ? Number.parseInt((initialState.match(/\d+/) || ["5"])[0]) : 7 + Math.floor(Math.random() * 7)
+      const date = new Date(now)
+      date.setDate(date.getDate() + (i === 0 ? daysToAdd : scheduleItems[i - 1].daysFromNow + daysToAdd))
+
+      // Randomly select 1-2 recycling types (reduced from 1-3)
+      const types = []
+      const numTypes = 1 + Math.floor(Math.random() * 2)
+      const availableTypes = [...recyclingTypes]
+
+      // Always include general waste for the first collection
+      if (i === 0) {
+        types.push(recyclingTypes[0])
+      } else {
+        for (let j = 0; j < numTypes; j++) {
+          if (availableTypes.length > 0) {
+            const randomIndex = Math.floor(Math.random() * availableTypes.length)
+            types.push(availableTypes[randomIndex])
+            availableTypes.splice(randomIndex, 1)
+          }
+        }
+      }
+
+      scheduleItems.push({
+        id: i,
+        date: date,
+        daysFromNow: Math.round((date - now) / (1000 * 60 * 60 * 24)),
+        types: types,
+      })
+    }
+
+    setSchedule(scheduleItems)
+  }, [initialState])
+
+  const formatDate = (date) => {
+    return date.toLocaleDateString("en-US", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    })
+  }
+
+  const handleRemindersToggle = () => {
+    setRemindersEnabled(!remindersEnabled)
+    onUpdate({
+      status: `In ${schedule[0]?.daysFromNow || 5} Days`,
+      remindersEnabled: !remindersEnabled,
+    })
+  }
+
+  return (
+    <div className={styles.controlsContainer}>
+      <div className={styles.recyclingHeader}>
+        <h3 className={styles.controlTitle}>Recycling Schedule</h3>
+        <div className={styles.toggleContainer} style={{ margin: 0 }}>
+          <button
+            className={`${styles.toggleButton} ${remindersEnabled ? styles.active : ""}`}
+            onClick={handleRemindersToggle}
+          >
+            {remindersEnabled ? "Reminders On" : "Reminders Off"}
+          </button>
+        </div>
+      </div>
+
+      {schedule.length > 0 && (
+        <div className={styles.compactRecyclingSchedule}>
+          {schedule.map((item, index) => (
+            <div key={item.id} className={`${styles.compactRecyclingItem} ${index === 0 ? styles.nextCollection : ""}`}>
+              <div className={styles.recyclingDateCompact}>
+                <span className={styles.dateText}>{formatDate(item.date)}</span>
+                <span className={styles.daysText}>{item.daysFromNow} days</span>
+              </div>
+              <div className={styles.recyclingIconsCompact}>
+                {item.types.map((type) => (
+                  <span
+                    key={type.id}
+                    title={type.name}
+                    className={styles.recyclingDot}
+                    style={{ backgroundColor: type.color }}
+                  />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   )
 }
@@ -415,7 +636,7 @@ const SpeakerControls = ({ initialState = "Off", onUpdate }) => {
     onUpdate({
       status: newState ? "On" : "Off",
       isActive: newState,
-      // Preserve battery status in the status if it exists
+      // Always use statusPink if battery info exists, otherwise no color
       statusColor: initialState.includes("Battery") ? "" : newState ? "statusPink" : "",
     })
   }
@@ -673,8 +894,12 @@ const renderControls = (device, onUpdate, handleClose) => {
   const { title, status, icon } = device
   const iconName = icon.name
 
+  // Motion controls
+  if (iconName === "MdTimer" || title.includes("Motion")) {
+    return <MotionControls initialState={status} onUpdate={onUpdate} />
+  }
   // Fan controls
-  if (iconName === "MdWindPower" || title.includes("Fan")) {
+  else if (iconName === "MdWindPower" || title.includes("Fan")) {
     return <FanControls initialSpeed={status} onUpdate={onUpdate} />
   }
   // Light controls
@@ -727,13 +952,17 @@ const renderControls = (device, onUpdate, handleClose) => {
   else if (iconName === "LuProjector" || title.includes("Projector")) {
     return <ProjectorControls initialState={status} onUpdate={onUpdate} />
   }
-  // Notification controls - with auto-close
-  else if (iconName === "MdNotifications" || title.includes("Notification")) {
-    return <NotificationControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
+  // Visitor Log controls
+  else if (title.includes("Visitor Log")) {
+    return <VisitorLogControls initialState={status} onUpdate={onUpdate} />
   }
   // Washing machine controls
   else if (iconName === "LuWashingMachine" || title.includes("Washing Machine")) {
     return <WashingMachineControls initialState={status} onUpdate={onUpdate} />
+  }
+  // Recycling controls
+  else if (iconName === "MdRecycling" || title.includes("Recycling")) {
+    return <RecyclingControls initialState={status} onUpdate={onUpdate} />
   }
   // Default controls for other devices
   else {

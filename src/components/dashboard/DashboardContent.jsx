@@ -7,7 +7,6 @@ import {
   MdRecycling,
   MdDoorFront,
   MdTimer,
-  MdNotifications,
   MdThermostat,
   MdGarage,
   MdWindPower,
@@ -201,6 +200,7 @@ export function DashboardContent() {
           icon={BsSpeaker}
           title="JBL GO 4"
           status="52% Battery"
+          isActive={false}
           statusColor="statusPink"
         />
         <DeviceCard id="living_projector" icon={LuProjector} title="Epson Projector" status="Off" />
@@ -249,18 +249,7 @@ export function DashboardContent() {
       <RoomSection title="Front Door">
         <DeviceCard id="front_motion" icon={MdTimer} title="Last Motion" status="11 minutes ago" />
         <DeviceCard id="front_door" icon={MdDoorFront} title="Front Door" status="Locked" />
-        <DeviceCard
-          id="front_notifications"
-          icon={MdNotifications}
-          title="Notifications"
-          status="On"
-          isActive
-          statusColor="statusYellow"
-        />
       </RoomSection>
-
-      <div className="custom-padding" />
-
 
       <div className={styles.actionBar}>
         <button className={styles.actionButton} onClick={turnOffLightsAndFans}>

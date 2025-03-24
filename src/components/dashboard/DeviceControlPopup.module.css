@@ -24,7 +24,7 @@
   border: 1px solid rgba(210, 220, 245, 0.15);
   border-radius: 16px;
   width: 90%;
-  max-width: 400px;
+  max-width: 360px; /* Reduced from 400px */
   z-index: 101;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
   opacity: 0;
@@ -41,22 +41,22 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
+  padding: 16px; /* Reduced from 20px */
   border-bottom: 1px solid rgba(210, 220, 245, 0.1);
 }
 
 .popupTitle {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px; /* Reduced from 12px */
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem; /* Reduced from 1.25rem */
   font-weight: 500;
 }
 
 .popupIcon {
-  width: 24px;
-  height: 24px;
+  width: 20px; /* Reduced from 24px */
+  height: 20px; /* Reduced from 24px */
   color: var(--lavender);
 }
 
@@ -65,7 +65,7 @@
   border: none;
   color: var(--text-secondary);
   cursor: pointer;
-  font-size: 24px;
+  font-size: 20px; /* Reduced from 24px */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -80,20 +80,20 @@
 }
 
 .popupContent {
-  padding: 20px;
+  padding: 16px; /* Reduced from 20px */
 }
 
 /* Controls styling */
 .controlsContainer {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px; /* Reduced from 20px */
 }
 
 .controlTitle {
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reduced from 1rem */
   font-weight: 500;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0; /* Reduced from 8px */
   color: var(--text-primary);
 }
 
@@ -107,11 +107,11 @@
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 8px 16px;
+  padding: 6px 14px; /* Reduced from 8px 16px */
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
-  min-width: 80px;
+  min-width: 70px; /* Reduced from 80px */
   text-align: center;
 }
 
@@ -131,7 +131,7 @@
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 10px;
+  padding: 8px; /* Reduced from 10px */
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -146,7 +146,7 @@
 .sliderContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .slider {
@@ -162,16 +162,16 @@
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 18px;
-  height: 18px;
+  width: 16px; /* Reduced from 18px */
+  height: 16px; /* Reduced from 18px */
   border-radius: 50%;
   background: var(--lavender);
   cursor: pointer;
 }
 
 .slider::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
+  width: 16px; /* Reduced from 18px */
+  height: 16px; /* Reduced from 18px */
   border-radius: 50%;
   background: var(--lavender);
   cursor: pointer;
@@ -186,20 +186,20 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px; /* Reduced from 16px */
 }
 
 .tempButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  width: 40px;
-  height: 40px;
+  width: 36px; /* Reduced from 40px */
+  height: 36px; /* Reduced from 40px */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-size: 1.25rem; /* Reduced from 1.5rem */
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -219,13 +219,13 @@
 }
 
 .tempValue {
-  font-size: 2.5rem;
+  font-size: 2rem; /* Reduced from 2.5rem */
   font-weight: 300;
   color: var(--text-primary);
 }
 
 .tempUnit {
-  font-size: 1rem;
+  font-size: 0.9rem; /* Reduced from 1rem */
   color: var(--text-secondary);
   margin-left: 4px;
 }
@@ -233,25 +233,25 @@
 .sourceControl {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .sourceButtons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .sourceButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 10px; /* Reduced from 8px 12px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
   flex: 1;
-  min-width: 80px;
+  min-width: 70px; /* Reduced from 80px */
 }
 
 .sourceButton.active {
@@ -268,18 +268,18 @@
 .doorControlButtons {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px; /* Reduced from 16px */
 }
 
 .doorButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px; /* Reduced from 12px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reduced from 1rem */
 }
 
 .doorButton.active {
@@ -291,18 +291,18 @@
 .blindsControls {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .blindsButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px; /* Reduced from 12px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reduced from 1rem */
 }
 
 .blindsButton.active {
@@ -314,38 +314,38 @@
 .batteryInfo {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .batteryLevel {
   width: 100%;
-  height: 8px;
+  height: 6px; /* Reduced from 8px */
   background-color: rgba(210, 220, 245, 0.1);
-  border-radius: 4px;
+  border-radius: 3px; /* Reduced from 4px */
   overflow: hidden;
 }
 
 .batteryFill {
   height: 100%;
   background-color: #dc2626; /* Red instead of pink */
-  border-radius: 4px;
+  border-radius: 3px; /* Reduced from 4px */
 }
 
 .notificationOptions {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px; /* Reduced from 12px */
 }
 
 .notificationButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 12px;
-  border-radius: 8px;
+  padding: 10px; /* Reduced from 12px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 1rem;
+  font-size: 0.95rem; /* Reduced from 1rem */
 }
 
 .notificationButton.active {
@@ -358,25 +358,25 @@
 .cycleSelector {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .cycleButtons {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .cycleButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 6px 10px; /* Reduced from 8px 12px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
   flex: 1;
-  min-width: 80px;
+  min-width: 70px; /* Reduced from 80px */
 }
 
 .cycleButton.active {
@@ -393,15 +393,15 @@
 .actionButtons {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
 }
 
 .actionButton {
   background-color: rgba(210, 220, 245, 0.1);
   border: 1px solid rgba(210, 220, 245, 0.2);
   color: var(--text-primary);
-  padding: 10px;
-  border-radius: 8px;
+  padding: 8px; /* Reduced from 10px */
+  border-radius: 6px; /* Reduced from 8px */
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -418,15 +418,15 @@
 .progressContainer {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 6px; /* Reduced from 8px */
+  margin-top: 6px; /* Reduced from 8px */
 }
 
 .progressBar {
   width: 100%;
-  height: 8px;
+  height: 6px; /* Reduced from 8px */
   background-color: rgba(210, 220, 245, 0.1);
-  border-radius: 4px;
+  border-radius: 3px; /* Reduced from 4px */
   overflow: hidden;
   position: relative;
 }
@@ -437,7 +437,7 @@
   left: 0;
   height: 100%;
   background-color: var(--lavender);
-  border-radius: 4px;
+  border-radius: 3px; /* Reduced from 4px */
   width: 30%;
   animation: progress 2s infinite alternate;
 }
@@ -454,19 +454,19 @@
 .waterUsageInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px; /* Reduced from 8px */
   background-color: rgba(210, 220, 245, 0.05);
-  padding: 8px 12px;
-  border-radius: 8px;
-  margin-top: 12px;
+  padding: 6px 10px; /* Reduced from 8px 12px */
+  border-radius: 6px; /* Reduced from 8px */
+  margin-top: 10px; /* Reduced from 12px */
 }
 
 .waterUsageIcon {
-  font-size: 1.25rem;
+  font-size: 1.125rem; /* Reduced from 1.25rem */
 }
 
 .waterUsageText {
-  font-size: 0.875rem;
+  font-size: 0.8rem; /* Reduced from 0.875rem */
   color: var(--text-secondary);
 }
 
@@ -475,12 +475,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin: 16px 0;
+  gap: 12px; /* Reduced from 16px */
+  margin: 12px 0; /* Reduced from 16px 0 */
 }
 
 .tempValue {
-  font-size: 2.5rem;
+  font-size: 2rem; /* Reduced from 2.5rem */
   font-weight: 300;
   color: var(--text-primary);
   text-align: center;
@@ -489,16 +489,16 @@
 .tempSlider {
   position: relative;
   width: 100%;
-  height: 24px;
-  margin: 8px 0;
+  height: 20px; /* Reduced from 24px */
+  margin: 6px 0; /* Reduced from 8px 0 */
 }
 
 .tempSliderInput {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 24px;
-  border-radius: 12px;
+  height: 20px; /* Reduced from 24px */
+  border-radius: 10px; /* Reduced from 12px */
   outline: none;
   background: linear-gradient(to right, #60a5fa, #ffd700, #dc2626);
   cursor: pointer;
@@ -508,8 +508,8 @@
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 24px;
-  border-radius: 12px;
+  height: 20px; /* Reduced from 24px */
+  border-radius: 10px; /* Reduced from 12px */
   outline: none;
   background: linear-gradient(to right, #bfdbfe, #93c5fd, #60a5fa);
   cursor: pointer;
@@ -519,8 +519,8 @@
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 24px;
-  border-radius: 12px;
+  height: 20px; /* Reduced from 24px */
+  border-radius: 10px; /* Reduced from 12px */
   outline: none;
   background: linear-gradient(to right, #60a5fa, #ffd700, #dc2626);
   cursor: pointer;
@@ -531,8 +531,8 @@
 .tempSliderInputHot::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 32px;
-  height: 32px;
+  width: 28px; /* Reduced from 32px */
+  height: 28px; /* Reduced from 32px */
   border-radius: 50%;
   background: white;
   cursor: pointer;
@@ -543,8 +543,8 @@
 .tempSliderInput::-moz-range-thumb,
 .tempSliderInputCold::-moz-range-thumb,
 .tempSliderInputHot::-moz-range-thumb {
-  width: 32px;
-  height: 32px;
+  width: 28px; /* Reduced from 32px */
+  height: 28px; /* Reduced from 32px */
   border-radius: 50%;
   background: white;
   cursor: pointer;
@@ -564,5 +564,327 @@
   justify-content: space-between;
   width: 100%;
   color: var(--text-secondary);
-  font-size: 0.875rem;
+  font-size: 0.8rem; /* Reduced from 0.875rem */
+}
+
+/* Motion events styles - more compact */
+.motionEventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px; /* Reduced from 8px */
+  margin: 12px 0; /* Reduced from 16px 0 */
+  max-height: 200px; /* Reduced from 300px */
+  overflow-y: auto;
+  padding: 2px 0; /* Reduced from 4px 0 */
+}
+
+.motionEvent {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Reduced from 12px */
+  padding: 8px 12px; /* Reduced from 12px 16px */
+  background-color: rgba(210, 220, 245, 0.05);
+  border-radius: 6px; /* Reduced from 8px */
+  margin-bottom: 2px; /* Reduced from 4px */
+}
+
+.motionEventIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px; /* Reduced from 32px */
+  height: 28px; /* Reduced from 32px */
+  border-radius: 50%;
+  background-color: rgba(210, 220, 245, 0.1);
+  color: var(--text-primary);
+}
+
+.motionEventDetails {
+  flex: 1;
+}
+
+.motionEventTime {
+  font-size: 0.85rem; /* Reduced from 0.9rem */
+  color: var(--text-primary);
+  line-height: 1.3; /* Reduced from 1.4 */
+}
+
+.motionSettings {
+  margin-bottom: 12px; /* Reduced from 16px */
+}
+
+.motionSummary {
+  margin-top: 12px; /* Reduced from 16px */
+  font-size: 0.85rem; /* Reduced from 0.9rem */
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.showMoreButton {
+  width: 100%;
+  padding: 6px; /* Reduced from 8px */
+  margin-top: 6px; /* Reduced from 8px */
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.2);
+  color: var(--text-primary);
+  border-radius: 6px; /* Reduced from 8px */
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.85rem; /* Added smaller font */
+}
+
+.showMoreButton:hover {
+  background-color: rgba(210, 220, 245, 0.15);
+}
+
+/* Add these styles at the end of the file */
+
+/* Recycling Controls Styles */
+.recyclingSchedule {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 12px 0;
+}
+
+.nextRecyclingDay {
+  background-color: rgba(210, 220, 245, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid rgba(210, 220, 245, 0.1);
+}
+
+.nextRecyclingHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.nextRecyclingLabel {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.nextRecyclingDate {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.recyclingTypes {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.recyclingType {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recyclingIcon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recyclingName {
+  font-size: 0.9rem;
+}
+
+.upcomingRecycling {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.upcomingTitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.recyclingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  background-color: rgba(210, 220, 245, 0.05);
+  border-radius: 6px;
+}
+
+.recyclingDate {
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.daysAway {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.recyclingIcons {
+  display: flex;
+  gap: 4px;
+}
+
+.smallRecyclingIcon {
+  font-size: 1rem;
+}
+
+.recyclingSettings {
+  margin-bottom: 12px;
+}
+
+.recyclingTip {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  text-align: center;
+  background-color: rgba(210, 220, 245, 0.05);
+  padding: 8px;
+  border-radius: 6px;
+}
+
+/* Add these styles at the end of the file for the compact recycling widget */
+
+.recyclingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.compactRecyclingSchedule {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compactRecyclingItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: rgba(210, 220, 245, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(210, 220, 245, 0.08);
+}
+
+.nextCollection {
+  background-color: rgba(210, 220, 245, 0.1);
+  border: 1px solid rgba(210, 220, 245, 0.15);
+}
+
+.recyclingDateCompact {
+  display: flex;
+  flex-direction: column;
+}
+
+.dateText {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.daysText {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.recyclingIconsCompact {
+  display: flex;
+  gap: 6px;
+}
+
+.recyclingIconSmall {
+  font-size: 1.2rem;
+}
+
+/* Add this new style for the recycling type indicators */
+.recyclingDot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+/* Visitor Log Styles */
+.visitorSummary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(210, 220, 245, 0.08);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.visitorCount {
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--text-primary);
+}
+
+.visitorCountLabel {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.visitorSettings {
+  margin-bottom: 12px;
+}
+
+.visitorList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.visitorItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background-color: rgba(210, 220, 245, 0.05);
+  border-radius: 6px;
+}
+
+.visitorIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(210, 220, 245, 0.1);
+  color: var(--text-primary);
+}
+
+.visitorDetails {
+  flex: 1;
+}
+
+.visitorType {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.visitorTime {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.visitorDuration {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  background-color: rgba(210, 220, 245, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
