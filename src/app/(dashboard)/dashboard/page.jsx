@@ -1,5 +1,10 @@
-import DashboardContent from "./DashboardContent";
+import DashboardContent from "./DashboardContent.jsx";
+import { FirebaseProvider } from "./FirebaseContext";
 
 export default function DashboardPage() {
-  return <DashboardContent />;
+  return (
+    <FirebaseProvider>
+      <DashboardContent />
+    </FirebaseProvider>
+  );
 }
