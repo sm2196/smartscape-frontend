@@ -1,7 +1,17 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { MdChevronRight, MdAdd, MdHome, MdDevicesOther, MdClose, MdDelete, MdError } from "react-icons/md"
+import { useState, useEffect, useCallback, useRef } from "react"
+import {
+  MdChevronRight,
+  MdAdd,
+  MdHome,
+  MdDevicesOther,
+  MdClose,
+  MdDelete,
+  MdError,
+  MdSearch,
+  MdCheck,
+} from "react-icons/md"
 import { collection, query, where, getDocs, deleteDoc, doc, addDoc } from "firebase/firestore"
 import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
@@ -15,6 +25,25 @@ const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds
 // Define the collections array
 const CACHE_COLLECTIONS = ["Rooms", "Devices"]
 
+// Define device types array
+const DEVICE_TYPES = [
+  { value: "Light", label: "Light" },
+  { value: "Fan", label: "Fan" },
+  { value: "AC", label: "Air Conditioner" },
+  { value: "Room_Heater", label: "Room Heater" },
+  { value: "Water_Heater", label: "Water Heater" },
+  { value: "Bed", label: "Smart Bed" },
+  { value: "TV", label: "Television" },
+  { value: "Projector", label: "Projector" },
+  { value: "Speaker", label: "Speaker" },
+  { value: "Blinds", label: "Window Blinds" },
+  { value: "Door", label: "Door" },
+  { value: "Motion", label: "Motion Sensor" },
+  { value: "Freezer", label: "Freezer" },
+  { value: "Washer", label: "Washing Machine" },
+  { value: "Recycling", label: "Recycle Bin" },
+]
+
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null)
   const [selectedRoom, setSelectedRoom] = useState(null)
@@ -22,10 +51,16 @@ const DeviceManagement = () => {
   const [rooms, setRooms] = useState([])
   const [newDeviceCategory, setNewDeviceCategory] = useState("")
   const [newDeviceName, setNewDeviceName] = useState("")
+  const [newDeviceType, setNewDeviceType] = useState("") // Selected device type
+  const [deviceTypeSearch, setDeviceTypeSearch] = useState("") // Search input for device types
+  const [showDeviceTypeDropdown, setShowDeviceTypeDropdown] = useState(false)
   const [devices, setDevices] = useState({})
   const [selectedDevice, setSelectedDevice] = useState(null)
   const [error, setError] = useState(null)
   const [userId, setUserId] = useState(null)
+
+  // Ref for the device type dropdown
+  const deviceTypeDropdownRef = useRef(null)
 
   // Change the auth hook usage at the top of the component
   const { user, loading: authLoading } = useAuth()
@@ -52,6 +87,25 @@ const DeviceManagement = () => {
 
   // Add this loading state determination
   const isLoading = (authLoading && !userId) || (userId && dataLoading)
+
+  // Filter device types based on search input
+  const filteredDeviceTypes = DEVICE_TYPES.filter((type) =>
+    type.label.toLowerCase().includes(deviceTypeSearch.toLowerCase()),
+  )
+
+  // Handle click outside of device type dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (deviceTypeDropdownRef.current && !deviceTypeDropdownRef.current.contains(event.target)) {
+        setShowDeviceTypeDropdown(false)
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside)
+    }
+  }, [])
 
   // Replace the fetchRooms function with this updated version
   const fetchRooms = useCallback(
@@ -122,13 +176,24 @@ const DeviceManagement = () => {
     if (device) setSelectedDevice(device)
   }
 
+  // Update the closePopup function to reset the device type
   const closePopup = () => {
     setPopupType(null)
     setSelectedRoom(null)
     setNewRoomName("")
     setNewDeviceCategory("")
     setNewDeviceName("")
+    setNewDeviceType("") // Reset device type
+    setDeviceTypeSearch("") // Reset device type search
+    setShowDeviceTypeDropdown(false) // Hide dropdown
     setSelectedDevice(null)
+  }
+
+  // Handle device type selection
+  const handleDeviceTypeSelect = (type) => {
+    setNewDeviceType(type.value)
+    setDeviceTypeSearch(type.label)
+    setShowDeviceTypeDropdown(false)
   }
 
   // Update the handleSaveRoom function
@@ -198,23 +263,140 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the handleSaveDevice function
+  // Add this function after the handleSaveDevice function
+  // Get default properties based on device type
+  const getDeviceTypeProperties = (deviceType) => {
+    switch (deviceType) {
+      case "Light":
+        return {
+          isActive: false,
+          status: "Off",
+          statusColor: "",
+          voltage: Math.random() < 0.5 ? 120 : 60,
+        }
+      case "Fan":
+        return {
+          isActive: false,
+          status: "Off",
+          statusColor: "",
+          voltage: 75,
+        }
+      case "AC":
+        return {
+          isActive: true,
+          status: "27°C",
+          statusColor: "statusPink",
+          voltage: 0,
+        }
+      case "Room_Heater":
+        return {
+          isActive: true,
+          status: "22°C",
+          statusColor: "statusBlue",
+          voltage: 1500,
+        }
+      case "Water_Heater":
+        return {
+          isActive: true,
+          status: "83°C",
+          statusColor: "statusPink",
+          voltage: 1200,
+        }
+      case "Bed":
+        return {
+          isActive: true,
+          status: "On",
+          voltage: 0,
+        }
+      case "TV":
+        return {
+          isActive: true,
+          status: "On",
+          statusColor: "statusGreen",
+          voltage: 150,
+        }
+      case "Projector":
+        return {
+          isActive: false,
+          status: "Off",
+          statusColor: "",
+          voltage: 300,
+        }
+      case "Speaker":
+        return {
+          isActive: false,
+          status: "Off",
+          statusColor: "",
+          voltage: 30,
+        }
+      case "Blinds":
+        return {
+          isActive: false,
+          status: "Open",
+          voltage: 0,
+        }
+      case "Door":
+        return {
+          isActive: false,
+          status: "Locked",
+          voltage: 0,
+        }
+      case "Motion":
+        return {
+          isActive: false,
+          notificationsEnabled: true,
+          status: "1 hour ago",
+          voltage: 0,
+        }
+      case "Freezer":
+        return {
+          isActive: true,
+          status: "-6.5°C",
+          statusColor: "statusBlue",
+          volume: 700,
+        }
+      case "Washer":
+        return {
+          isActive: true,
+          status: "Cycle Complete",
+          voltage: 500,
+        }
+      case "Recycling":
+        return {
+          isActive: true,
+          remindersEnabled: false,
+          status: "In 5 Days",
+          statusColor: "statusGreen",
+          voltage: 0,
+        }
+    }
+  }
+
+  // Update the handleSaveDevice function to include deviceType
   const handleSaveDevice = async () => {
-    if (!user || !newDeviceName.trim() || !newDeviceCategory) return
+    if (!user || !newDeviceName.trim() || !newDeviceCategory || !newDeviceType) return
 
     try {
       const devicesRef = collection(db, "Devices")
+
+      // Get default properties for the selected device type
+      const deviceTypeProps = getDeviceTypeProperties(newDeviceType)
+
       const newDeviceRef = await addDoc(devicesRef, {
         deviceName: newDeviceName.trim(),
-        status: "off",
+        status: deviceTypeProps.status || "Off",
         roomRef: doc(db, "Rooms", newDeviceCategory),
+        deviceType: newDeviceType, // Add the device type
+        ...deviceTypeProps, // Add all the type-specific properties
       })
 
       const newDevice = {
         id: newDeviceRef.id,
         deviceName: newDeviceName.trim(),
-        status: "off",
+        status: deviceTypeProps.status || "Off",
         roomRef: doc(db, "Rooms", newDeviceCategory),
+        deviceType: newDeviceType,
+        ...deviceTypeProps,
       }
 
       // Update state
@@ -285,6 +467,25 @@ const DeviceManagement = () => {
     )
   }
 
+  // Get all devices as a flat array for display
+  const getAllDevices = () => {
+    const allDevices = []
+    rooms.forEach((room) => {
+      if (devices[room.id]) {
+        devices[room.id].forEach((device) => {
+          allDevices.push({
+            ...device,
+            roomName: room.roomName,
+          })
+        })
+      }
+    })
+    return allDevices
+  }
+
+  // Update the return statement to enhance the UI design
+  // Replace the existing return statement with this improved version:
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -292,58 +493,104 @@ const DeviceManagement = () => {
         <p className={styles.subtitle}>Manage your smart home setup by organizing rooms and devices</p>
       </div>
 
-      <div className={styles.content}>
-        <section className={styles.section}>
+      <div className={styles.sectionsContainer}>
+        {/* Rooms Section */}
+        <div className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionTitleWrapper}>
               <MdHome className={styles.sectionIcon} />
-              Rooms
-            </h2>
+              <h2 className={styles.sectionTitle}>Rooms</h2>
+            </div>
             <button className={styles.addButton} onClick={() => openPopup("addRoom")}>
               <MdAdd />
-              Add Room
+              <span>Add Room</span>
             </button>
           </div>
 
-          <div className={styles.grid}>
+          <div className={styles.cardGrid}>
             {rooms.map((room) => (
               <div key={room.id} className={styles.card} onClick={() => openPopup("room", room)}>
                 <div className={styles.cardContent}>
                   <h3 className={styles.cardTitle}>{room.roomName}</h3>
                   <p className={styles.cardSubtitle}>{devices[room.id]?.length || 0} devices</p>
                 </div>
-                <MdChevronRight className={styles.cardArrow} />
+                <div className={styles.cardArrowWrapper}>
+                  <MdChevronRight className={styles.cardArrow} />
+                </div>
               </div>
             ))}
+            {rooms.length === 0 && (
+              <div className={styles.emptyStateCard}>
+                <MdHome className={styles.emptyStateIcon} />
+                <p>No rooms added yet</p>
+                <button className={styles.emptyStateButton} onClick={() => openPopup("addRoom")}>
+                  Add Your First Room
+                </button>
+              </div>
+            )}
           </div>
-        </section>
+        </div>
 
-        <section className={styles.section}>
+        {/* Devices Section */}
+        <div className={styles.section}>
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>
+            <div className={styles.sectionTitleWrapper}>
               <MdDevicesOther className={styles.sectionIcon} />
-              All Devices
-            </h2>
-            <button className={styles.addButton} onClick={() => openPopup("addDevice")}>
+              <h2 className={styles.sectionTitle}>All Devices</h2>
+            </div>
+            <button
+              className={styles.addButton}
+              onClick={() => openPopup("addDevice")}
+              disabled={rooms.length === 0}
+              title={rooms.length === 0 ? "Add a room first" : "Add a new device"}
+            >
               <MdAdd />
-              Add Device
+              <span>Add Device</span>
             </button>
           </div>
 
-          <div className={styles.grid}>
-            {rooms.map((room) =>
-              devices[room.id]?.map((device) => (
-                <div key={device.id} className={styles.card} onClick={() => openPopup("device", room, device)}>
-                  <div className={styles.cardContent}>
+          <div className={styles.cardGrid}>
+            {getAllDevices().map((device) => (
+              <div
+                key={device.id}
+                className={`${styles.card} ${styles.deviceCard}`}
+                onClick={() => {
+                  const room = rooms.find((r) => r.roomName === device.roomName)
+                  if (room) {
+                    openPopup("device", room, device)
+                  }
+                }}
+              >
+                <div className={styles.cardContent}>
+                  <div className={styles.deviceCardHeader}>
                     <h3 className={styles.cardTitle}>{device.deviceName}</h3>
-                    <p className={styles.cardSubtitle}>{room.roomName}</p>
+                    {/* Removed active indicator */}
                   </div>
+                  <div className={styles.deviceMeta}>
+                    {/* Removed device type */}
+                    <span className={styles.roomBadge}>{device.roomName}</span>
+                  </div>
+                </div>
+                <div className={styles.cardArrowWrapper}>
                   <MdChevronRight className={styles.cardArrow} />
                 </div>
-              )),
+              </div>
+            ))}
+            {getAllDevices().length === 0 && (
+              <div className={styles.emptyStateCard}>
+                <MdDevicesOther className={styles.emptyStateIcon} />
+                <p>No devices added yet</p>
+                <button
+                  className={styles.emptyStateButton}
+                  onClick={() => openPopup("addDevice")}
+                  disabled={rooms.length === 0}
+                >
+                  {rooms.length === 0 ? "Add a room first" : "Add Your First Device"}
+                </button>
+              </div>
             )}
           </div>
-        </section>
+        </div>
       </div>
 
       {popupType && (
@@ -373,7 +620,11 @@ const DeviceManagement = () => {
                   <button className={styles.secondaryButton} onClick={closePopup}>
                     Cancel
                   </button>
-                  <button className={styles.primaryButton} onClick={handleSaveRoom}>
+                  <button
+                    className={`${styles.primaryButton} ${!newRoomName.trim() ? styles.disabledButton : ""}`}
+                    onClick={handleSaveRoom}
+                    disabled={!newRoomName.trim()}
+                  >
                     Add Room
                   </button>
                 </div>
@@ -393,10 +644,28 @@ const DeviceManagement = () => {
                   <div className={styles.deviceList}>
                     {devices[selectedRoom.id]?.map((device) => (
                       <div key={device.id} className={styles.deviceItem}>
-                        <span>{device.deviceName}</span>
+                        <div className={styles.deviceItemContent}>
+                          <span className={styles.deviceItemName}>{device.deviceName}</span>
+                          {/* Removed device type */}
+                        </div>
+                        {/* Removed active status indicator */}
                       </div>
                     ))}
-                    {!devices[selectedRoom.id]?.length && <p className={styles.emptyState}>No devices in this room</p>}
+                    {!devices[selectedRoom.id]?.length && (
+                      <div className={styles.emptyState}>
+                        <MdDevicesOther className={styles.emptyStateIcon} />
+                        <p>No devices in this room</p>
+                        <button
+                          className={styles.emptyStateButton}
+                          onClick={() => {
+                            closePopup()
+                            setTimeout(() => openPopup("addDevice"), 100)
+                          }}
+                        >
+                          Add a device
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className={styles.modalFooter}>
@@ -430,6 +699,48 @@ const DeviceManagement = () => {
                       className={styles.input}
                     />
                   </div>
+                  <div className={styles.formGroup} ref={deviceTypeDropdownRef}>
+                    <label>Device Type</label>
+                    <div className={styles.searchableDropdown}>
+                      <div className={styles.searchInputWrapper}>
+                        <input
+                          type="text"
+                          value={deviceTypeSearch}
+                          onChange={(e) => {
+                            setDeviceTypeSearch(e.target.value)
+                            setShowDeviceTypeDropdown(true)
+                            if (!e.target.value) {
+                              setNewDeviceType("")
+                            }
+                          }}
+                          onFocus={() => setShowDeviceTypeDropdown(true)}
+                          placeholder="Search device type"
+                          className={styles.input}
+                        />
+                        <MdSearch className={styles.searchIcon} />
+                      </div>
+                      {showDeviceTypeDropdown && (
+                        <div className={styles.dropdownList}>
+                          {filteredDeviceTypes.length > 0 ? (
+                            filteredDeviceTypes.map((type) => (
+                              <div
+                                key={type.value}
+                                className={`${styles.dropdownItem} ${
+                                  newDeviceType === type.value ? styles.selected : ""
+                                }`}
+                                onClick={() => handleDeviceTypeSelect(type)}
+                              >
+                                {type.label}
+                                {newDeviceType === type.value && <MdCheck className={styles.checkIcon} />}
+                              </div>
+                            ))
+                          ) : (
+                            <div className={styles.noResults}>No device types found</div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div className={styles.formGroup}>
                     <label>Room</label>
                     <select
@@ -450,7 +761,13 @@ const DeviceManagement = () => {
                   <button className={styles.secondaryButton} onClick={closePopup}>
                     Cancel
                   </button>
-                  <button className={styles.primaryButton} onClick={handleSaveDevice}>
+                  <button
+                    className={`${styles.primaryButton} ${
+                      !newDeviceName.trim() || !newDeviceCategory || !newDeviceType ? styles.disabledButton : ""
+                    }`}
+                    onClick={handleSaveDevice}
+                    disabled={!newDeviceName.trim() || !newDeviceCategory || !newDeviceType}
+                  >
                     Add Device
                   </button>
                 </div>
@@ -465,14 +782,7 @@ const DeviceManagement = () => {
                     <MdClose />
                   </button>
                 </div>
-                <div className={styles.modalContent}>
-                  <div className={styles.deviceDetails}>
-                    <div className={styles.detailRow}>
-                      <span>Room</span>
-                      <span>{selectedRoom.roomName}</span>
-                    </div>
-                  </div>
-                </div>
+                <div className={styles.modalContent}>{/* Empty content - removed all device details */}</div>
                 <div className={styles.modalFooter}>
                   <button className={styles.dangerButton} onClick={() => handleRemoveDevice(selectedDevice)}>
                     <MdDelete />

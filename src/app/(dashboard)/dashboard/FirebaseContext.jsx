@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect } from "react"
-import { collection, doc, setDoc, getDoc, updateDoc, onSnapshot, serverTimestamp } from "firebase/firestore"
+import { collection, doc, setDoc, getDoc, updateDoc, onSnapshot } from "firebase/firestore"
 import { db } from "@/lib/firebase/config";
 
 const FirebaseContext = createContext(null)
@@ -137,15 +137,12 @@ export const FirebaseProvider = ({ children }) => {
         await updateDoc(deviceRef, {
           ...newState,
           voltage: existingVoltage, // Preserve existing voltage
-          updatedAt: serverTimestamp(),
         })
       } else {
         // Create new device document with default voltage
         await setDoc(deviceRef, {
           ...newState,
           voltage: defaultVoltage,
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
         })
       }
     } catch (error) {
@@ -163,7 +160,6 @@ export const FirebaseProvider = ({ children }) => {
         // Update existing device with new voltage
         await updateDoc(deviceRef, {
           voltage: voltage,
-          updatedAt: serverTimestamp(),
         })
       } else {
         // Create new device document with provided voltage
@@ -171,8 +167,6 @@ export const FirebaseProvider = ({ children }) => {
           voltage: voltage,
           isActive: false,
           status: "Off",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
         })
       }
     } catch (error) {
