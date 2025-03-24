@@ -10,7 +10,7 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="tw:font-roboto">
-      <body className="tw:m-0 tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)] tw:flex tw:h-screen">
+      <body className="tw:text-[color:var(--text-primary)] tw:m-0 tw:bg-gradient-to-b tw:from-[var(--oxford-blue)] tw:to-[var(--space-cadet)] tw:flex tw:h-screen">
         <ProtectedRoute>
           <DashboardNavbar />
           <div

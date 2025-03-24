@@ -35,7 +35,7 @@ export function VoltageAlert({ totalVoltage, threshold, onDismiss, highVoltageDe
           </button>
         </div>
         <div className={styles.alertContent}>
-          <p className="tw:text-[color:var(--text-primary)]">
+          <p>
             Your current energy usage is <strong>{totalVoltage}W</strong>, which exceeds the recommended threshold of{" "}
             <strong>{threshold}W</strong> during peak hours (6PM-8PM).
           </p>
