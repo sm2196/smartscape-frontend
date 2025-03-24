@@ -1,4 +1,3 @@
-import { Parallax } from 'react-scroll-parallax';
 import './SMServices.css';
 import {
   FaMobileAlt,
@@ -6,20 +5,16 @@ import {
   FaLeaf,
   FaBolt,
   FaUsers,
-  FaLock,
-  FaChartLine,
   FaWater,
   FaClock,
   FaBrain,
   FaTools,
-  FaRegLightbulb,
   FaAmazon,
   FaGoogle,
   FaApple,
   FaMicrosoft,
-  FaHome
 } from 'react-icons/fa';
-import { MdSecurity, MdDeviceHub } from 'react-icons/md';
+import { MdSecurity } from 'react-icons/md';
 
 function Services() {
   const services = [

@@ -1,12 +1,9 @@
+"use client"
+
 import React, { useEffect } from "react";
 import { Parallax } from "react-scroll-parallax";
 import "./SMAboutUsPage.css";
-import "../Footer/SMFooter.css";
 import {
-  FaFacebookF,
-  FaInstagram,
-  FaYoutube,
-  FaTwitter,
   FaLinkedinIn,
   FaLightbulb,
   FaLeaf,
@@ -14,7 +11,6 @@ import {
   FaHeadset,
   FaEnvelope,
 } from "react-icons/fa";
-import SMfooter from "../Footer/SMFooter";
 
 function AboutUsPage() {
   useEffect(() => {
@@ -347,7 +343,6 @@ function AboutUsPage() {
           </div>
         </div>
       </section>
-      <SMfooter />
     </div>
   );
 }

@@ -32,4 +32,4 @@ setPersistence(auth, browserLocalPersistence)
   .then(() => console.log("Persistence set"))
   .catch((error) => console.error("Error setting persistence:", error));
 
-export { firebase_app as default, auth, db, storage };
+export { firebase_app as app, auth, db, storage };

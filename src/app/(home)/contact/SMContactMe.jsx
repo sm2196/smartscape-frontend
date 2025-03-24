@@ -1,21 +1,15 @@
+"use client"
+
 import React, { useState, useEffect } from "react";
 import {
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
   FaClock,
-  FaFacebookF,
-  FaInstagram,
-  FaYoutube,
-  FaTwitter,
-  FaLinkedinIn,
 } from "react-icons/fa";
-import { Link } from "react-router-dom";
 import "./SMContactMe.css";
-import "../Footer/SMFooter.css";
 import { db } from "@/lib/firebase/config"; // Adjust the import path as needed
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import SMFooter from "../Footer/SMFooter";
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -238,7 +232,6 @@ function Contact() {
           ></iframe>
         </div>
       </div>
-      <SMFooter />
     </div>
   );
 }

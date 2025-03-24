@@ -24,16 +24,16 @@ const SMfooter = () => {
         <div className="SMfooter-link-wrapper">
           <div className="SMfooter-link-items">
             <h2>About Us</h2>
-            <Link href="/">How it works</Link>
-            <Link href="/">Testimonials</Link>
-            <Link href="/">Careers</Link>
+            <Link href="/about">How it works</Link>
+            <Link href="/about">Testimonials</Link>
+            <Link href="/about">Careers</Link>
           </div>
           <div className="SMfooter-link-items">
             <h2>Contact Us</h2>
-            <Link href="/">Contact</Link>
-            <Link href="/">Support</Link>
-            <Link href="/">Customer Care</Link>
-            <Link href="/">Technical Help</Link>
+            <Link href="/contact">Contact</Link>
+            <Link href="/contact">Support</Link>
+            <Link href="/contact">Customer Care</Link>
+            <Link href="/contact">Technical Help</Link>
           </div>
         </div>
         <div className="SMfooter-link-wrapper">
@@ -41,7 +41,7 @@ const SMfooter = () => {
             <h2>Resources</h2>
             <Link href="/">Submit Video</Link>
             <Link href="/">Ambassadors</Link>
-            <Link href="/">FAQ</Link>
+            <Link href="/faq">FAQ</Link>
             <Link href="/">Blog</Link>
           </div>
           <div className="SMfooter-link-items">

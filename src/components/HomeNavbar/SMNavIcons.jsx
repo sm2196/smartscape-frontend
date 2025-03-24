@@ -1,8 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
-import { FaRegBookmark, FaRegUser, FaTimes } from "react-icons/fa";
+import { FaRegBookmark, FaRegUser } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
-import { MdLogout } from "react-icons/md";
 import "./SMNavIcons.css";
 
 function SMIcons() {
