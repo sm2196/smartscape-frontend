@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from "react"
 import {
+  BarChart,
+  Bar,
   PieChart,
   Pie,
   Cell,
@@ -11,16 +13,12 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
-  AreaChart,
-  Area,
 } from "recharts"
 import { generateDashboardData, CHART_COLORS } from "./utils/generateDashboardData"
 import { FirebaseProvider, useFirebase } from "./firebase/FirebaseContext"
 import PeakHourNotification from "./components/PeakHourNotification"
 import NotificationCenter from "./components/NotificationCenter"
 import DashboardNavbar from "./components/DashboardNavbar"
-import WeatherWidget from "./components/WeatherWidget"
-import ExportOptions from "./components/ExportOptions"
 import "./styles.css"
 
 // Wrap the main component with the FirebaseProvider
@@ -139,7 +137,6 @@ function Page() {
               <option value="quarterly">Quarterly</option>
               <option value="yearly">Yearly</option>
             </select>
-            <ExportOptions data={chartData.monthlyData} period={period} />
             <button onClick={refreshData} className="refresh-button">
               Refresh Data
             </button>
@@ -148,9 +145,6 @@ function Page() {
 
         {/* Top Row - Weather and Summary */}
         <div className="top-row">
-          <div className="weather-card">
-            <WeatherWidget />
-          </div>
           <div className="summary-card">
             <h3>Consumption Summary</h3>
             <div className="summary-stats">
@@ -180,41 +174,27 @@ function Page() {
             <h3>Consumption Trends</h3>
             <div className="chart-container">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart
+                <BarChart
                   data={chartData.monthlyData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   animationDuration={1000}
                 >
-                  <defs>
-                    <linearGradient id="colorElectricity" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#94a3b8" stopOpacity={0.1} />
-                    </linearGradient>
-                    <linearGradient id="colorWater" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.8} />
-                      <stop offset="95%" stopColor="#60a5fa" stopOpacity={0.1} />
-                    </linearGradient>
-                  </defs>
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Area
-                    type="monotone"
+                  <Bar
                     dataKey="electricity"
-                    stroke="#94a3b8"
-                    fillOpacity={1}
-                    fill="url(#colorElectricity)"
+                    stackId="a"
+                    fill="#94a3b8"
                     name="Electricity (kWh)"
                     animationDuration={1500}
                     animationEasing="ease-in-out"
                   />
-                  <Area
-                    type="monotone"
+                  <Bar
                     dataKey="water"
-                    stroke="#60a5fa"
-                    fillOpacity={1}
-                    fill="url(#colorWater)"
+                    stackId="a"
+                    fill="#60a5fa"
                     name="Water (m³)"
                     animationDuration={1500}
                     animationEasing="ease-in-out"
@@ -228,7 +208,7 @@ function Page() {
                       label={{ value: "Peak Hour", position: "top", fill: "#ff4d4f" }}
                     />
                   )}
-                </AreaChart>
+                </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -246,7 +226,6 @@ function Page() {
                     outerRadius={80}
                     dataKey="value"
                     label={({ name, value }) => `${name} (${value}%)`}
-                    labelLine={{ stroke: "#60a5fa", strokeWidth: 1 }}
                     animationDuration={1500}
                     animationEasing="ease-out"
                   >
@@ -257,11 +236,7 @@ function Page() {
                       />
                     ))}
                   </Pie>
-                  <Tooltip
-                    formatter={(value) => `${value}%`}
-                    contentStyle={{ backgroundColor: "#1a1a1a", color: "#ffffff", border: "1px solid #333" }}
-                    itemStyle={{ color: "#ffffff" }}
-                  />
+                  <Tooltip formatter={(value) => `${value}%`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -281,7 +256,6 @@ function Page() {
                     outerRadius={80}
                     dataKey="value"
                     label={({ name, value }) => `${name} (${value}%)`}
-                    labelLine={{ stroke: "#60a5fa", strokeWidth: 1 }}
                     animationDuration={1500}
                     animationEasing="ease-out"
                   >
@@ -292,11 +266,7 @@ function Page() {
                       />
                     ))}
                   </Pie>
-                  <Tooltip
-                    formatter={(value) => `${value}%`}
-                    contentStyle={{ backgroundColor: "#1a1a1a", color: "#ffffff", border: "1px solid #333" }}
-                    itemStyle={{ color: "#ffffff" }}
-                  />
+                  <Tooltip formatter={(value) => `${value}%`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -316,7 +286,6 @@ function Page() {
                     outerRadius={80}
                     dataKey="value"
                     label={({ name, value }) => `${name} (${value}%)`}
-                    labelLine={{ stroke: "#60a5fa", strokeWidth: 1 }}
                     animationDuration={1500}
                     animationEasing="ease-out"
                   >
@@ -324,11 +293,7 @@ function Page() {
                       <Cell key={`cell-${index}`} fill={CHART_COLORS.savings[index % CHART_COLORS.savings.length]} />
                     ))}
                   </Pie>
-                  <Tooltip
-                    formatter={(value) => `${value}%`}
-                    contentStyle={{ backgroundColor: "#1a1a1a", color: "#ffffff", border: "1px solid #333" }}
-                    itemStyle={{ color: "#ffffff" }}
-                  />
+                  <Tooltip formatter={(value) => `${value}%`} />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
