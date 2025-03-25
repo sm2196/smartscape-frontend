@@ -77,7 +77,7 @@ function AboutUsPage() {
             </p>
           </div>
           <div className="SMmission-image">
-            <img src="/bluebg2.jpg" alt="Smart Home Technology" />
+            <img src="/home/bluebg2.jpg" alt="Smart Home Technology" />
           </div>
         </div>
       </Parallax>
@@ -172,7 +172,7 @@ function AboutUsPage() {
               </div>
             </div>
             <div className="SMvision-image">
-              <img src="/try2.jpg" alt="Future Smart Home" />
+              <img src="/home/try2.jpg" alt="Future Smart Home" />
             </div>
           </div>
         </div>
@@ -189,7 +189,7 @@ function AboutUsPage() {
           <div className="SMteam-grid">
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -206,7 +206,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -223,7 +223,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -240,7 +240,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -257,7 +257,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/KaranPic.jpg" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -274,7 +274,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -291,7 +291,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -308,7 +308,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/Salimpic.jpg" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">
@@ -325,7 +325,7 @@ function AboutUsPage() {
             </div>
             <div className="SMteam-member reveal">
               <div className="SMmember-image">
-                <img src="/humanicon.png" alt="Team Member" />
+                <img src="/home/humanicon.png" alt="Team Member" />
                 <div className="SMmember-overlay">
                   <div className="SMmember-social">
                     <a href="#">

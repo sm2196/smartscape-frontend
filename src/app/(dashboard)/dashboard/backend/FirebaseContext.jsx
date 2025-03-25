@@ -60,10 +60,9 @@ export const FirebaseProvider = ({ children }) => {
     updateQueue.current = {}
   }, [devices])
 
-  // Extract room ID from roomRef path
+  // Extract ID from DocRef objects
   const getIdFromRef = (roomRef) => {
     if (!roomRef) return null
-    // roomRef format is "/Rooms/roomId"
     const segments = roomRef._key.path.segments
     return segments.length > 0 ? segments[segments.length - 1] : null
   }
