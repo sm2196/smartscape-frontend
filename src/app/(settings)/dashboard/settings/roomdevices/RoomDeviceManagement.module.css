@@ -18,7 +18,7 @@
   font-size: 1.75rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  background-color: #333;
+  background: #333;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   display: inline-block;
@@ -155,11 +155,22 @@
 }
 
 .deviceCardHeader {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.activeIndicator {
-  display: none;
+.deviceIconContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.deviceIconDisplay {
+  color: #6366f1;
+  font-size: 1.25rem;
 }
 
 .deviceMeta {
@@ -179,6 +190,48 @@
   background-color: rgba(99, 102, 241, 0.1);
   padding: 2px 8px;
   border-radius: 12px;
+}
+
+/* Icon selection styles */
+.iconSelectionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.iconOption {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.iconOption:hover {
+  background-color: #f3f4f6;
+  transform: translateY(-2px);
+}
+
+.selectedIcon {
+  background-color: rgba(99, 102, 241, 0.1);
+  border-color: #6366f1;
+}
+
+.iconDisplay {
+  font-size: 1.5rem;
+  color: #6366f1;
+  margin-bottom: 0.5rem;
+}
+
+.iconLabel {
+  font-size: 0.75rem;
+  color: #4b5563;
+  text-align: center;
 }
 
 /* Empty state styles */
@@ -489,8 +542,8 @@
 
 .deviceItemContent {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 8px;
 }
 
 .deviceItemName {
@@ -742,6 +795,10 @@
   .addButton {
     width: 100%;
     justify-content: center;
+  }
+
+  .iconSelectionGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

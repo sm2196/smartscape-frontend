@@ -11,7 +11,12 @@ import {
   MdError,
   MdSearch,
   MdCheck,
+  MdLightbulb,
+  MdOutlineLight,
+  MdDoorFront,
+  MdGarage,
 } from "react-icons/md"
+import { LuLamp, LuLampDesk } from "react-icons/lu"
 import { collection, query, where, getDocs, deleteDoc, doc, addDoc } from "firebase/firestore"
 import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
@@ -44,6 +49,20 @@ const DEVICE_TYPES = [
   { value: "Recycling", label: "Recycle Bin" },
 ]
 
+// Define device icons mapping
+const DEVICE_ICONS = {
+  Light: [
+    { name: "MdLightbulb", icon: MdLightbulb, label: "Lightbulb" },
+    { name: "MdOutlineLight", icon: MdOutlineLight, label: "Light" },
+    { name: "LuLamp", icon: LuLamp, label: "Lamp" },
+    { name: "LuLampDesk", icon: LuLampDesk, label: "Desk Lamp" },
+  ],
+  Door: [
+    { name: "MdDoorFront", icon: MdDoorFront, label: "Door" },
+    { name: "MdGarage", icon: MdGarage, label: "Garage" },
+  ],
+}
+
 const DeviceManagement = () => {
   const [popupType, setPopupType] = useState(null)
   const [selectedRoom, setSelectedRoom] = useState(null)
@@ -58,6 +77,7 @@ const DeviceManagement = () => {
   const [selectedDevice, setSelectedDevice] = useState(null)
   const [error, setError] = useState(null)
   const [userId, setUserId] = useState(null)
+  const [selectedDeviceIcon, setSelectedDeviceIcon] = useState("") // New state for selected icon
 
   // Ref for the device type dropdown
   const deviceTypeDropdownRef = useRef(null)
@@ -106,6 +126,11 @@ const DeviceManagement = () => {
       document.removeEventListener("mousedown", handleClickOutside)
     }
   }, [])
+
+  // Reset selected icon when device type changes
+  useEffect(() => {
+    setSelectedDeviceIcon("")
+  }, [newDeviceType])
 
   // Replace the fetchRooms function with this updated version
   const fetchRooms = useCallback(
@@ -176,7 +201,7 @@ const DeviceManagement = () => {
     if (device) setSelectedDevice(device)
   }
 
-  // Update the closePopup function to reset the device type
+  // Update the closePopup function to reset the device type and icon
   const closePopup = () => {
     setPopupType(null)
     setSelectedRoom(null)
@@ -187,6 +212,7 @@ const DeviceManagement = () => {
     setDeviceTypeSearch("") // Reset device type search
     setShowDeviceTypeDropdown(false) // Hide dropdown
     setSelectedDevice(null)
+    setSelectedDeviceIcon("") // Reset selected icon
   }
 
   // Handle device type selection
@@ -194,6 +220,11 @@ const DeviceManagement = () => {
     setNewDeviceType(type.value)
     setDeviceTypeSearch(type.label)
     setShowDeviceTypeDropdown(false)
+  }
+
+  // Handle device icon selection
+  const handleDeviceIconSelect = (iconName) => {
+    setSelectedDeviceIcon(iconName)
   }
 
   // Update the handleSaveRoom function
@@ -372,9 +403,15 @@ const DeviceManagement = () => {
     }
   }
 
-  // Update the handleSaveDevice function to include deviceType
+  // Update the handleSaveDevice function to include deviceIcon
   const handleSaveDevice = async () => {
     if (!user || !newDeviceName.trim() || !newDeviceCategory || !newDeviceType) return
+
+    // For Light and Door device types, require an icon selection
+    if ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon) {
+      setError("Please select an icon for this device type")
+      return
+    }
 
     try {
       const devicesRef = collection(db, "Devices")
@@ -382,21 +419,25 @@ const DeviceManagement = () => {
       // Get default properties for the selected device type
       const deviceTypeProps = getDeviceTypeProperties(newDeviceType)
 
-      const newDeviceRef = await addDoc(devicesRef, {
-        deviceName: newDeviceName.trim(),
-        status: deviceTypeProps.status || "Off",
-        roomRef: doc(db, "Rooms", newDeviceCategory),
-        deviceType: newDeviceType, // Add the device type
-        ...deviceTypeProps, // Add all the type-specific properties
-      })
-
-      const newDevice = {
-        id: newDeviceRef.id,
+      // Create the device data object with all properties
+      const deviceData = {
         deviceName: newDeviceName.trim(),
         status: deviceTypeProps.status || "Off",
         roomRef: doc(db, "Rooms", newDeviceCategory),
         deviceType: newDeviceType,
         ...deviceTypeProps,
+      }
+
+      // Add deviceIcon if one was selected
+      if (selectedDeviceIcon) {
+        deviceData.deviceIcon = selectedDeviceIcon
+      }
+
+      const newDeviceRef = await addDoc(devicesRef, deviceData)
+
+      const newDevice = {
+        id: newDeviceRef.id,
+        ...deviceData,
       }
 
       // Update state
@@ -438,6 +479,22 @@ const DeviceManagement = () => {
       console.error("Error removing device: ", error)
       setError("Failed to remove device. Please try again.")
     }
+  }
+
+  // Helper function to render the appropriate icon component
+  const renderDeviceIcon = (iconName) => {
+    if (!iconName) return null
+
+    // Flatten all icon options into a single array for easier lookup
+    const allIcons = Object.values(DEVICE_ICONS).flat()
+    const iconConfig = allIcons.find((icon) => icon.name === iconName)
+
+    if (iconConfig) {
+      const IconComponent = iconConfig.icon
+      return <IconComponent className={styles.deviceIconDisplay} />
+    }
+
+    return null
   }
 
   // Update the useEffect that calls fetchRooms to use the new dependency
@@ -564,10 +621,12 @@ const DeviceManagement = () => {
                 <div className={styles.cardContent}>
                   <div className={styles.deviceCardHeader}>
                     <h3 className={styles.cardTitle}>{device.deviceName}</h3>
-                    {/* Removed active indicator */}
+                    {/* Display device icon if available */}
+                    {device.deviceIcon && (
+                      <div className={styles.deviceIconContainer}>{renderDeviceIcon(device.deviceIcon)}</div>
+                    )}
                   </div>
                   <div className={styles.deviceMeta}>
-                    {/* Removed device type */}
                     <span className={styles.roomBadge}>{device.roomName}</span>
                   </div>
                 </div>
@@ -646,9 +705,9 @@ const DeviceManagement = () => {
                       <div key={device.id} className={styles.deviceItem}>
                         <div className={styles.deviceItemContent}>
                           <span className={styles.deviceItemName}>{device.deviceName}</span>
-                          {/* Removed device type */}
+                          {/* Display device icon if available */}
+                          {device.deviceIcon && renderDeviceIcon(device.deviceIcon)}
                         </div>
-                        {/* Removed active status indicator */}
                       </div>
                     ))}
                     {!devices[selectedRoom.id]?.length && (
@@ -741,6 +800,32 @@ const DeviceManagement = () => {
                       )}
                     </div>
                   </div>
+
+                  {/* Icon selection for Light and Door device types */}
+                  {(newDeviceType === "Light" || newDeviceType === "Door") && (
+                    <div className={styles.formGroup}>
+                      <label>Select Icon</label>
+                      <div className={styles.iconSelectionGrid}>
+                        {DEVICE_ICONS[newDeviceType].map((iconConfig) => {
+                          const IconComponent = iconConfig.icon
+                          return (
+                            <div
+                              key={iconConfig.name}
+                              className={`${styles.iconOption} ${
+                                selectedDeviceIcon === iconConfig.name ? styles.selectedIcon : ""
+                              }`}
+                              onClick={() => handleDeviceIconSelect(iconConfig.name)}
+                              title={iconConfig.label}
+                            >
+                              <IconComponent className={styles.iconDisplay} />
+                              <span className={styles.iconLabel}>{iconConfig.label}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
                   <div className={styles.formGroup}>
                     <label>Room</label>
                     <select
@@ -763,10 +848,20 @@ const DeviceManagement = () => {
                   </button>
                   <button
                     className={`${styles.primaryButton} ${
-                      !newDeviceName.trim() || !newDeviceCategory || !newDeviceType ? styles.disabledButton : ""
+                      !newDeviceName.trim() ||
+                      !newDeviceCategory ||
+                      !newDeviceType ||
+                      ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon)
+                        ? styles.disabledButton
+                        : ""
                     }`}
                     onClick={handleSaveDevice}
-                    disabled={!newDeviceName.trim() || !newDeviceCategory || !newDeviceType}
+                    disabled={
+                      !newDeviceName.trim() ||
+                      !newDeviceCategory ||
+                      !newDeviceType ||
+                      ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon)
+                    }
                   >
                     Add Device
                   </button>
@@ -782,7 +877,7 @@ const DeviceManagement = () => {
                     <MdClose />
                   </button>
                 </div>
-                <div className={styles.modalContent}>{/* Empty content - removed all device details */}</div>
+                <div className={styles.modalContent}>{/* Empty content - only showing Remove Device button */}</div>
                 <div className={styles.modalFooter}>
                   <button className={styles.dangerButton} onClick={() => handleRemoveDevice(selectedDevice)}>
                     <MdDelete />
