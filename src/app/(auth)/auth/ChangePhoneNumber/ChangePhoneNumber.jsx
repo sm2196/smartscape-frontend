@@ -68,11 +68,11 @@ const ChangePhoneNum = () => {
   return (
     <div className="RSUserSignUpLogInFP">
       <div className="HeaderPhone">
-        <img src="/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
       </div>
       <ToastContainer />
       <div className="right-section-cfn">
-        <img src="/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
+        <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
         <form className="RSForms-fp">
           <div>
             <h2>Change Your Phone Number</h2>

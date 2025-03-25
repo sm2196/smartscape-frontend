@@ -101,11 +101,11 @@ const OTPVerification = () => {
   return (
     <div className="RSUserSignUpLogInFU">
       <div className="HeaderPhone">
-        <img src="/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
       </div>
       <ToastContainer />
       <div className="left-section">
-        <img src="/nobg.png" alt="Logo" className="RSLogoImagee" />
+        <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" />
 
         <button className="Changebutton" onClick={handleChangePhone}>
           <FaArrowLeft className="changearrow" /> Change Phone Number

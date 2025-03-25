@@ -276,7 +276,7 @@ SmartScape System`
   return (
     <div className="RSUserSignUpLogIn">
       <div className="HeaderPhone">
-        <img src="/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
       </div>
       <ToastContainer />
       <Components.RSSignUp $userSignIn={signIn}>
@@ -496,7 +496,7 @@ SmartScape System`
       <Components.RSLRCoverBG $userSignIn={signIn}>
         <Components.RSCover $userSignIn={signIn}>
           <Components.RSLeftSlider $userSignIn={signIn}>
-            <img src="/nobg.png" alt="Logo" className="RSLogoImagee" />
+            <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" />
             <h1 className="RSHeader">Want to be a general user?</h1>
             <p className="RSSliderText">
               Please visit the following page to complete the registration
@@ -508,7 +508,7 @@ SmartScape System`
           </Components.RSLeftSlider>
 
           <Components.RSRightSlider $userSignIn={signIn}>
-            <img src="/nobg.png" alt="Logo" className="RSLogoImage" />
+            <img src="/auth/nobg.png" alt="Logo" className="RSLogoImage" />
             <h1 className="RSHeader">Want to be an admin?</h1>
             <p className="RSSliderText">
               Please visit the following page and follow the instructions to

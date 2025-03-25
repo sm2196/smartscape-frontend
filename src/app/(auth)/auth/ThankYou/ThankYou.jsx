@@ -7,11 +7,11 @@ const ThankYou = () => {
   return (
     <div className="RSUserSignUpLogInFP">
       <div className="HeaderPhone">
-        <img src="/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
       </div>
       <ToastContainer />
       <div className="right-section-fp">
-        <img src="/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
+        <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
         <form className="RSForms-fp">
           <div>
             <h2>Thank you for submitting your documents!</h2>

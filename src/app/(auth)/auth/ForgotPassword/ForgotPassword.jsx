@@ -4,11 +4,12 @@ import { useState } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import { getAuth, sendPasswordResetEmail } from "firebase/auth"
 import { app } from "@/lib/firebase/config" // Import your Firebase app configuration
+import { useRouter } from "next/navigation"
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("")
   const [emailError, setEmailError] = useState("")
-  //const navigate = useNavigate();
+  const router = useRouter()
 
   const handleEmailChange = (e) => {
     const value = e.target.value
@@ -40,7 +41,9 @@ const ForgotPassword = () => {
       try {
         await sendPasswordResetEmail(auth, email)
         toast.success("Password reset email sent!")
-        // navigate("/login"); // Navigate to login page or wherever you need
+        setTimeout(() => {
+          router.push("/auth")
+        }, 3000)
       } catch (error) {
         console.error(error)
         toast.error("Error sending reset email. Please try again.")
@@ -53,11 +56,11 @@ const ForgotPassword = () => {
   return (
     <div className="RSUserSignUpLogInFP">
       <div className="HeaderPhone">
-        <img src="\nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
       </div>
       <ToastContainer />
       <div className="right-section-fp">
-        <img src="/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
+        <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee-fp" />
         <form className="RSForms-fp" onSubmit={handleSubmit}>
           <h2 className="RSHeader">Reset your password</h2>
           <p className="subtitle-fp">
