@@ -1,4 +1,4 @@
-.hkemergencyPanel {
+.emergencyPanel {
   width: 100%;
   max-width: 1200px;
   background-color: #ffffff;
@@ -8,7 +8,7 @@
   border: 1px solid #e9ecef;
 }
 
-.hkpanelHeader {
+.panelHeader {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -17,26 +17,26 @@
   border-bottom: 1px solid #e9ecef;
 }
 
-.hkpanelHeader h2 {
+.panelHeader h2 {
   font-size: 1.25rem;
   font-weight: 600;
   color: #0a1630;
   margin: 0;
 }
 
-.hkpanelIcon {
+.panelIcon {
   font-size: 1.5rem;
   color: #e74c3c;
 }
 
-.hkbuttonContainer {
+.buttonContainer {
   display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 20px;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
 }
 
-.hkbutton {
+.button {
   padding: 0.875rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -56,85 +56,117 @@
   gap: 0.5rem;
 }
 
-.hkbutton:hover {
+.button:hover {
   background-color: #152447;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(10, 22, 48, 0.2);
 }
 
-.hkbutton:active {
+.button:active {
   transform: translateY(0);
 }
 
-.hkbuttonIcon {
+.buttonIcon {
   font-size: 1.25rem;
 }
 
-.hkemergencyButton,
-.hkcontactButton {
-  padding: 8px 16px;
-  font-size: 0.9rem;
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.emergencyButton,
+.contactButton {
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
   cursor: pointer;
   transition: all 0.3s ease;
-  min-width: 180px;
-  font-weight: 500;
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 200px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hkemergencyButton {
+.emergencyButton {
   background-color: #e74c3c;
   border: 1px solid #c0392b;
   color: white;
 }
 
-.hkemergencyButton:hover {
+.emergencyButton:hover {
   background-color: #c0392b;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
-.hkemergencyButtonActive {
+.emergencyButtonActive {
   background-color: #2ecc71;
   border: 1px solid #27ae60;
   color: white;
+  padding: 0.875rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 200px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.hkemergencyButtonActive:hover {
+.emergencyButtonActive:hover {
   background-color: #27ae60;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
-.hkcontactButton {
+.contactButton {
   background-color: #3498db;
   border: 1px solid #2980b9;
   color: white;
 }
 
-.hkcontactButton:hover {
+.contactButton:hover {
   background-color: #2980b9;
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
 }
 
 @media (max-width: 768px) {
-  .hkbuttonContainer {
+  .buttonContainer {
     flex-direction: column;
     align-items: center;
   }
 
-  .hkemergencyButton,
-  .hkcontactButton {
-    width: 100%;
-    max-width: 200px;
-  }
-
-  .hkbutton {
+  .emergencyButton,
+  .emergencyButtonActive,
+  .contactButton {
     width: 100%;
     max-width: 300px;
   }
+
+  .button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    align-items: center;
+  }
 }
+
+
+
+
 
 
 

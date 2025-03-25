@@ -9,6 +9,7 @@ export default function EmergencyControl() {
   const videoRefs = useRef([])
   const [currentTime, setCurrentTime] = useState(new Date())
   const [activeCamera, setActiveCamera] = useState(0)
+  const [isLockdown, setIsLockdown] = useState(false)
 
   useEffect(() => {
     // Play all videos
@@ -30,66 +31,89 @@ export default function EmergencyControl() {
     setActiveCamera(index)
   }
 
+  const handleLockdownChange = (lockdownActive) => {
+    setIsLockdown(lockdownActive)
+  }
+
   return (
-    <div className={styles.hkpageContainer}>
+    <div className={styles.pageContainer}>
+      {/* Lockdown banner - shown when lockdown is active */}
+      {isLockdown && <div className={styles.lockdownBanner}>EMERGENCY LOCKDOWN ACTIVE</div>}
+
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Content */}
-      <main className={styles.hkmainContent}>
-        <div className={styles.hkheader}>
-          <h1 className={styles.hkemergencyTitle}>Emergency Control Center</h1>
+      <main className={`${styles.mainContent} ${isLockdown ? styles.lockdownActive : ""}`}>
+        <div className={styles.header}>
+          <h1 className={styles.emergencyTitle}>Emergency Control Center</h1>
         </div>
 
-        <div className={styles.hkcctvContainer}>
-          <div className={styles.hkcctvGrid}>
-            <div className={styles.hkcctvMain}>
-              <div className={styles.hkfeedContainer}>
-                <video ref={(el) => (videoRefs.current[0] = el)} className={styles.hkcctvFeed} muted loop playsInline>
+        {/* Emergency Buttons - Now placed above the videos */}
+        <div className={styles.emergencyControlPanel}>
+          <div className={styles.panelHeader}>
+            <div className={styles.panelTitle}>Emergency Controls</div>
+            <div className={styles.panelStatus}>
+              Status:{" "}
+              <span className={isLockdown ? styles.statusAlert : styles.statusNormal}>
+                {isLockdown ? "LOCKDOWN ACTIVE" : "Normal"}
+              </span>
+            </div>
+          </div>
+          <EmergencyButtons onLockdownChange={handleLockdownChange} isLockdown={isLockdown} />
+        </div>
+
+        {/* CCTV Container - Now below the buttons */}
+        <div className={styles.cctvContainer}>
+          <div className={styles.sectionTitle}>Security Camera Feeds</div>
+          <div className={styles.cctvGrid}>
+            <div className={styles.cctvMain}>
+              <div className={styles.feedContainer}>
+                <video ref={(el) => (videoRefs.current[0] = el)} className={styles.cctvFeed} muted loop playsInline>
                   <source src="/videos/video1.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                <div className={styles.hkcameraLabel}>Camera 1 - Main Entrance</div>
+                <div className={styles.cameraLabel}>Camera 1 - Main Entrance</div>
               </div>
             </div>
 
-            <div className={styles.hkcctvSecondary}>
+            <div className={styles.cctvSecondary}>
               <div
-                className={`${styles.hkcctvFeedContainer} ${activeCamera === 1 ? styles.activeFeed : ""}`}
+                className={`${styles.cctvFeedContainer} ${activeCamera === 1 ? styles.activeFeed : ""}`}
                 onClick={() => handleCameraSelect(1)}
               >
-                <div className={styles.hkfeedContainer}>
-                  <video ref={(el) => (videoRefs.current[1] = el)} className={styles.hkcctvFeed} muted loop playsInline>
+                <div className={styles.feedContainer}>
+                  <video ref={(el) => (videoRefs.current[1] = el)} className={styles.cctvFeed} muted loop playsInline>
                     <source src="/videos/video2.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  <div className={styles.hkcameraLabel}>Camera 2 - Parking</div>
+                  <div className={styles.cameraLabel}>Camera 2 - Parking</div>
                 </div>
               </div>
 
               <div
-                className={`${styles.hkcctvFeedContainer} ${activeCamera === 2 ? styles.hkactiveFeed : ""}`}
+                className={`${styles.cctvFeedContainer} ${activeCamera === 2 ? styles.activeFeed : ""}`}
                 onClick={() => handleCameraSelect(2)}
               >
-                <div className={styles.hkfeedContainer}>
-                  <video ref={(el) => (videoRefs.current[2] = el)} className={styles.hkcctvFeed} muted loop playsInline>
+                <div className={styles.feedContainer}>
+                  <video ref={(el) => (videoRefs.current[2] = el)} className={styles.cctvFeed} muted loop playsInline>
                     <source src="/videos/video3.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  <div className={styles.hkcameraLabel}>Camera 3 - Living Room</div>
+                  <div className={styles.cameraLabel}>Camera 3 - Living Room</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className={styles.hkbuttonSection}>
-          <EmergencyButtons />
-        </div>
       </main>
     </div>
   )
 }
+
+
+
+
 
 
 
