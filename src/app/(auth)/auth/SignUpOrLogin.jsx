@@ -220,7 +220,7 @@ function SignupOrLogin() {
   return (
     <div className="RSUserSignUpLogIn">
       <div className="HeaderPhone">
-        <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" />
+      <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" /> </a>
       </div>
       <ToastContainer />
       <Components.RSSignUp $userSignIn={signIn}>
@@ -337,7 +337,7 @@ function SignupOrLogin() {
       <Components.RSLRCoverBG $userSignIn={signIn}>
         <Components.RSCover $userSignIn={signIn}>
           <Components.RSLeftSlider $userSignIn={signIn}>
-            <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" />
+          <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" /> </a>
             <h1 className="RSHeader">Already have an account?</h1>
             <p className="RSSliderText">
               Please log in and enjoy a personalized experience and manage your home seamlessly
@@ -348,7 +348,7 @@ function SignupOrLogin() {
           </Components.RSLeftSlider>
 
           <Components.RSRightSlider $userSignIn={signIn}>
-            <img src="/auth/nobg.png" alt="Logo" className="RSLogoImage" />
+          <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImage" /> </a>
             <h1 className="RSHeader">Your smart home experience awaits!</h1>
             <p className="RSSliderText">Join us to control, automate, and monitor your home effortlessly</p>
             <button className="RSButtonCover" onClick={() => toggle(false)}>
