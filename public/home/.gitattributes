@@ -1,0 +1,2 @@
+public/home/*.jpg filter=lfs diff=lfs merge=lfs -text
+public/home/*.png filter=lfs diff=lfs merge=lfs -text
