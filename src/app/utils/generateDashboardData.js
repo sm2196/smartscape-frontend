@@ -193,13 +193,13 @@ export function generateDashboardData(period) {
 // Export color schemes for charts
 export const CHART_COLORS = {
   electricity: {
-    bar: "#94a3b8",
-    pie: ["#0a1529", "#1e40af", "#3b82f6", "#60a5fa", "#93c5fd"],
+    bar: "#1e40af", // Darker blue to match export button
+    pie: ["#2563eb", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"], // All blue shades
   },
   water: {
     bar: "#60a5fa",
-    pie: ["#60a5fa", "#3b82f6", "#2563eb", "#1d4ed8", "#1e40af"],
+    pie: ["#1e40af", "#2563eb", "#3b82f6", "#60a5fa", "#93c5fd"], // Different blue shades
   },
-  savings: ["#94a3b8", "#60a5fa"],
+  savings: ["#1e40af", "#60a5fa"], // Two blue shades
 }
 

@@ -84,11 +84,16 @@ a {
 .period-select {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
-  border: 1px solid #cbd5e1;
-  background-color: white;
+  border: none;
+  background-color: #1e40af; /* Match export button blue */
   font-size: 0.875rem;
-  color: #0f172a;
+  color: white; /* White text for better contrast */
   cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.period-select:hover {
+  background-color: #2563eb;
 }
 
 /* Top Row - Weather and Summary */
@@ -208,66 +213,7 @@ a {
   background-color: #0a1630;
 }
 
-/* Peak Hour Indicator */
-.peak-hour-indicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: rgba(239, 68, 68, 0.2);
-  color: #ef4444;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 4px;
-  margin-right: 16px;
-  font-size: 14px;
-  position: relative;
-}
-
-.peak-hour-details {
-  font-size: 11px;
-  font-weight: normal;
-  color: #fca5a5;
-}
-
-/* Peak Hour Info Bar */
-.peak-hour-info-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
-  border-left: 4px solid #ef4444;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  margin-bottom: 1.5rem;
-  font-size: 0.875rem;
-  color: #fca5a5;
-}
-
-.peak-hour-info-icon {
-  color: #ef4444;
-}
-
-.peak-hour-info-text {
-  font-weight: 500;
-}
-
-.peak-hour-active {
-  color: #ef4444;
-  font-weight: 600;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.6;
-  }
-}
+/* Peak Hour Indicator - Removed */
 
 /* Notification Center Styles */
 .notification-center {
@@ -492,6 +438,34 @@ a {
     transform: translateY(0);
     opacity: 1;
   }
+}
+
+/* Update the Peak Hour Info Bar styles to use red colors */
+
+/* Peak Hour Info Bar */
+.peak-hour-info-bar {
+  display: flex;
+  align-items: center;
+  background-color: rgba(239, 68, 68, 0.15); /* Changed to red */
+  border-radius: 4px;
+  padding: 10px 16px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.peak-hour-info-icon {
+  color: #ef4444; /* Changed to red */
+  margin-right: 10px;
+}
+
+.peak-hour-info-text {
+  color: #fecaca; /* Changed to lighter red */
+  font-size: 14px;
+}
+
+.peak-hour-active {
+  color: #f87171; /* Changed to brighter red */
+  font-weight: 600;
 }
 
 .firebase-error-banner {

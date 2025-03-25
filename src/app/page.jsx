@@ -138,13 +138,8 @@ function Page() {
           <h2>Consumption Analysis</h2>
           <div className="header-right">
             <NotificationCenter />
-            {firebase.isPeakHour && (
-              <span className="peak-hour-indicator">
-                Peak Hour Detected
-                <span className="peak-hour-details">Current consumption exceeds daily average</span>
-              </span>
-            )}
-            <select value={period} onChange={handlePeriodChange} className="period-select">
+            {/* Removed the red peak hour indicator */}
+            <select value={period} onChange={handlePeriodChange} className="period-select export-button">
               <option value="daily">Daily</option>
               <option value="monthly">Monthly</option>
               <option value="quarterly">Quarterly</option>
@@ -186,7 +181,7 @@ function Page() {
         </div>
 
         <div className="charts-grid">
-          {/* Consumption Charts */}
+          {/* Consumption Charts - Keeping this unchanged */}
           <div className="chart-card">
             <h3>Consumption Trends</h3>
             <div className="chart-container">
