@@ -96,7 +96,7 @@ function SMNavbar() {
       <div className="SMcontainer">
         <nav>
           <Link href="/" className="SMnavbar-logo" onClick={closeMobileMenu}>
-            <img src="/Logo.png" alt="Logo" className="SMnavbar-logo-image" />
+            <img src="/home/Logo.png" alt="Logo" className="SMnavbar-logo-image" />
           </Link>
 
           <ul className={SMclick ? "SMnav-link active" : "SMnav-link"}>

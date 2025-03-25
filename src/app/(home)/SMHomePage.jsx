@@ -44,7 +44,7 @@ const AboutUs = () => {
     <div className="SM-about-us-container">
       <Parallax translateY={[-30, 30]} className="SM-about-us-content">
         <div className="SM-about-us-image">
-          <img src="/bluebg1.jpg" alt="Smart Home" />
+          <img src="/home/bluebg1.jpg" alt="Smart Home" />
         </div>
         <div className="SM-about-us-text">
           <h2>About Us</h2>
@@ -164,7 +164,7 @@ const Cards = () => {
           <div className="SMcards__item">
             <Link className="SMcards__item__link" href="/services">
               <figure className="SMcards__item__pic-wrap" data-category="1">
-                <img className="SMcards__item__img" alt="Smart Home" src="/bulb.jpg" />
+                <img className="SMcards__item__img" alt="Smart Home" src="/home/bulb.jpg" />
               </figure>
               <div className="SMcards__item__info">
                 <h5 className="SMcards__item__text">Monitor your electricity consumption... and Your home</h5>
@@ -174,7 +174,7 @@ const Cards = () => {
           <div className="SMcards__item">
             <Link className="SMcards__item__link" href="/services">
               <figure className="SMcards__item__pic-wrap" data-category="2">
-                <img className="SMcards__item__img" alt="Smart Device" src="/device.jpg" />
+                <img className="SMcards__item__img" alt="Smart Device" src="/home/device.jpg" />
               </figure>
               <div className="SMcards__item__info">
                 <h5 className="SMcards__item__text">Save your bills. Turn off devices during peak hours.</h5>
@@ -184,7 +184,7 @@ const Cards = () => {
           <div className="SMcards__item">
             <Link className="SMcards__item__link" href="/services">
               <figure className="SMcards__item__pic-wrap" data-category="3">
-                <img className="SMcards__item__img" alt="Control" src="/control.jpg" />
+                <img className="SMcards__item__img" alt="Control" src="/home/control.jpg" />
               </figure>
               <div className="SMcards__item__info">
                 <h5 className="SMcards__item__text">Control all your devices on the run.</h5>
@@ -194,7 +194,7 @@ const Cards = () => {
           <div className="SMcards__item">
             <Link className="SMcards__item__link" href="/products">
               <figure className="SMcards__item__pic-wrap" data-category="4">
-                <img className="SMcards__item__img" alt="Security" src="/cam.jpg" />
+                <img className="SMcards__item__img" alt="Security" src="/home/cam.jpg" />
               </figure>
               <div className="SMcards__item__info">
                 <h5 className="SMcards__item__text">Watch for intruders!</h5>
@@ -204,10 +204,10 @@ const Cards = () => {
           <div className="SMcards__item">
             <Link className="SMcards__item__link" href="/sign-up">
               <figure className="SMcards__item__pic-wrap" data-category="5">
-                <img className="SMcards__item__img" alt="Emergency" src="/off.jpg" />
+                <img className="SMcards__item__img" alt="Emergency" src="/home/off.jpg" />
               </figure>
               <div className="SMcards__item__info">
-                <h5 className="SMcards__item__text">Emergency shutdown and Do Not Disturb modes</h5>
+                <h5 className="SMcards__item__text">Emergency shutdown for enhanced home safety</h5>
               </div>
             </Link>
           </div>

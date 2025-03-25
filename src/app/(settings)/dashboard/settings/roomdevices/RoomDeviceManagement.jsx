@@ -389,7 +389,7 @@ const DeviceManagement = () => {
           isActive: false,
           status: "Off",
           statusColor: "",
-          voltage: Math.random() < 0.5 ? 120 : 60,
+          voltage: Math.floor(Math.random() * (120 - 60 + 1)) + 60,
         }
       case "Fan":
         return {
@@ -463,7 +463,7 @@ const DeviceManagement = () => {
           isActive: false,
           notificationsEnabled: true,
           status: "1 hour ago",
-          voltage: 0,
+          voltage: 5,
         }
       case "Freezer":
         return {
