@@ -32,14 +32,10 @@ export function generateDashboardData(period) {
         else if (index >= 10 && index <= 15) {
           multiplier = randomInRange(10, 15) / 10 // 1.0-1.5
         }
-        // Evening peak (6pm-9pm) - Make 6pm (18:00) always the highest
-        else if (index >= 18 && index <= 21) {
-          // Special case for 6pm (index 18) - ensure it's the peak
-          if (index === 18) {
-            multiplier = randomInRange(35, 40) / 10 // 3.5-4.0 (highest)
-          } else {
-            multiplier = randomInRange(25, 30) / 10 // 2.5-3.0
-          }
+        // Evening peak (6pm-8pm) - Make 6pm-8pm (18:00-20:00) always the highest
+        else if (index >= 18 && index <= 20) {
+          // Ensure all hours in the 6PM-8PM range have high multipliers
+          multiplier = randomInRange(30, 40) / 10 // 3.0-4.0 (highest)
         }
         // Night (10pm-4am)
         else {
@@ -140,18 +136,18 @@ export function generateDashboardData(period) {
     if (type === "electricity") {
       // Different categories based on period
       if (period === "daily") {
-        categories = ["Pendant Lights", "AC", "Ceiling Fan", "Heater", "Sony TV"]
+        categories = ["Lighting", "HVAC", "Electronics", "Kitchen", "Other"]
         baseValues = [15, 45, 20, 15, 5]
       } else {
-        categories = ["AC", "Pendant Lights", "Sony TV", "JBL GO 4", "Epson Projector"]
+        categories = ["HVAC", "Lighting", "Electronics", "Appliances", "Other"]
         baseValues = [40, 20, 15, 15, 10]
       }
     } else if (type === "water") {
       if (period === "daily") {
-        categories = ["Washing Machine", "Bathroom", "Kitchen", "Garden", "Other"]
+        categories = ["Shower", "Toilet", "Kitchen", "Laundry", "Other"]
         baseValues = [35, 30, 20, 10, 5]
       } else {
-        categories = ["Bathroom", "Kitchen", "Washing Machine", "Garden", "Other"]
+        categories = ["Bathroom", "Kitchen", "Laundry", "Garden", "Other"]
         baseValues = [40, 20, 15, 20, 5]
       }
     } else if (type === "savings") {
@@ -198,7 +194,7 @@ export function generateDashboardData(period) {
 export const CHART_COLORS = {
   electricity: {
     bar: "#94a3b8",
-    pie: ["#1e40af", "#3b82f6", "#60a5fa", "#93c5fd", "#bfdbfe"],
+    pie: ["#0a1529", "#1e40af", "#3b82f6", "#60a5fa", "#93c5fd"],
   },
   water: {
     bar: "#60a5fa",

@@ -36,21 +36,11 @@
 .period-select {
   padding: 0.5rem 1rem;
   border-radius: 0.375rem;
-  border: none;
-  background-color: #1e40af;
+  border: 1px solid #cbd5e1;
+  background-color: white;
   font-size: 0.875rem;
-  color: white;
+  color: #0f172a;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.period-select:hover {
-  background-color: #2563eb;
-}
-
-.period-select option {
-  background-color: #1a1a1a;
-  color: white;
 }
 
 /* Top Row - Weather and Summary */
@@ -187,6 +177,46 @@
   font-size: 11px;
   font-weight: normal;
   color: #fca5a5;
+}
+
+/* Peak Hour Info Bar */
+.peak-hour-info-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(90deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.1) 100%);
+  border-left: 4px solid #ef4444;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+  color: #fca5a5;
+}
+
+.peak-hour-info-icon {
+  color: #ef4444;
+}
+
+.peak-hour-info-text {
+  font-weight: 500;
+}
+
+.peak-hour-active {
+  color: #ef4444;
+  font-weight: 600;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 0.6;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* Notification Center Styles */
@@ -432,13 +462,19 @@
 .peak-hour-tooltip {
   background-color: rgba(255, 77, 79, 0.2);
   border-left: 3px solid #ff4d4f;
+  border-radius: 4px;
+  box-shadow: 0 0 8px rgba(255, 77, 79, 0.3);
 }
 
 .peak-hour-note {
   font-style: italic;
   color: #ff4d4f;
-  margin-top: 4px;
+  margin-top: 8px;
   font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  background-color: rgba(255, 77, 79, 0.1);
+  border-radius: 4px;
 }
 
 /* Refresh button */

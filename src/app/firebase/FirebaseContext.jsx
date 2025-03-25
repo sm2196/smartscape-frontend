@@ -36,41 +36,38 @@ const MOCK_MODE = true // Set to true for development without Firebase
 // Default voltages for devices if not set
 export const DEFAULT_DEVICE_VOLTAGES = {
   // Living Room
-  lamp: 60,
-  heater: 1500,
-  ceiling_fan: 75,
-  pendant_lights: 120,
-  sony_tv: 150,
-  jbl_go_4: 30,
-  epson_projector: 300,
+  living_lamp: 60,
+  living_heater: 1500,
+  living_fan: 75,
+  living_lights: 120,
+  living_tv: 150,
+  living_speaker: 30,
+  living_projector: 300,
 
   // Garage
-  garage_door: 100,
   garage_lights: 100,
-  washing_machine: 500,
+  garage_freezer: 700,
+  garage_washer: 500,
 
   // Bedrooms
-  bedside_lamp: 60,
-  main_light: 60,
-  ac: 1200, // AC uses a lot of power
-  night_light: 20,
-  smart_bed: 50,
-  study_lamp: 60,
+  master_lamp: 60,
+  guest_light: 60,
+  kids_water_heater: 1200, // Water heater uses a lot of power
+  kids_lamp: 60,
 
   // Other devices
-  blinds: 25,
-  door: 15,
+  front_notifications: 5,
 }
 
 // Mock devices data
 const MOCK_DEVICES = {
-  lamp: { isActive: true, voltage: 60, status: "On" },
-  heater: { isActive: true, voltage: 1500, status: "On" },
-  ceiling_fan: { isActive: false, voltage: 75, status: "Off" },
-  pendant_lights: { isActive: true, voltage: 120, status: "On" },
-  sony_tv: { isActive: true, voltage: 150, status: "On" },
-  washing_machine: { isActive: true, voltage: 500, status: "On" },
-  ac: { isActive: false, voltage: 1200, status: "Off" },
+  living_lamp: { isActive: true, voltage: 60, status: "On" },
+  living_heater: { isActive: true, voltage: 1500, status: "On" },
+  living_fan: { isActive: false, voltage: 75, status: "Off" },
+  living_lights: { isActive: true, voltage: 120, status: "On" },
+  living_tv: { isActive: true, voltage: 150, status: "On" },
+  garage_freezer: { isActive: true, voltage: 700, status: "On" },
+  kids_water_heater: { isActive: false, voltage: 1200, status: "Off" },
 }
 
 export const FirebaseProvider = ({ children }) => {
@@ -160,8 +157,8 @@ export const FirebaseProvider = ({ children }) => {
       const now = new Date()
       const currentHour = now.getHours()
 
-      // We're specifically interested in 6 PM (18:00)
-      if (currentHour === 18) {
+      // We're interested in the 6PM-8PM range (18:00-20:00)
+      if (currentHour >= 18 && currentHour <= 20) {
         // Get electricity data for the current hour
         const currentElectricityUsage = hourlyData.electricity[currentHour] || 0
         const currentWaterUsage = hourlyData.water[currentHour] || 0

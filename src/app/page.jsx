@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react"
 import {
-  BarChart,
-  Bar,
   PieChart,
   Pie,
   Cell,
@@ -13,13 +11,18 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  AreaChart,
+  Area,
 } from "recharts"
 import { generateDashboardData, CHART_COLORS } from "./utils/generateDashboardData"
 import { FirebaseProvider, useFirebase } from "./firebase/FirebaseContext"
 import PeakHourNotification from "./components/PeakHourNotification"
 import NotificationCenter from "./components/NotificationCenter"
 import DashboardNavbar from "./components/DashboardNavbar"
+import WeatherWidget from "./components/WeatherWidget"
+import ExportOptions from "./components/ExportOptions"
 import "./styles.css"
+import PeakHourInfoBar from "./components/PeakHourInfoBar"
 
 // Wrap the main component with the FirebaseProvider
 export default function PageWrapper() {
@@ -70,21 +73,28 @@ function Page() {
     return () => clearInterval(interval)
   }, [refreshData])
 
-  // Custom tooltip for the bar chart
+  // Custom tooltip for the chart
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      // Highlight if this is the peak hour (6 PM)
-      const isPeakHour = label === "18:00"
+      // Check if this is within peak hours (6PM-8PM)
+      const hour = Number.parseInt(label.split(":")[0], 10)
+      const isPeakHour = hour >= 18 && hour <= 20
 
       return (
         <div className={`custom-tooltip ${isPeakHour ? "peak-hour-tooltip" : ""}`}>
-          <p className="label">{`${label} ${isPeakHour ? "(Peak Hour)" : ""}`}</p>
+          <p className="label">{`${label} ${isPeakHour ? "⚠️ PEAK HOUR" : ""}`}</p>
           {payload.map((entry, index) => (
             <p key={index} style={{ color: entry.color }}>
               {entry.dataKey === "electricity" ? "Electricity (kWh)" : "Water (m³)"}: {entry.value}
             </p>
           ))}
-          {isPeakHour && <p className="peak-hour-note">Highest consumption period</p>}
+          {isPeakHour && (
+            <p className="peak-hour-note">
+              This is during peak hours (6PM-8PM).
+              <br />
+              Consider reducing consumption during this time.
+            </p>
+          )}
         </div>
       )
     }
@@ -118,6 +128,9 @@ function Page() {
           </div>
         )}
 
+        {/* Peak Hour Info Bar */}
+        <PeakHourInfoBar />
+
         {/* Peak Hour Notification */}
         <PeakHourNotification />
 
@@ -137,6 +150,7 @@ function Page() {
               <option value="quarterly">Quarterly</option>
               <option value="yearly">Yearly</option>
             </select>
+            <ExportOptions data={chartData.monthlyData} period={period} />
             <button onClick={refreshData} className="refresh-button">
               Refresh Data
             </button>
@@ -145,6 +159,9 @@ function Page() {
 
         {/* Top Row - Weather and Summary */}
         <div className="top-row">
+          <div className="weather-card">
+            <WeatherWidget />
+          </div>
           <div className="summary-card">
             <h3>Consumption Summary</h3>
             <div className="summary-stats">
@@ -174,41 +191,96 @@ function Page() {
             <h3>Consumption Trends</h3>
             <div className="chart-container">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart
+                <AreaChart
                   data={chartData.monthlyData}
                   margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                   animationDuration={1000}
                 >
+                  <defs>
+                    <linearGradient id="colorElectricity" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#94a3b8" stopOpacity={0.1} />
+                    </linearGradient>
+                    <linearGradient id="colorWater" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.8} />
+                      <stop offset="95%" stopColor="#60a5fa" stopOpacity={0.1} />
+                    </linearGradient>
+                    {/* Add gradient for peak hour highlight */}
+                    <linearGradient id="peakHourGradient" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="rgba(239, 68, 68, 0.2)" />
+                      <stop offset="100%" stopColor="rgba(239, 68, 68, 0.05)" />
+                    </linearGradient>
+                  </defs>
                   <XAxis dataKey="name" />
                   <YAxis />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend />
-                  <Bar
+
+                  {/* Add peak hour range highlight if in daily view */}
+                  {period === "daily" && (
+                    <rect
+                      x={
+                        (chartData.monthlyData.findIndex((item) => item.name === "18:00") /
+                          chartData.monthlyData.length) *
+                        100
+                      }
+                      width={
+                        ((chartData.monthlyData.findIndex((item) => item.name === "20:00") -
+                          chartData.monthlyData.findIndex((item) => item.name === "18:00") +
+                          1) /
+                          chartData.monthlyData.length) *
+                        100
+                      }
+                      y="0%"
+                      height="100%"
+                      fill="url(#peakHourGradient)"
+                      fillOpacity={0.6}
+                    />
+                  )}
+
+                  <Area
+                    type="monotone"
                     dataKey="electricity"
-                    stackId="a"
-                    fill="#94a3b8"
+                    stroke="#94a3b8"
+                    fillOpacity={1}
+                    fill="url(#colorElectricity)"
                     name="Electricity (kWh)"
                     animationDuration={1500}
                     animationEasing="ease-in-out"
                   />
-                  <Bar
+                  <Area
+                    type="monotone"
                     dataKey="water"
-                    stackId="a"
-                    fill="#60a5fa"
+                    stroke="#60a5fa"
+                    fillOpacity={1}
+                    fill="url(#colorWater)"
                     name="Water (m³)"
                     animationDuration={1500}
                     animationEasing="ease-in-out"
                   />
-                  {/* Add reference line for peak hour if in daily view */}
+
+                  {/* Add reference lines for peak hour range if in daily view */}
                   {period === "daily" && (
-                    <ReferenceLine
-                      x="18:00"
-                      stroke="#ff4d4f"
-                      strokeWidth={2}
-                      label={{ value: "Peak Hour", position: "top", fill: "#ff4d4f" }}
-                    />
+                    <>
+                      <ReferenceLine
+                        x="18:00"
+                        stroke="#ff4d4f"
+                        strokeWidth={2}
+                        label={{ value: "Peak Hours Start (6PM)", position: "top", fill: "#ff4d4f" }}
+                      />
+                      <ReferenceLine
+                        x="20:00"
+                        stroke="#ff4d4f"
+                        strokeWidth={2}
+                        label={{ value: "Peak Hours End (8PM)", position: "top", fill: "#ff4d4f" }}
+                      />
+                      {/* Add a text annotation for peak hours */}
+                      <text x="50%" y="15%" textAnchor="middle" fill="#ff4d4f" fontSize="14" fontWeight="bold">
+                        Peak Hours: 6PM - 8PM
+                      </text>
+                    </>
                   )}
-                </BarChart>
+                </AreaChart>
               </ResponsiveContainer>
             </div>
           </div>
