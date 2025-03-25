@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect, useRef } from "react"
-import { MdShield, MdFullscreen, MdZoomIn } from "react-icons/md"
+import { useEffect, useRef, useState  } from "react"
 import EmergencyButtons from "./EmergencyButtons"
 import styles from "./EmergencyControl.module.css"
 
 export default function EmergencyControl() {
   const videoRefs = useRef([])
+  const [currentTime, setCurrentTime] = useState(new Date())
+  const [activeCamera, setActiveCamera] = useState(0)
+  const [isLockdown, setIsLockdown] = useState(false)
 
   useEffect(() => {
     // Play all videos
@@ -15,91 +17,122 @@ export default function EmergencyControl() {
         video.play().catch((error) => console.error("Error playing video:", error))
       }
     })
+
+    // Update time every second
+    const timer = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000)
+
+    return () => clearInterval(timer)
   }, [])
+
+  const handleCameraSelect = (index) => {
+    setActiveCamera(index)
+  }
+
+  const handleLockdownChange = (lockdownActive) => {
+    setIsLockdown(lockdownActive)
+  }
 
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.mainContent}>
+      {/* Lockdown banner - shown when lockdown is active */}
+      {isLockdown && <div className={styles.lockdownBanner}>EMERGENCY LOCKDOWN ACTIVE</div>}
+
+      {/* Main Content */}
+      <main className={`${styles.mainContent} ${isLockdown ? styles.lockdownActive : ""}`}>
         <div className={styles.header}>
-          <div className={styles.titleContainer}>
-            <MdShield className={styles.titleIcon} />
-            <h1 className={styles.emergencyTitle}>Emergency Control Center</h1>
-          </div>
+          <h1 className={styles.emergencyTitle}>Emergency Control Center</h1>
         </div>
 
-        <div className={styles.cameraSection}>
-          <div className={styles.cameraGrid}>
-            {/* Main camera - full width */}
-            <div className={`${styles.cameraCard} ${styles.mainCamera}`}>
-              <div className={styles.cameraHeader}>
-                <span className={styles.cameraLabel}>Camera 1 - Main Entrance</span>
-                <span className={styles.liveIndicator}>● LIVE</span>
-              </div>
-              <div className={styles.cameraFeed}>
-                <video ref={(el) => (videoRefs.current[0] = el)} className={styles.videoElement} muted loop playsInline>
-                  <source src="/videos/video1.mp4" type="video/mp4" />
+        {/* Emergency Buttons - Now placed above the videos */}
+        <div className={styles.emergencyControlPanel}>
+          <div className={styles.panelHeader}>
+            <div className={styles.panelTitle}>Emergency Controls</div>
+            <div className={styles.panelStatus}>
+              Status:{" "}
+              <span className={isLockdown ? styles.statusAlert : styles.statusNormal}>
+                {isLockdown ? "LOCKDOWN ACTIVE" : "Normal"}
+              </span>
+            </div>
+          </div>
+          <EmergencyButtons onLockdownChange={handleLockdownChange} isLockdown={isLockdown} />
+        </div>
+
+        {/* CCTV Container - Now below the buttons */}
+        <div className={styles.cctvContainer}>
+          <div className={styles.sectionTitle}>Security Camera Feeds</div>
+          <div className={styles.cctvGrid}>
+            <div className={styles.cctvMain}>
+              <div className={styles.feedContainer}>
+                <video ref={(el) => (videoRefs.current[0] = el)} className={styles.cctvFeed} muted loop playsInline>
+                  <source src="/emergency/video1.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
-                <button className={styles.fullscreenButton} aria-label="Fullscreen">
-                  <MdFullscreen />
-                </button>
+                <div className={styles.cameraLabel}>Camera 1 - Main Entrance</div>
               </div>
             </div>
 
-            {/* Secondary cameras - side by side */}
-            <div className={styles.secondaryCameras}>
-              <div className={styles.cameraCard}>
-                <div className={styles.cameraHeader}>
-                  <span className={styles.cameraLabel}>Camera 2 - Parking</span>
-                  <span className={styles.liveIndicator}>● LIVE</span>
-                </div>
-                <div className={styles.cameraFeed}>
-                  <video
-                    ref={(el) => (videoRefs.current[1] = el)}
-                    className={styles.videoElement}
-                    muted
-                    loop
-                    playsInline
-                  >
-                    <source src="/videos/video2.mp4" type="video/mp4" />
+            <div className={styles.cctvSecondary}>
+              <div
+                className={`${styles.cctvFeedContainer} ${activeCamera === 1 ? styles.activeFeed : ""}`}
+                onClick={() => handleCameraSelect(1)}
+              >
+                <div className={styles.feedContainer}>
+                  <video ref={(el) => (videoRefs.current[1] = el)} className={styles.cctvFeed} muted loop playsInline>
+                    <source src="/emergency/video2.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  <button className={styles.zoomButton} aria-label="Zoom">
-                    <MdZoomIn />
-                  </button>
+                  <div className={styles.cameraLabel}>Camera 2 - Parking</div>
                 </div>
               </div>
 
-              <div className={styles.cameraCard}>
-                <div className={styles.cameraHeader}>
-                  <span className={styles.cameraLabel}>Camera 3 - Living Room</span>
-                  <span className={styles.liveIndicator}>● LIVE</span>
-                </div>
-                <div className={styles.cameraFeed}>
-                  <video
-                    ref={(el) => (videoRefs.current[2] = el)}
-                    className={styles.videoElement}
-                    muted
-                    loop
-                    playsInline
-                  >
-                    <source src="/videos/video3.mp4" type="video/mp4" />
+              <div
+                className={`${styles.cctvFeedContainer} ${activeCamera === 2 ? styles.activeFeed : ""}`}
+                onClick={() => handleCameraSelect(2)}
+              >
+                <div className={styles.feedContainer}>
+                  <video ref={(el) => (videoRefs.current[2] = el)} className={styles.cctvFeed} muted loop playsInline>
+                    <source src="/emergency/video3.mp4" type="video/mp4" />
                     Your browser does not support the video tag.
                   </video>
-                  <button className={styles.zoomButton} aria-label="Zoom">
-                    <MdZoomIn />
-                  </button>
+                  <div className={styles.cameraLabel}>Camera 3 - Living Room</div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
-        <div className={styles.buttonSection}>
-          <EmergencyButtons />
-        </div>
-      </div>
+      </main>
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

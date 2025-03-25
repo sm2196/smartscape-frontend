@@ -406,6 +406,12 @@
   transition: all 0.2s ease;
 }
 
+.actionButton.active {
+  background-color: var(--lavender);
+  color: var(--oxford-blue);
+  font-weight: 500;
+}
+
 .actionButton:hover:not(:disabled) {
   background-color: rgba(210, 220, 245, 0.2);
 }
@@ -440,6 +446,19 @@
   border-radius: 3px; /* Reduced from 4px */
   width: 30%;
   animation: progress 2s infinite alternate;
+}
+
+/* Add a new style for the paused progress bar */
+.progressPaused {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: var(--lavender);
+  opacity: 0.5;
+  border-radius: 3px;
+  width: 50%;
+  transition: width 0.5s ease-out;
 }
 
 @keyframes progress {
@@ -888,3 +907,4 @@
   padding: 2px 6px;
   border-radius: 4px;
 }
+

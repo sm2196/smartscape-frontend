@@ -64,52 +64,6 @@
   text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
 }
 
-.wrapper .live-chat {
-  background: #152447;
-  color: #fff;
-}
-
-.wrapper .live-chat:hover {
-  background: #D2DCF5;
-  color: #152447;
-
-}
-
-.wrapper .live-chat:hover .tooltip,
-.wrapper .live-chat:hover .tooltip::before {
-  background: #D2DCF5;
-  color: #152447;
-}
-
-.videoBtn {
-  width: 155px;
-  height: 50px;
-  border-radius: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.349);
-  background-color: #4a5f96;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition-duration: 0.3s;
-  overflow: hidden;
-  position: absolute;
-  top: 20px;
-  right: 25px;
-}
-
-.IconContainer {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(to bottom, #152447, #264180);
-  border-radius: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  transition-duration: 0.3s;
-}
-
 .icon {
   color: white;
   font-size: 1.5em;
@@ -125,23 +79,6 @@
   font-weight: bold;
   transition-duration: 0.3s;
   font-size: 1.04em;
-}
-
-.videoBtn:hover .IconContainer {
-  width: 160px;
-  transition-duration: 0.3s;
-}
-
-.videoBtn:hover .text {
-  transform: translate(10px);
-  width: 0;
-  font-size: 0;
-  transition-duration: 0.3s;
-}
-
-.videoBtn:active {
-  transform: scale(0.95);
-  transition-duration: 0.3s;
 }
 
 .faq-nav {
@@ -285,24 +222,6 @@ h2 {
 
   .faq-item {
     width: 100%;
-  }
-
-  .videoBtn {
-    width: 50px;
-    height: 40px;
-    font-size: 0.9em;
-    top: 10px;
-    right: 15px;
-    top: 80px;
-
-  }
-
-  .videoBtn:hover {
-    background-color: #152447;
-  }
-
-  .IconContainer {
-    background: transparent;
   }
 
   .text {

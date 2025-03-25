@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { useEffect, useMemo, useState } from "react"
 import {
   MdLightbulb,
   MdTv,
@@ -13,6 +14,7 @@ import {
   MdBed,
   MdOutlineLight,
   MdBolt,
+  MdDevicesOther,
 } from "react-icons/md"
 import { LuHeater, LuLamp, LuLampDesk, LuProjector, LuWashingMachine, LuBlinds } from "react-icons/lu"
 import { BsSpeaker } from "react-icons/bs"
@@ -22,90 +24,127 @@ import { DeviceCard } from "./DeviceCard"
 import { RoomSection } from "./RoomSection"
 import { VoltageAlert } from "./VoltageAlert"
 import styles from "./DashboardContent.module.css"
-import { useFirebase, DEFAULT_DEVICE_VOLTAGES } from "./FirebaseContext"
+import { useFirebase } from "./backend/FirebaseContext"
+import { useAuth } from "@/hooks/useAuth"
 
-// Add this constant at the top of the file, after the imports
-// Default voltages for devices
-
-const bedroomDevices = {
-  "Master Bedroom": [
-    { id: "master_blinds", icon: LuBlinds, title: "Blinds", status: "Closed" },
-    { id: "master_door", icon: MdDoorFront, title: "Door", status: "Locked" },
-    { id: "master_lamp", icon: LuLampDesk, title: "Bedside Lamp", status: "Off" },
-  ],
-  "Guest Bedroom": [
-    { id: "guest_light", icon: MdLightbulb, title: "Main Light", status: "Off" },
-    { id: "guest_ac", icon: TbAirConditioning, title: "AC", status: "22°C", statusColor: "statusBlue" },
-  ],
-  "Kids Bedroom": [
-    {
-      id: "kids_water_heater",
-      icon: MdThermostat,
-      title: "Water Heater",
-      status: "45°C",
-      isActive: true,
-      statusColor: "statusBlue",
-    },
-    { id: "kids_bed", icon: MdBed, title: "Smart Bed", status: "Occupied" },
-    { id: "kids_lamp", icon: LuLampDesk, title: "Study Lamp", status: "Off" },
-  ],
-}
-
-// Define device IDs for master controls
-const lightAndFanDevices = [
-  "living_lamp",
-  "living_lights",
-  "living_fan",
-  "garage_lights",
-  "master_lamp",
-  "guest_light",
-  "kids_nightlight",
-  "kids_lamp",
-]
-
-const mediaDevices = ["living_tv", "living_speaker", "living_projector"]
-
-// Device title mapping
-const deviceTitles = {
-  living_lamp: "Living Room Lamp",
-  living_heater: "Living Room Heater",
-  living_fan: "Ceiling Fan",
-  living_lights: "Pendant Lights",
-  living_tv: "SONY TV",
-  living_speaker: "JBL GO 4",
-  living_projector: "Epson Projector",
-  garage_lights: "Garage Lights",
-  garage_freezer: "Freezer",
-  garage_washer: "Washing Machine",
-  master_lamp: "Master Bedroom Lamp",
-  guest_light: "Guest Bedroom Light",
-  guest_ac: "Guest Bedroom AC",
-  kids_nightlight: "Kids Night Light",
-  kids_lamp: "Kids Study Lamp",
-  kids_water_heater: "Kids Water Heater",
+// Map device types to their respective icons
+const DEVICE_ICONS = {
+  Light: MdLightbulb,
+  Fan: MdWindPower,
+  AC: TbAirConditioning,
+  Room_Heater: LuHeater,
+  Water_Heater: MdThermostat,
+  Bed: MdBed,
+  TV: MdTv,
+  Projector: LuProjector,
+  Speaker: BsSpeaker,
+  Blinds: LuBlinds,
+  Door: MdDoorFront,
+  Motion: MdTimer,
+  Freezer: MdThermostat,
+  Washer: LuWashingMachine,
+  Recycling: MdRecycling,
+  // Custom icons for specific device icons from database
+  MdLightbulb: MdLightbulb,
+  MdOutlineLight: MdOutlineLight,
+  LuLamp: LuLamp,
+  LuLampDesk: LuLampDesk,
+  MdDoorFront: MdDoorFront,
+  MdGarage: MdGarage,
+  // Default icon
+  default: MdDevicesOther,
 }
 
 export default function DashboardContent() {
-  const [selectedBedroom, setSelectedBedroom] = useState("Master Bedroom")
+  const { user } = useAuth()
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
   const {
-    updateDeviceState,
     devices,
+    rooms,
     totalVoltage,
-    isPeakHour,
     showVoltageAlert,
     dismissVoltageAlert,
     triggerVoltageAlert,
     VOLTAGE_THRESHOLD,
+    updateDeviceState,
+    fetchRoomsAndDevices,
+    getIdFromRef,
   } = useFirebase()
+
+  // Ensure rooms and devices are loaded
+  useEffect(() => {
+    if (user) {
+      setIsLoading(true)
+      fetchRoomsAndDevices().finally(() => {
+        setIsLoading(false)
+      })
+    }
+  }, [user, fetchRoomsAndDevices])
+
+  // Group devices by room using roomRef
+  const devicesByRoom = useMemo(() => {
+    const grouped = {}
+
+    // Initialize with empty arrays for all rooms
+    rooms.forEach((room) => {
+      grouped[room.id] = []
+    })
+
+    // Add devices to their respective rooms based on roomRef
+    Object.entries(devices).forEach(([deviceId, device]) => {
+      const roomId = getIdFromRef(device.roomRef)
+      if (roomId && grouped[roomId]) {
+        grouped[roomId].push({
+          ...device,
+          id: deviceId, // Add the device ID to the device object for easier reference
+        })
+      }
+    })
+
+    return grouped
+  }, [devices, rooms, getIdFromRef])
+
+  // Get all light and fan devices for master control
+  const lightAndFanDevices = useMemo(() => {
+    return Object.keys(devices).filter((deviceId) => {
+      const device = devices[deviceId]
+      return device.deviceType === "Light" || device.deviceType === "Fan"
+    })
+  }, [devices])
+
+  // Get all media devices for master control
+  const mediaDevices = useMemo(() => {
+    return Object.keys(devices).filter((deviceId) => {
+      const device = devices[deviceId]
+      return device.deviceType === "TV" || device.deviceType === "Speaker" || device.deviceType === "Projector"
+    })
+  }, [devices])
+
+  // Function to get the appropriate icon for a device
+  const getDeviceIcon = (device) => {
+    // First check if the device has a specific icon set
+    if (device.deviceIcon && DEVICE_ICONS[device.deviceIcon]) {
+      return DEVICE_ICONS[device.deviceIcon]
+    }
+
+    // Otherwise use the device type to determine the icon
+    if (device.deviceType && DEVICE_ICONS[device.deviceType]) {
+      return DEVICE_ICONS[device.deviceType]
+    }
+
+    // Default fallback icon
+    return DEVICE_ICONS.default
+  }
 
   // Function to turn off all lights and fans
   const turnOffLightsAndFans = () => {
     lightAndFanDevices.forEach((deviceId) => {
       // Get current device state or use default
-      const currentState = devices[deviceId] || { status: "Off", isActive: false }
+      const currentDevice = devices[deviceId]
 
       // Only update if the device is currently active
-      if (currentState.isActive) {
+      if (currentDevice && currentDevice.isActive) {
         updateDeviceState(deviceId, {
           status: "Off",
           isActive: false,
@@ -119,10 +158,10 @@ export default function DashboardContent() {
   const turnOffMediaDevices = () => {
     mediaDevices.forEach((deviceId) => {
       // Get current device state or use default
-      const currentState = devices[deviceId] || { status: "Off", isActive: false }
+      const currentDevice = devices[deviceId]
 
       // Only update if the device is currently active
-      if (currentState.isActive) {
+      if (currentDevice && currentDevice.isActive) {
         updateDeviceState(deviceId, {
           status: "Off",
           isActive: false,
@@ -134,26 +173,41 @@ export default function DashboardContent() {
 
   // Function to turn on high-voltage devices for testing
   const turnOnHighVoltageDevices = () => {
-    // Turn on heater (1500W)
-    updateDeviceState("living_heater", {
-      status: "On",
-      isActive: true,
-      statusColor: "statusBlue",
-    })
+    // Find high voltage devices
+    const heaters = Object.keys(devices).find(
+      (id) => devices[id].deviceType === "Room_Heater" || devices[id].deviceType === "Water_Heater",
+    )
 
-    // Turn on TV (150W)
-    updateDeviceState("living_tv", {
-      status: "On",
-      isActive: true,
-      statusColor: "statusGreen",
-    })
+    const tvs = Object.keys(devices).find((id) => devices[id].deviceType === "TV")
 
-    // Turn on freezer (700W)
-    updateDeviceState("garage_freezer", {
-      status: "-6.5°C",
-      isActive: true,
-      statusColor: "statusBlue",
-    })
+    const freezers = Object.keys(devices).find((id) => devices[id].deviceType === "Freezer")
+
+    // Turn on heater if available
+    if (heaters) {
+      updateDeviceState(heaters, {
+        status: "On",
+        isActive: true,
+        statusColor: "statusBlue",
+      })
+    }
+
+    // Turn on TV if available
+    if (tvs) {
+      updateDeviceState(tvs, {
+        status: "On",
+        isActive: true,
+        statusColor: "statusGreen",
+      })
+    }
+
+    // Turn on freezer if available
+    if (freezers) {
+      updateDeviceState(freezers, {
+        status: "-6.5°C",
+        isActive: true,
+        statusColor: "statusBlue",
+      })
+    }
 
     // After turning on devices, trigger the alert
     setTimeout(() => {
@@ -166,13 +220,13 @@ export default function DashboardContent() {
     const activeDevices = Object.entries(devices)
       .filter(([id, device]) => {
         // Only include active devices with significant voltage (more than 50W)
-        const voltage = device.voltage || DEFAULT_DEVICE_VOLTAGES[id] || 0
+        const voltage = device.voltage || 0
         return device.isActive && voltage > 50
       })
       .map(([id, device]) => ({
         id,
-        title: deviceTitles[id] || id,
-        voltage: device.voltage || DEFAULT_DEVICE_VOLTAGES[id] || 0,
+        title: device.deviceName || id,
+        voltage: device.voltage || 0,
       }))
       .sort((a, b) => b.voltage - a.voltage) // Sort by voltage, highest first
       .slice(0, 5) // Get top 5 highest voltage devices
@@ -180,76 +234,57 @@ export default function DashboardContent() {
     return activeDevices
   }
 
+  // If loading, show a loading spinner
+  if (isLoading) {
+    return (
+      <div className={styles.dashboardMainContent}>
+        <div className={styles.loadingState}>
+          <div className={styles.loadingSpinner}></div>
+          <p>Loading your smart home...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // If no rooms are available, show an empty state with a button to add rooms
+  if (rooms.length === 0) {
+    return (
+      <div className={styles.dashboardMainContent}>
+        <div className={styles.emptyState}>
+          <MdDevicesOther size={48} />
+          <p>No rooms or devices found. Add some in the Room & Device Management section.</p>
+          <button className={styles.addRoomButton} onClick={() => router.push("/dashboard/settings/roomdevices")}>
+            Add Rooms & Devices
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className={styles.dashboardMainContent}>
-      <RoomSection title="Living Room">
-        <DeviceCard id="living_lamp" icon={LuLamp} title="Lamp" status="Off" />
-        <DeviceCard id="living_heater" icon={LuHeater} title="Heater" status="Off" />
-        <DeviceCard
-          id="living_fan"
-          icon={MdWindPower}
-          title="Ceiling Fan"
-          status="Low"
-          isActive
-          statusColor="statusYellow"
-        />
-        <DeviceCard id="living_lights" icon={MdOutlineLight} title="Pendant Lights" status="Off" />
-        <DeviceCard id="living_tv" icon={MdTv} title="SONY TV" status="On" isActive statusColor="statusGreen" />
-        <DeviceCard
-          id="living_speaker"
-          icon={BsSpeaker}
-          title="JBL GO 4"
-          status="52% Battery"
-          isActive={false}
-          statusColor="statusPink"
-        />
-        <DeviceCard id="living_projector" icon={LuProjector} title="Epson Projector" status="Off" />
-      </RoomSection>
-
-      <RoomSection title="Garage">
-        <DeviceCard id="garage_door" icon={MdGarage} title="Garage Door" status="Closed" />
-        <DeviceCard
-          id="garage_freezer"
-          icon={MdThermostat}
-          title="Freezer Temp"
-          status="-6.5°C"
-          statusColor="statusBlue"
-        />
-        <DeviceCard id="garage_lights" icon={MdLightbulb} title="Lights" status="Off" />
-        <DeviceCard
-          id="garage_recycling"
-          icon={MdRecycling}
-          title="Recycling Day"
-          status="In 5 Days"
-          statusColor="statusGreen"
-        />
-        <DeviceCard
-          id="garage_washer"
-          icon={LuWashingMachine}
-          title="Washing Machine"
-          status="Cycle Complete"
-          isActive
-        />
-      </RoomSection>
-
-      <RoomSection title={selectedBedroom} rooms={Object.keys(bedroomDevices)} handleRoomChange={setSelectedBedroom}>
-        {bedroomDevices[selectedBedroom].map((device) => (
-          <DeviceCard
-            key={device.id}
-            id={device.id}
-            icon={device.icon}
-            title={device.title}
-            status={device.status}
-            isActive={device.isActive}
-            statusColor={device.statusColor}
-          />
-        ))}
-      </RoomSection>
-
-      <RoomSection title="Front Door">
-        <DeviceCard id="front_motion" icon={MdTimer} title="Last Motion" status="11 minutes ago" />
-        <DeviceCard id="front_door" icon={MdDoorFront} title="Front Door" status="Locked" />
-      </RoomSection>
+      {/* Render each room as a separate section */}
+      {rooms.map((room) => (
+        <RoomSection key={room.id} title={room.roomName}>
+          {devicesByRoom[room.id]?.map((device) => {
+            const DeviceIcon = getDeviceIcon(device)
+            return (
+              <DeviceCard
+                key={device.id}
+                id={device.id}
+                icon={DeviceIcon}
+                title={device.deviceName}
+                status={device.status || "Off"}
+                isActive={device.isActive || false}
+                statusColor={device.statusColor || ""}
+              />
+            )
+          })}
+          {devicesByRoom[room.id]?.length === 0 && (
+            <div className={styles.emptyDeviceMessage}>No devices in this room</div>
+          )}
+        </RoomSection>
+      ))}
 
       {/* Add padding div for action bar */}
       <div className={"tw:pb-14 tw:max-lg:pb-24"} />
@@ -281,3 +316,4 @@ export default function DashboardContent() {
     </div>
   )
 }
+

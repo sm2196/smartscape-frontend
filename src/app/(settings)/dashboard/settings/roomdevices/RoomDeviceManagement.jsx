@@ -15,9 +15,17 @@ import {
   MdOutlineLight,
   MdDoorFront,
   MdGarage,
+  MdWindPower,
+  MdThermostat,
+  MdBed,
+  MdTv,
+  MdTimer,
+  MdRecycling,
 } from "react-icons/md"
-import { LuLamp, LuLampDesk } from "react-icons/lu"
-import { collection, query, where, getDocs, deleteDoc, doc, addDoc } from "firebase/firestore"
+import { LuLamp, LuLampDesk, LuHeater, LuProjector, LuBlinds, LuWashingMachine } from "react-icons/lu"
+import { TbAirConditioning } from "react-icons/tb"
+import { BsSpeaker } from "react-icons/bs"
+import { collection, query, where, getDocs, deleteDoc, doc, addDoc, updateDoc } from "firebase/firestore"
 import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
 import styles from "./RoomDeviceManagement.module.css"
@@ -61,6 +69,19 @@ const DEVICE_ICONS = {
     { name: "MdDoorFront", icon: MdDoorFront, label: "Door" },
     { name: "MdGarage", icon: MdGarage, label: "Garage" },
   ],
+  Fan: [{ name: "MdWindPower", icon: MdWindPower, label: "Fan" }],
+  AC: [{ name: "TbAirConditioning", icon: TbAirConditioning, label: "Air Conditioner" }],
+  Room_Heater: [{ name: "LuHeater", icon: LuHeater, label: "Room Heater" }],
+  Water_Heater: [{ name: "MdThermostat", icon: MdThermostat, label: "Water Heater" }],
+  Bed: [{ name: "MdBed", icon: MdBed, label: "Smart Bed" }],
+  TV: [{ name: "MdTv", icon: MdTv, label: "Television" }],
+  Projector: [{ name: "LuProjector", icon: LuProjector, label: "Projector" }],
+  Speaker: [{ name: "BsSpeaker", icon: BsSpeaker, label: "Speaker" }],
+  Blinds: [{ name: "LuBlinds", icon: LuBlinds, label: "Window Blinds" }],
+  Motion: [{ name: "MdTimer", icon: MdTimer, label: "Motion Sensor" }],
+  Freezer: [{ name: "MdThermostat", icon: MdThermostat, label: "Freezer" }],
+  Washer: [{ name: "LuWashingMachine", icon: LuWashingMachine, label: "Washing Machine" }],
+  Recycling: [{ name: "MdRecycling", icon: MdRecycling, label: "Recycle Bin" }],
 }
 
 const DeviceManagement = () => {
@@ -78,6 +99,14 @@ const DeviceManagement = () => {
   const [error, setError] = useState(null)
   const [userId, setUserId] = useState(null)
   const [selectedDeviceIcon, setSelectedDeviceIcon] = useState("") // New state for selected icon
+
+  // New state variables for editing
+  const [isEditingRoom, setIsEditingRoom] = useState(false)
+  const [editedRoomName, setEditedRoomName] = useState("")
+  const [isEditingDevice, setIsEditingDevice] = useState(false)
+  const [editedDeviceName, setEditedDeviceName] = useState("")
+  const [editedDeviceIcon, setEditedDeviceIcon] = useState("")
+  const [showIconSelector, setShowIconSelector] = useState(false)
 
   // Ref for the device type dropdown
   const deviceTypeDropdownRef = useRef(null)
@@ -195,13 +224,25 @@ const DeviceManagement = () => {
     [user, userId],
   )
 
+  // Update the openPopup function to initialize editing state properly
   const openPopup = (type, room = null, device = null) => {
     setPopupType(type)
-    if (room) setSelectedRoom(room)
-    if (device) setSelectedDevice(device)
+
+    if (room) {
+      setSelectedRoom(room)
+      // Initialize room editing state
+      setEditedRoomName(room.roomName)
+    }
+
+    if (device) {
+      setSelectedDevice(device)
+      // Initialize device editing state
+      setEditedDeviceName(device.deviceName)
+      setEditedDeviceIcon(device.deviceIcon || "")
+    }
   }
 
-  // Update the closePopup function to reset the device type and icon
+  // Update the closePopup function to reset all state
   const closePopup = () => {
     setPopupType(null)
     setSelectedRoom(null)
@@ -213,6 +254,14 @@ const DeviceManagement = () => {
     setShowDeviceTypeDropdown(false) // Hide dropdown
     setSelectedDevice(null)
     setSelectedDeviceIcon("") // Reset selected icon
+
+    // Reset editing states
+    setIsEditingRoom(false)
+    setEditedRoomName("")
+    setIsEditingDevice(false)
+    setEditedDeviceName("")
+    setEditedDeviceIcon("")
+    setShowIconSelector(false)
   }
 
   // Handle device type selection
@@ -225,6 +274,11 @@ const DeviceManagement = () => {
   // Handle device icon selection
   const handleDeviceIconSelect = (iconName) => {
     setSelectedDeviceIcon(iconName)
+  }
+
+  // Handle edited device icon selection
+  const handleEditedDeviceIconSelect = (iconName) => {
+    setEditedDeviceIcon(iconName)
   }
 
   // Update the handleSaveRoom function
@@ -258,6 +312,38 @@ const DeviceManagement = () => {
     } catch (error) {
       console.error("Error adding room: ", error)
       setError("Failed to add room. Please try again.")
+    }
+  }
+
+  // New function to handle updating room name
+  const handleUpdateRoom = async () => {
+    if (!user || !selectedRoom || !editedRoomName.trim()) return
+
+    try {
+      const roomRef = doc(db, "Rooms", selectedRoom.id)
+      await updateDoc(roomRef, {
+        roomName: editedRoomName.trim(),
+      })
+
+      // Update local state
+      const updatedRooms = rooms.map((room) =>
+        room.id === selectedRoom.id ? { ...room, roomName: editedRoomName.trim() } : room,
+      )
+      setRooms(updatedRooms)
+
+      // Update devices that reference this room (for display purposes)
+      const updatedDevices = { ...devices }
+
+      // Update cache
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [updatedRooms, updatedDevices])
+
+      // Exit editing mode
+      setIsEditingRoom(false)
+      // Update the selected room with the new name
+      setSelectedRoom({ ...selectedRoom, roomName: editedRoomName.trim() })
+    } catch (error) {
+      console.error("Error updating room: ", error)
+      setError("Failed to update room. Please try again.")
     }
   }
 
@@ -407,10 +493,15 @@ const DeviceManagement = () => {
   const handleSaveDevice = async () => {
     if (!user || !newDeviceName.trim() || !newDeviceCategory || !newDeviceType) return
 
-    // For Light and Door device types, require an icon selection
-    if ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon) {
-      setError("Please select an icon for this device type")
-      return
+    // For device types with icons, require an icon selection or auto-select if only one option
+    if (DEVICE_ICONS[newDeviceType]) {
+      if (DEVICE_ICONS[newDeviceType].length === 1) {
+        // Auto-select the only icon available for this device type
+        setSelectedDeviceIcon(DEVICE_ICONS[newDeviceType][0].name)
+      } else if (!selectedDeviceIcon) {
+        setError("Please select an icon for this device type")
+        return
+      }
     }
 
     try {
@@ -454,6 +545,55 @@ const DeviceManagement = () => {
     } catch (error) {
       console.error("Error adding device: ", error)
       setError("Failed to add device. Please try again.")
+    }
+  }
+
+  // New function to handle updating device
+  const handleUpdateDevice = async () => {
+    if (!user || !selectedRoom || !selectedDevice || !editedDeviceName.trim()) return
+
+    try {
+      const deviceRef = doc(db, "Devices", selectedDevice.id)
+
+      // Prepare update data
+      const updateData = {
+        deviceName: editedDeviceName.trim(),
+      }
+
+      // Only update icon if it's changed and not empty
+      if (editedDeviceIcon) {
+        updateData.deviceIcon = editedDeviceIcon
+      }
+
+      await updateDoc(deviceRef, updateData)
+
+      // Update local state
+      const updatedDevices = { ...devices }
+      updatedDevices[selectedRoom.id] = devices[selectedRoom.id].map((device) =>
+        device.id === selectedDevice.id
+          ? { ...device, deviceName: editedDeviceName.trim(), deviceIcon: editedDeviceIcon || device.deviceIcon }
+          : device,
+      )
+
+      setDevices(updatedDevices)
+
+      // Update cache
+      saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [rooms, updatedDevices])
+
+      // Exit editing mode
+      setIsEditingDevice(false)
+      // Update the selected device with the new data
+      setSelectedDevice({
+        ...selectedDevice,
+        deviceName: editedDeviceName.trim(),
+        deviceIcon: editedDeviceIcon || selectedDevice.deviceIcon,
+      })
+
+      // Hide icon selector
+      setShowIconSelector(false)
+    } catch (error) {
+      console.error("Error updating device: ", error)
+      setError("Failed to update device. Please try again.")
     }
   }
 
@@ -653,7 +793,16 @@ const DeviceManagement = () => {
       </div>
 
       {popupType && (
-        <div className={styles.modalOverlay} onClick={closePopup}>
+        <div
+          className={styles.modalOverlay}
+          onClick={(e) => {
+            // Only allow closing by clicking outside for viewing rooms or devices
+            // Prevent closing when adding rooms or devices
+            if (popupType !== "addRoom" && popupType !== "addDevice") {
+              closePopup()
+            }
+          }}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             {popupType === "addRoom" && (
               <>
@@ -693,7 +842,15 @@ const DeviceManagement = () => {
             {popupType === "room" && selectedRoom && (
               <>
                 <div className={styles.modalHeader}>
-                  <h2>{selectedRoom.roomName}</h2>
+                  <div className={styles.editNameContainer}>
+                    <input
+                      type="text"
+                      value={editedRoomName}
+                      onChange={(e) => setEditedRoomName(e.target.value)}
+                      className={`${styles.input} ${styles.editNameInput}`}
+                      placeholder="Room Name"
+                    />
+                  </div>
                   <button className={styles.closeButton} onClick={closePopup}>
                     <MdClose />
                   </button>
@@ -732,9 +889,18 @@ const DeviceManagement = () => {
                     <MdDelete />
                     Remove Room
                   </button>
-                  <button className={styles.secondaryButton} onClick={closePopup}>
-                    Close
-                  </button>
+                  <div className={styles.actionButtons}>
+                    <button className={styles.secondaryButton} onClick={closePopup}>
+                      Cancel
+                    </button>
+                    <button
+                      className={`${styles.primaryButton} ${!editedRoomName.trim() ? styles.disabledButton : ""}`}
+                      onClick={handleUpdateRoom}
+                      disabled={!editedRoomName.trim() || editedRoomName === selectedRoom.roomName}
+                    >
+                      Save Changes
+                    </button>
+                  </div>
                 </div>
               </>
             )}
@@ -801,8 +967,8 @@ const DeviceManagement = () => {
                     </div>
                   </div>
 
-                  {/* Icon selection for Light and Door device types */}
-                  {(newDeviceType === "Light" || newDeviceType === "Door") && (
+                  {/* Icon selection for device types with icons */}
+                  {newDeviceType && DEVICE_ICONS[newDeviceType] && (
                     <div className={styles.formGroup}>
                       <label>Select Icon</label>
                       <div className={styles.iconSelectionGrid}>
@@ -848,20 +1014,10 @@ const DeviceManagement = () => {
                   </button>
                   <button
                     className={`${styles.primaryButton} ${
-                      !newDeviceName.trim() ||
-                      !newDeviceCategory ||
-                      !newDeviceType ||
-                      ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon)
-                        ? styles.disabledButton
-                        : ""
+                      !newDeviceName.trim() || !newDeviceCategory || !newDeviceType ? styles.disabledButton : ""
                     }`}
                     onClick={handleSaveDevice}
-                    disabled={
-                      !newDeviceName.trim() ||
-                      !newDeviceCategory ||
-                      !newDeviceType ||
-                      ((newDeviceType === "Light" || newDeviceType === "Door") && !selectedDeviceIcon)
-                    }
+                    disabled={!newDeviceName.trim() || !newDeviceCategory || !newDeviceType}
                   >
                     Add Device
                   </button>
@@ -872,20 +1028,96 @@ const DeviceManagement = () => {
             {popupType === "device" && selectedDevice && (
               <>
                 <div className={styles.modalHeader}>
-                  <h2>{selectedDevice.deviceName}</h2>
+                  <div className={styles.editNameContainer}>
+                    <input
+                      type="text"
+                      value={editedDeviceName}
+                      onChange={(e) => setEditedDeviceName(e.target.value)}
+                      className={`${styles.input} ${styles.editNameInput}`}
+                      placeholder="Device Name"
+                    />
+                  </div>
                   <button className={styles.closeButton} onClick={closePopup}>
                     <MdClose />
                   </button>
                 </div>
-                <div className={styles.modalContent}>{/* Empty content - only showing Remove Device button */}</div>
+                <div className={styles.modalContent}>
+                  <div className={styles.formGroup}>
+                    <label>Device Icon</label>
+                    <div className={styles.currentIconDisplay}>
+                      <div className={styles.selectedIconPreview}>
+                        {editedDeviceIcon
+                          ? renderDeviceIcon(editedDeviceIcon)
+                          : renderDeviceIcon(selectedDevice.deviceIcon) || <span>No icon selected</span>}
+                      </div>
+                    </div>
+
+                    {selectedDevice.deviceType && DEVICE_ICONS[selectedDevice.deviceType] && (
+                      <div className={styles.iconSelectionGrid}>
+                        {DEVICE_ICONS[selectedDevice.deviceType].map((iconConfig) => {
+                          const IconComponent = iconConfig.icon
+                          return (
+                            <div
+                              key={iconConfig.name}
+                              className={`${styles.iconOption} ${
+                                (editedDeviceIcon || selectedDevice.deviceIcon) === iconConfig.name
+                                  ? styles.selectedIcon
+                                  : ""
+                              }`}
+                              onClick={() => handleEditedDeviceIconSelect(iconConfig.name)}
+                              title={iconConfig.label}
+                            >
+                              <IconComponent className={styles.iconDisplay} />
+                            </div>
+                          )
+                        })}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.deviceDetails}>
+                    <div className={styles.deviceTypeDisplay}>
+                      <span className={styles.detailLabel}>Type:</span>
+                      <span className={styles.detailValue}>
+                        {DEVICE_TYPES.find((t) => t.value === selectedDevice.deviceType)?.label ||
+                          selectedDevice.deviceType}
+                      </span>
+                    </div>
+                    <div className={styles.deviceRoomDisplay}>
+                      <span className={styles.detailLabel}>Room:</span>
+                      <span className={styles.detailValue}>{selectedRoom.roomName}</span>
+                    </div>
+                  </div>
+                </div>
                 <div className={styles.modalFooter}>
                   <button className={styles.dangerButton} onClick={() => handleRemoveDevice(selectedDevice)}>
                     <MdDelete />
                     Remove Device
                   </button>
-                  <button className={styles.secondaryButton} onClick={closePopup}>
-                    Close
-                  </button>
+                  <div className={styles.actionButtons}>
+                    <button className={styles.secondaryButton} onClick={closePopup}>
+                      Cancel
+                    </button>
+                    <button
+                      className={`${styles.primaryButton} ${
+                        !editedDeviceName.trim() ||
+                        (
+                          editedDeviceName === selectedDevice.deviceName &&
+                            editedDeviceIcon === selectedDevice.deviceIcon
+                        )
+                          ? styles.disabledButton
+                          : ""
+                      }`}
+                      onClick={handleUpdateDevice}
+                      disabled={
+                        !editedDeviceName.trim() ||
+                        (editedDeviceName === selectedDevice.deviceName &&
+                          editedDeviceIcon === selectedDevice.deviceIcon)
+                      }
+                    >
+                      Save Changes
+                    </button>
+                  </div>
                 </div>
               </>
             )}

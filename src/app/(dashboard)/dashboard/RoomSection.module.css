@@ -1,87 +1,111 @@
 .roomSection {
-  margin-bottom: 40px;
+  margin-bottom: 2rem;
 }
 
-.roomTitleWrapper {
+.roomHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
   position: relative;
-  margin-bottom: 24px;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .roomTitle {
-  font-size: 1.5rem;
-  font-weight: 500;
-  color: var(--text-primary);
-  padding-left: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  padding-left: 0.5rem;
+  border-left: 3px solid transparent;
+  border-image: linear-gradient(180deg, var(--lavender) 0%, transparent 100%) 1;
 }
 
-.roomTitle::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 16px;
-  background: linear-gradient(180deg, var(--lavender) 0%, transparent 100%);
-  border-radius: 2px;
-}
-
-.roomDropdown {
+.roomSelector {
   position: relative;
+  margin-left: 0.5rem;
 }
 
-.dropdownToggle {
-  background: rgba(210, 220, 245, 0.1);
-  border: 1px solid rgba(210, 220, 245, 0.2);
-  color: var(--text-primary);
+.roomSelectorButton {
+  background: none;
+  border: none;
+  color: #fff;
   cursor: pointer;
-  padding: 4px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
+  padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
 }
 
-.dropdownToggle:hover {
-  background-color: rgba(210, 220, 245, 0.2);
+.roomSelectorButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.dropdownMenu {
+.chevron {
+  transition: transform 0.2s;
+}
+
+.chevronUp {
+  transform: rotate(180deg);
+}
+
+.roomDropdown {
   position: absolute;
-  left: 0;
   top: 100%;
-  background-color: var(--surface-dark);
-  border: 1px solid rgba(210, 220, 245, 0.1);
-  border-radius: 8px;
-  padding: 8px 0;
-  min-width: 160px;
+  left: 0;
+  background-color: #1e293b;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
   z-index: 10;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  margin-top: 4px;
+  min-width: 150px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
-.dropdownItem {
+.roomOption {
   display: block;
   width: 100%;
-  padding: 8px 16px;
   text-align: left;
   background: none;
   border: none;
-  color: var(--text-primary);
+  color: #fff;
+  padding: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s;
 }
 
-.dropdownItem:hover {
-  background-color: rgba(210, 220, 245, 0.1);
+.roomOption:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.activeRoom {
+  background-color: rgba(59, 130, 246, 0.2);
+  font-weight: 500;
 }
 
 .deviceGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
 }
+
+.emptyRoom {
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background-color: rgba(15, 23, 42, 0.5);
+  border-radius: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .deviceGrid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+

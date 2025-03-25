@@ -25,7 +25,7 @@ export default function InfoPanel() {
       iconColor: "#E2C391",
       title: "Which details can be edited?",
       content:
-        "Identity verification details can't be changed. You can edit contact info and personal details but may need to verify your identity again.",
+        "You can edit contact info and personal details but may need to verify your identity again.",
     },
     {
       id: "section3",

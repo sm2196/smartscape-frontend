@@ -255,11 +255,6 @@ const FAQ = () => {
     window.open("https://www.example.com/tutorial-video", "_blank")
   }, [])
 
-  const handleClick = useCallback(() => {
-    // Placeholder for live chat logic
-    window.open("https://www.example.com/live-chat", "_blank")
-  }, [])
-
   const filteredFaqs = searchQuery
     ? faqs.filter((faq) => faq.question.toLowerCase().includes(searchQuery.toLowerCase()))
     : isMobile
@@ -280,19 +275,6 @@ const FAQ = () => {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </div>
-      <button className="videoBtn" onClick={handleTutorialButtonClick}>
-        <span className="IconContainer">
-          <FaVideo className="icon" />
-        </span>
-        <p className="text">Watch Tutorial</p>
-      </button>
-
-      <div className="wrapper">
-        <div className="icon live-chat" onClick={handleClick}>
-          <IoChatbubblesOutline size={30} color="#fff" />
-          <div className="tooltip">Chat</div>
-        </div>
       </div>
 
       <div className="faq-nav">

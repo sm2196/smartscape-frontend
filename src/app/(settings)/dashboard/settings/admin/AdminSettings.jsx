@@ -48,16 +48,15 @@ const AdminSettings = () => {
   const [homeId, setHomeId] = useState("")
   const [adminPin, setAdminPin] = useState(null)
   const [isSavingPermissions, setIsSavingPermissions] = useState(false)
+  // Add a new state variable for tracking family members loading
+  const [familyMembersLoading, setFamilyMembersLoading] = useState(false)
 
   // Get the current user
   const { user } = useAuth()
   const userId = user?.uid
 
   // Fetch user data with caching
-  const {
-    data: userData,
-    loading: dataLoading,
-  } = useFirestoreData("Users", userId, {
+  const { data: userData, loading: dataLoading } = useFirestoreData("Users", userId, {
     localStorageCache: true,
     cacheDuration: CACHE_EXPIRATION,
   })
@@ -159,12 +158,15 @@ const AdminSettings = () => {
     }
   }, [userData, isCreatingPin])
 
-  // Fetch family members from Firestore
+  // Update the useEffect that fetches family members to include loading state
   useEffect(() => {
     const fetchFamilyMembers = async () => {
       if (!userId || !authenticated) return
 
       try {
+        // Set loading state to true when starting to fetch
+        setFamilyMembersLoading(true)
+
         // First get the current user's data
         const userDocRef = doc(db, "Users", userId)
         const userDocSnap = await getDoc(userDocRef)
@@ -249,6 +251,9 @@ const AdminSettings = () => {
         setFamilyMembers(members)
       } catch (error) {
         console.error("Error fetching family members:", error)
+      } finally {
+        // Set loading state to false when done, whether successful or not
+        setFamilyMembersLoading(false)
       }
     }
 
@@ -529,27 +534,40 @@ const AdminSettings = () => {
                 </button>
               </div>
               <div className={styles.memberList}>
-                {familyMembers.map((member) => (
-                  <div key={member.id} className={styles.memberCard}>
-                    <div className={styles.memberInfo}>
-                      <div className={styles.memberNameWithIcon}>
-                        {member.isAdmin ? (
-                          <MdAdminPanelSettings size={20} className={styles.adminIcon} />
-                        ) : (
-                          <MdPerson size={20} className={styles.guestIcon} />
-                        )}
-                        <span className={styles.memberName}>{member.name}</span>
-                      </div>
-                      <span className={styles.memberEmail}>{member.email}</span>
-                    </div>
-                    <div className={styles.memberActions}>
-                      <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
-                        <span className={styles.statusDot}></span>
-                        {member.online ? "Online" : "Offline"}
-                      </div>
-                    </div>
+                {familyMembersLoading ? (
+                  <div className={styles.loadingContainer}>
+                    <div className={styles.loadingSpinner}></div>
+                    <p className={styles.loadingText}>Loading family members...</p>
                   </div>
-                ))}
+                ) : familyMembers.length > 0 ? (
+                  familyMembers.map((member) => (
+                    <div key={member.id} className={styles.memberCard}>
+                      <div className={styles.memberInfo}>
+                        <div className={styles.memberNameWithIcon}>
+                          {member.isAdmin ? (
+                            <MdAdminPanelSettings size={20} className={styles.adminIcon} />
+                          ) : (
+                            <MdPerson size={20} className={styles.guestIcon} />
+                          )}
+                          <span className={styles.memberName}>{member.name}</span>
+                        </div>
+                        <span className={styles.memberEmail}>{member.email}</span>
+                      </div>
+                      <div className={styles.memberActions}>
+                        <div className={`${styles.statusBadge} ${member.online ? styles.online : styles.offline}`}>
+                          <span className={styles.statusDot}></span>
+                          {member.online ? "Online" : "Offline"}
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className={styles.emptyState}>
+                    <MdPersonAdd size={48} className={styles.emptyStateIcon} />
+                    <p>No family members found</p>
+                    <p className={styles.emptyStateSubtext}>Add family members to share access to your smart home</p>
+                  </div>
+                )}
               </div>
             </section>
 

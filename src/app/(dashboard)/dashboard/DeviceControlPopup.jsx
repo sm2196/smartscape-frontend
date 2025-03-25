@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { MdClose, MdAccessTime, MdPerson } from "react-icons/md"
+import { useState, useEffect, useRef } from "react"
+import { MdClose, MdAccessTime } from "react-icons/md"
 import styles from "./DeviceControlPopup.module.css"
 
 // Device-specific control components
@@ -32,9 +32,19 @@ const FanControls = ({ initialSpeed = "Off", onUpdate }) => {
   )
 }
 
+// Fix the LightControls component to properly handle percentage values
 const LightControls = ({ initialState = "Off", onUpdate }) => {
-  const [isOn, setIsOn] = useState(initialState === "On")
-  const [brightness, setBrightness] = useState(initialState === "Off" ? 100 : Number.parseInt(initialState) || 100)
+  // Check if initialState contains a percentage or is "On" to determine if light is on
+  const [isOn, setIsOn] = useState(initialState !== "Off")
+
+  // Extract brightness value from initialState if it's a percentage, otherwise use 100
+  const [brightness, setBrightness] = useState(() => {
+    if (initialState === "Off") return 100
+    if (initialState === "On") return 100
+    // Extract number from string like "50%"
+    const match = initialState.match(/(\d+)%/)
+    return match ? Number.parseInt(match[1]) : 100
+  })
 
   const handleToggle = () => {
     const newState = !isOn
@@ -727,95 +737,177 @@ const ProjectorControls = ({ initialState = "Off", onUpdate }) => {
   )
 }
 
-// Auto-close after selection for simple controls
-const NotificationControls = ({ initialState = "Off", onUpdate, autoClose }) => {
-  return (
-    <div className={styles.controlsContainer}>
-      <h3 className={styles.controlTitle}>Notification Settings</h3>
-      <div className={styles.notificationOptions}>
-        <button
-          className={`${styles.notificationButton} ${initialState === "On" ? styles.active : ""}`}
-          onClick={() => {
-            onUpdate({
-              status: "On",
-              isActive: true,
-              statusColor: "statusYellow",
-            })
-            if (autoClose) setTimeout(autoClose, 300)
-          }}
-        >
-          Enable Notifications
-        </button>
-        <button
-          className={`${styles.notificationButton} ${initialState === "Off" ? styles.active : ""}`}
-          onClick={() => {
-            onUpdate({
-              status: "Off",
-              isActive: false,
-            })
-            if (autoClose) setTimeout(autoClose, 300)
-          }}
-        >
-          Disable Notifications
-        </button>
-      </div>
-    </div>
-  )
-}
-
-// New washing machine controls
+// Improved washing machine controls with graceful transitions
 const WashingMachineControls = ({ initialState = "Off", onUpdate }) => {
-  const [isRunning, setIsRunning] = useState(initialState !== "Off" && initialState !== "Cycle Complete")
+  const [isRunning, setIsRunning] = useState(
+    initialState !== "Off" && initialState !== "Cycle Complete" && initialState !== "Paused",
+  )
+  const [isPaused, setIsPaused] = useState(initialState === "Paused")
   const [selectedCycle, setSelectedCycle] = useState("Normal")
+  const [currentAction, setCurrentAction] = useState(initialState.includes("Running:") ? "Running" : initialState)
+
+  // Track animation progress
+  const [progressPercent, setProgressPercent] = useState(50)
+  const progressRef = useRef(null)
+  const animationRef = useRef(null)
+
+  // Track transition state
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const [transitionTarget, setTransitionTarget] = useState(null)
 
   const cycles = ["Normal", "Quick", "Eco", "Heavy Duty", "Delicate"]
   const actions = ["Start", "Pause", "Spin", "Rinse", "Drain"]
+
+  // Calculate the current progress width when component mounts or when paused
+  useEffect(() => {
+    if (isPaused && progressRef.current) {
+      // Get the current width of the progress fill element
+      const computedStyle = window.getComputedStyle(progressRef.current)
+      const width = computedStyle.getPropertyValue("width")
+      const parentWidth = progressRef.current.parentElement.offsetWidth
+
+      // Calculate percentage
+      const widthValue = Number.parseFloat(width)
+      const percentage = (widthValue / parentWidth) * 100
+      setProgressPercent(percentage)
+    }
+  }, [isPaused])
 
   const handleCycleSelect = (cycle) => {
     setSelectedCycle(cycle)
   }
 
+  // Graceful transition function
+  const transitionToState = (targetState, duration = 1000) => {
+    // Set transitioning state
+    setIsTransitioning(true)
+    setTransitionTarget(targetState)
+
+    // Store current progress position
+    const currentProgress = progressPercent
+
+    // Create animation to smoothly transition
+    let startTime = null
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp
+      const elapsed = timestamp - startTime
+      const progress = Math.min(elapsed / duration, 1)
+
+      if (progress < 1) {
+        // Continue animation
+        animationRef.current = requestAnimationFrame(animate)
+      } else {
+        // Animation complete, apply final state
+        setIsTransitioning(false)
+
+        // Apply the target state
+        if (targetState === "Paused") {
+          setIsRunning(false)
+          setIsPaused(true)
+          setCurrentAction("Paused")
+          onUpdate({
+            status: "Paused",
+            isActive: true,
+          })
+        } else if (targetState === "Cycle Complete") {
+          setIsRunning(false)
+          setIsPaused(false)
+          setCurrentAction("Cycle Complete")
+          onUpdate({
+            status: "Cycle Complete",
+            isActive: true,
+          })
+        }
+      }
+    }
+
+    // Start animation
+    animationRef.current = requestAnimationFrame(animate)
+  }
+
+  // Clean up animation on unmount
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current)
+      }
+    }
+  }, [])
+
   const handleAction = (action) => {
     if (action === "Start") {
       setIsRunning(true)
+      setIsPaused(false)
+      setCurrentAction("Running")
       onUpdate({
         status: `Running: ${selectedCycle}`,
         isActive: true,
       })
     } else if (action === "Pause") {
-      setIsRunning(false)
-      onUpdate({
-        status: "Paused",
-        isActive: true,
-      })
+      // Gracefully transition to paused state
+      transitionToState("Paused")
     } else if (action === "Spin") {
       setIsRunning(true)
+      setIsPaused(false)
+      setCurrentAction("Spinning")
       onUpdate({
         status: "Spinning",
         isActive: true,
       })
     } else if (action === "Rinse") {
       setIsRunning(true)
+      setIsPaused(false)
+      setCurrentAction("Rinsing")
       onUpdate({
         status: "Rinsing",
         isActive: true,
       })
     } else if (action === "Drain") {
+      // For Drain, we want to gracefully transition to Cycle Complete
       setIsRunning(true)
+      setIsPaused(false)
+      setCurrentAction("Draining")
       onUpdate({
         status: "Draining",
         isActive: true,
       })
-      // Simulate cycle completion after draining
+
+      // Gracefully transition to cycle complete after draining
       setTimeout(() => {
-        setIsRunning(false)
-        onUpdate({
-          status: "Cycle Complete",
-          isActive: true,
-        })
-      }, 2000)
+        transitionToState("Cycle Complete", 2000)
+      }, 1000)
     }
   }
+
+  // Initialize state based on initialState when component mounts
+  useEffect(() => {
+    if (initialState.includes("Running:")) {
+      setCurrentAction("Running")
+      setIsRunning(true)
+      setIsPaused(false)
+    } else if (initialState === "Paused") {
+      setCurrentAction("Paused")
+      setIsRunning(false)
+      setIsPaused(true)
+    } else if (initialState === "Spinning") {
+      setCurrentAction("Spinning")
+      setIsRunning(true)
+      setIsPaused(false)
+    } else if (initialState === "Rinsing") {
+      setCurrentAction("Rinsing")
+      setIsRunning(true)
+      setIsPaused(false)
+    } else if (initialState === "Draining") {
+      setCurrentAction("Draining")
+      setIsRunning(true)
+      setIsPaused(false)
+    } else if (initialState === "Cycle Complete") {
+      setCurrentAction("Cycle Complete")
+      setIsRunning(false)
+      setIsPaused(false)
+    }
+  }, [initialState])
 
   return (
     <div className={styles.controlsContainer}>
@@ -829,7 +921,7 @@ const WashingMachineControls = ({ initialState = "Off", onUpdate }) => {
               key={cycle}
               className={`${styles.cycleButton} ${selectedCycle === cycle ? styles.active : ""}`}
               onClick={() => handleCycleSelect(cycle)}
-              disabled={isRunning}
+              disabled={isRunning || isPaused}
             >
               {cycle}
             </button>
@@ -838,24 +930,63 @@ const WashingMachineControls = ({ initialState = "Off", onUpdate }) => {
       </div>
 
       <div className={styles.actionButtons}>
-        {actions.map((action) => (
-          <button
-            key={action}
-            className={styles.actionButton}
-            onClick={() => handleAction(action)}
-            disabled={(action === "Start" && isRunning) || (action !== "Start" && !isRunning)}
-          >
-            {action}
-          </button>
-        ))}
+        {actions.map((action) => {
+          // Determine if button should be disabled
+          let isDisabled = false
+          if (action === "Start") {
+            isDisabled = isRunning
+          } else if (action === "Pause") {
+            isDisabled = !isRunning || isPaused
+          } else {
+            isDisabled = !isRunning && !isPaused
+          }
+
+          return (
+            <button
+              key={action}
+              className={`${styles.actionButton} ${currentAction === action ? styles.active : ""}`}
+              onClick={() => handleAction(action)}
+              disabled={isDisabled || isTransitioning}
+            >
+              {action}
+            </button>
+          )
+        })}
       </div>
 
-      {isRunning && (
+      {(isRunning || isPaused || isTransitioning) && (
         <div className={styles.progressContainer}>
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill}></div>
-          </div>
-          <span>Cycle in progress</span>
+          {isRunning && (
+            <div className={styles.progressBar}>
+              <div ref={progressRef} className={styles.progressFill}></div>
+            </div>
+          )}
+          {isPaused && (
+            <div className={styles.progressBar}>
+              <div ref={progressRef} className={styles.progressPaused} style={{ width: `${progressPercent}%` }}></div>
+            </div>
+          )}
+          {isTransitioning && (
+            <div className={styles.progressBar}>
+              <div
+                ref={progressRef}
+                className={transitionTarget === "Paused" ? styles.progressPaused : styles.progressFill}
+                style={{
+                  animationPlayState: "paused",
+                  width: `${progressPercent}%`,
+                }}
+              ></div>
+            </div>
+          )}
+          <span>
+            {isPaused
+              ? "Cycle paused"
+              : isTransitioning
+                ? transitionTarget === "Cycle Complete"
+                  ? "Completing cycle..."
+                  : "Pausing..."
+                : "Cycle in progress"}
+          </span>
         </div>
       )}
     </div>
@@ -871,6 +1002,7 @@ const DefaultControls = ({ title, status, onUpdate }) => {
     onUpdate({
       status: newState ? "On" : "Off",
       isActive: newState,
+      statusColor: "",
     })
   }
 
@@ -882,6 +1014,101 @@ const DefaultControls = ({ title, status, onUpdate }) => {
         <button className={`${styles.toggleButton} ${isEnabled ? styles.active : ""}`} onClick={handleToggle}>
           {isEnabled ? "On" : "Off"}
         </button>
+      </div>
+    </div>
+  )
+}
+
+// Add the VisitorLogControls component before the renderControls function (around line 750):
+
+const VisitorLogControls = ({ initialState = "0 Today", onUpdate }) => {
+  // Generate visitor log data
+  const [visitorCount, setVisitorCount] = useState(Number.parseInt(initialState.split(" ")[0]) || 0)
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [visitorLog, setVisitorLog] = useState([])
+
+  useEffect(() => {
+    // Generate random visitor events
+    const now = new Date()
+    const events = []
+
+    // Create random visitor events
+    for (let i = 0; i < visitorCount; i++) {
+      const minutesAgo = Math.floor(Math.random() * 720) // Random minutes within 12 hours
+      const eventTime = new Date(now.getTime() - minutesAgo * 60000)
+      const duration = Math.floor(Math.random() * 10) + 1 // 1-10 minutes
+
+      events.push({
+        id: i,
+        type: Math.random() > 0.3 ? "Person" : "Package Delivery",
+        time: eventTime,
+        minutesAgo: minutesAgo,
+        duration: duration,
+      })
+    }
+
+    // Sort by most recent first
+    events.sort((a, b) => a.minutesAgo - b.minutesAgo)
+
+    setVisitorLog(events)
+  }, [visitorCount])
+
+  const formatTimeAgo = (minutes) => {
+    if (minutes < 60) {
+      return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`
+    } else if (minutes < 1440) {
+      const hours = Math.floor(minutes / 60)
+      return `${hours} hour${hours !== 1 ? "s" : ""} ago`
+    } else {
+      const days = Math.floor(minutes / 1440)
+      return `${days} day${days !== 1 ? "s" : ""} ago`
+    }
+  }
+
+  const formatTime = (date) => {
+    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+  }
+
+  const handleNotificationsToggle = () => {
+    setNotificationsEnabled(!notificationsEnabled)
+    onUpdate({
+      status: `${visitorCount} Today`,
+      notificationsEnabled: !notificationsEnabled,
+    })
+  }
+
+  return (
+    <div className={styles.controlsContainer}>
+      <div className={styles.visitorSummary}>
+        <div className={styles.visitorCount}>{visitorCount}</div>
+        <div className={styles.visitorCountLabel}>Visitors Today</div>
+      </div>
+
+      <div className={styles.visitorSettings}>
+        <div className={styles.toggleContainer}>
+          <span>Notifications</span>
+          <button
+            className={`${styles.toggleButton} ${notificationsEnabled ? styles.active : ""}`}
+            onClick={handleNotificationsToggle}
+          >
+            {notificationsEnabled ? "On" : "Off"}
+          </button>
+        </div>
+      </div>
+
+      <div className={styles.visitorList}>
+        {visitorLog.map((event) => (
+          <div key={event.id} className={styles.visitorItem}>
+            <div className={styles.visitorIcon}>{event.type === "Person" ? "👤" : "📦"}</div>
+            <div className={styles.visitorDetails}>
+              <div className={styles.visitorType}>{event.type}</div>
+              <div className={styles.visitorTime}>
+                {formatTime(event.time)} • {formatTimeAgo(event.minutesAgo)}
+              </div>
+            </div>
+            <div className={styles.visitorDuration}>{event.duration} min</div>
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -1021,3 +1248,4 @@ export function DeviceControlPopup({ device, onClose, onUpdate }) {
     </>
   )
 }
+

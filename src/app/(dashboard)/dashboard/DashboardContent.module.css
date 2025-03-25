@@ -1,40 +1,134 @@
 .dashboardMainContent {
-  padding: 32px;
-  background: linear-gradient(180deg, var(--oxford-blue) 0%, var(--space-cadet) 100%);
+  padding: 1rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .actionBar {
   position: fixed;
-  bottom: 32px;
-  left: 32px;
-  right: 32px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(10px);
   display: flex;
-  gap: 16px;
+  justify-content: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  z-index: 10;
 }
 
 .actionButton {
-  flex: 1;
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  background-color: rgba(210, 220, 245, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(210, 220, 245, 0.1);
-  border-radius: 12px;
-  padding: 16px;
-  color: var(--text-primary);
-  font-size: 0.925rem;
-  font-weight: 500;
+  gap: 0.5rem;
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .actionButton:hover {
-  background-color: rgba(210, 220, 245, 0.15);
-  transform: translateY(-1px);
+  background-color: rgba(51, 65, 85, 0.8);
 }
 
 .actionButton:active {
-  transform: translateY(0);
+  transform: translateY(1px);
 }
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #8b9cb3;
+  padding: 0 20px;
+}
+
+.emptyState svg {
+  margin-bottom: 16px;
+  color: #4b5563;
+}
+
+.emptyState p {
+  margin-bottom: 24px;
+  max-width: 400px;
+}
+
+.emptyDeviceMessage {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 2rem;
+  color: #64748b;
+  background-color: rgba(15, 23, 42, 0.5);
+  border-radius: 0.5rem;
+}
+
+/* Add these styles for the loading state and add room button */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+  color: #8b9cb3;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #3b82f6;
+  animation: spin 1s ease-in-out infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.addRoomButton {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 20px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.addRoomButton:hover {
+  background-color: #2563eb;
+}
+
+.addRoomButton:active {
+  background-color: #1d4ed8;
+}
+
+@media (max-width: 768px) {
+  .actionBar {
+    flex-direction: column;
+    padding: 0.5rem;
+  }
+
+  .actionButton {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

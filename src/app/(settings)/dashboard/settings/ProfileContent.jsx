@@ -81,7 +81,7 @@ export default function ProfileContent() {
 
   // Display mapping for field names
   const displayMapping = {
-    name: "Legal name",
+    name: "Full name",
     email: "Email address",
     phone: "Phone number",
     governmentId: "Government ID",
