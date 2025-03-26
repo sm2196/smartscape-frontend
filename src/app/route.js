@@ -1,5 +1,19 @@
 import { NextResponse } from "next/server"
-import { activateEmergencyLockdown, deactivateEmergencyLockdown } from "@/lib/doorService"
+import { activateEmergencyLockdown, deactivateEmergencyLockdown, getLockdownStatus } from "@/lib/doorService"
+
+export async function GET() {
+  try {
+    const result = await getLockdownStatus()
+
+    if (result.success) {
+      return NextResponse.json(result)
+    } else {
+      return NextResponse.json({ error: result.error }, { status: 500 })
+    }
+  } catch (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
 
 export async function POST(request) {
   try {
@@ -17,6 +31,7 @@ export async function POST(request) {
       return NextResponse.json({
         success: true,
         message: result.message,
+        details: result.details,
       })
     } else {
       return NextResponse.json(
@@ -31,4 +46,6 @@ export async function POST(request) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+
+
 

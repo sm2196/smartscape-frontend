@@ -1,93 +1,68 @@
 import { db } from "./firebase"
-import { doc, updateDoc, getDoc, serverTimestamp } from "firebase/firestore"
+import { collection, query, where, getDocs, updateDoc, serverTimestamp } from "firebase/firestore"
 
 /**
- * Updates the lock status of a door
- * @param {string} doorId - ID of the door to update
- * @param {boolean} locked - Whether the door should be locked (true) or unlocked (false)
- * @returns {Promise<Object>} Result of the operation
- */
-export async function updateDoorLockStatus(doorId, locked) {
-  try {
-    const doorRef = doc(db, "Dashboard", doorId)
-
-    // Update the door status
-    await updateDoc(doorRef, {
-      isLocked: locked,
-      lastUpdated: serverTimestamp(),
-    })
-
-    return {
-      success: true,
-      message: `Door ${doorId} ${locked ? "locked" : "unlocked"}`,
-    }
-  } catch (error) {
-    console.error(`Error updating door ${doorId}:`, error)
-    return {
-      success: false,
-      error: error.message,
-    }
-  }
-}
-
-/**
- * Gets the current lock status of a door
- * @param {string} doorId - ID of the door to check
- * @returns {Promise<Object>} Current door status
- */
-export async function getDoorLockStatus(doorId) {
-  try {
-    const doorRef = doc(db, "Dashboard", doorId)
-    const doorSnap = await getDoc(doorRef)
-
-    if (doorSnap.exists()) {
-      return {
-        success: true,
-        data: doorSnap.data(),
-      }
-    } else {
-      return {
-        success: false,
-        error: "Door not found",
-      }
-    }
-  } catch (error) {
-    console.error(`Error getting door ${doorId}:`, error)
-    return {
-      success: false,
-      error: error.message,
-    }
-  }
-}
-
-/**
- * Activates emergency lockdown by locking all doors
+ * Activates emergency lockdown by locking all doors in the system
  * @returns {Promise<Object>} Result of the operation
  */
 export async function activateEmergencyLockdown() {
   try {
-    // Lock main door
-    const mainDoorResult = await updateDoorLockStatus("mainDoor", true)
+    // Query all devices with deviceType = "Door"
+    const doorsQuery = query(collection(db, "Devices"), where("deviceType", "==", "Door"))
 
-    // Lock garage door
-    const garageDoorResult = await updateDoorLockStatus("garageDoor", true)
+    const doorSnapshot = await getDocs(doorsQuery)
 
-    // Check if both operations were successful
-    if (mainDoorResult.success && garageDoorResult.success) {
-      return {
-        success: true,
-        message: "Emergency lockdown activated - All doors locked",
-      }
-    } else {
-      // If any operation failed, return error
+    if (doorSnapshot.empty) {
       return {
         success: false,
-        error: "Failed to lock all doors",
-        details: {
-          mainDoor: mainDoorResult,
-          garageDoor: garageDoorResult,
-        },
+        error: "No doors found in the system",
       }
+    }
+
+    // Track success/failure for each door
+    const results = []
+    let allSuccessful = true
+
+    // Update each door's status to "Locked"
+    const updatePromises = doorSnapshot.docs.map(async (doorDoc) => {
+      try {
+        await updateDoc(doorDoc.ref, {
+          status: "Locked",
+          statusColor: "#e74c3c", // Red color for locked status
+          lastUpdated: serverTimestamp(),
+        })
+
+        results.push({
+          doorId: doorDoc.id,
+          doorName: doorDoc.data().deviceName,
+          success: true,
+        })
+
+        return true
+      } catch (error) {
+        console.error(`Error locking door ${doorDoc.id}:`, error)
+
+        results.push({
+          doorId: doorDoc.id,
+          doorName: doorDoc.data().deviceName,
+          success: false,
+          error: error.message,
+        })
+
+        allSuccessful = false
+        return false
+      }
+    })
+
+    // Wait for all updates to complete
+    await Promise.all(updatePromises)
+
+    return {
+      success: allSuccessful,
+      message: allSuccessful
+        ? "Emergency lockdown activated - All doors locked"
+        : "Partial lockdown - Some doors could not be locked",
+      details: results,
     }
   } catch (error) {
     console.error("Error activating emergency lockdown:", error)
@@ -99,33 +74,67 @@ export async function activateEmergencyLockdown() {
 }
 
 /**
- * Deactivates emergency lockdown by unlocking all doors
+ * Deactivates emergency lockdown by unlocking all doors in the system
  * @returns {Promise<Object>} Result of the operation
  */
 export async function deactivateEmergencyLockdown() {
   try {
-    // Unlock main door
-    const mainDoorResult = await updateDoorLockStatus("mainDoor", false)
+    // Query all devices with deviceType = "Door"
+    const doorsQuery = query(collection(db, "Devices"), where("deviceType", "==", "Door"))
 
-    // Unlock garage door
-    const garageDoorResult = await updateDoorLockStatus("garageDoor", false)
+    const doorSnapshot = await getDocs(doorsQuery)
 
-    // Check if both operations were successful
-    if (mainDoorResult.success && garageDoorResult.success) {
-      return {
-        success: true,
-        message: "Emergency lockdown deactivated - All doors unlocked",
-      }
-    } else {
-      // If any operation failed, return error
+    if (doorSnapshot.empty) {
       return {
         success: false,
-        error: "Failed to unlock all doors",
-        details: {
-          mainDoor: mainDoorResult,
-          garageDoor: garageDoorResult,
-        },
+        error: "No doors found in the system",
       }
+    }
+
+    // Track success/failure for each door
+    const results = []
+    let allSuccessful = true
+
+    // Update each door's status to "Unlocked"
+    const updatePromises = doorSnapshot.docs.map(async (doorDoc) => {
+      try {
+        await updateDoc(doorDoc.ref, {
+          status: "Unlocked",
+          statusColor: "", // Clear color for unlocked status
+          lastUpdated: serverTimestamp(),
+        })
+
+        results.push({
+          doorId: doorDoc.id,
+          doorName: doorDoc.data().deviceName,
+          success: true,
+        })
+
+        return true
+      } catch (error) {
+        console.error(`Error unlocking door ${doorDoc.id}:`, error)
+
+        results.push({
+          doorId: doorDoc.id,
+          doorName: doorDoc.data().deviceName,
+          success: false,
+          error: error.message,
+        })
+
+        allSuccessful = false
+        return false
+      }
+    })
+
+    // Wait for all updates to complete
+    await Promise.all(updatePromises)
+
+    return {
+      success: allSuccessful,
+      message: allSuccessful
+        ? "Emergency lockdown deactivated - All doors unlocked"
+        : "Partial unlock - Some doors could not be unlocked",
+      details: results,
     }
   } catch (error) {
     console.error("Error deactivating emergency lockdown:", error)
@@ -135,4 +144,47 @@ export async function deactivateEmergencyLockdown() {
     }
   }
 }
+
+/**
+ * Gets the current lockdown status by checking if any doors are locked
+ * @returns {Promise<Object>} Current lockdown status
+ */
+export async function getLockdownStatus() {
+  try {
+    // Query all devices with deviceType = "Door"
+    const doorsQuery = query(collection(db, "Devices"), where("deviceType", "==", "Door"))
+
+    const doorSnapshot = await getDocs(doorsQuery)
+
+    if (doorSnapshot.empty) {
+      return {
+        success: true,
+        isLockdownActive: false,
+        message: "No doors found in the system",
+      }
+    }
+
+    // Check if any door is locked
+    const lockedDoors = doorSnapshot.docs.filter((doc) => doc.data().status === "Locked")
+
+    return {
+      success: true,
+      isLockdownActive: lockedDoors.length > 0,
+      totalDoors: doorSnapshot.size,
+      lockedDoors: lockedDoors.length,
+      message:
+        lockedDoors.length > 0
+          ? `Lockdown active: ${lockedDoors.length} of ${doorSnapshot.size} doors locked`
+          : "No lockdown active: All doors unlocked",
+    }
+  } catch (error) {
+    console.error("Error getting lockdown status:", error)
+    return {
+      success: false,
+      error: error.message,
+    }
+  }
+}
+
+
 
