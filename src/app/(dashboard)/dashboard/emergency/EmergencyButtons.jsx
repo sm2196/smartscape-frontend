@@ -3,55 +3,45 @@
 import { useState, useEffect } from "react"
 import { MdLockOutline, MdLock, MdLocalPolice } from "react-icons/md"
 import styles from "./EmergencyButtons.module.css"
+import { useEmergencyLockdown } from "./hooks/useEmergencyLockdown"
 
 export default function EmergencyButtons({ onLockdownChange, isLockdown: initialLockdownState }) {
-  const [isLoading, setIsLoading] = useState(false)
+  const {
+    isLockdownActive,
+    isLoading,
+    error,
+    lockdownDetails,
+    activateLockdown,
+    deactivateLockdown,
+    checkLockdownStatus,
+  } = useEmergencyLockdown()
+
+  // Local state to track lockdown status
   const [isLockdown, setIsLockdown] = useState(initialLockdownState || false)
+
+  // Sync local state with hook state
+  useEffect(() => {
+    setIsLockdown(isLockdownActive)
+
+    // Also update parent component if the status is different
+    if (isLockdownActive !== initialLockdownState) {
+      onLockdownChange(isLockdownActive)
+    }
+  }, [isLockdownActive, initialLockdownState, onLockdownChange])
 
   // Check current lockdown status when component mounts
   useEffect(() => {
-    const checkLockdownStatus = async () => {
-      try {
-        const response = await fetch("/api/emergency-lockdown")
-
-        if (response.ok) {
-          const data = await response.json()
-
-          if (data.success) {
-            setIsLockdown(data.isLockdownActive)
-            // Also update parent component if the status is different
-            if (data.isLockdownActive !== initialLockdownState) {
-              onLockdownChange(data.isLockdownActive)
-            }
-          }
-        }
-      } catch (error) {
-        console.error("Error checking lockdown status:", error)
-      }
-    }
-
     checkLockdownStatus()
-  }, [initialLockdownState, onLockdownChange])
+  }, [checkLockdownStatus])
 
   const handleLockdown = async () => {
-    setIsLoading(true)
-
     try {
       const newLockdownState = !isLockdown
 
-      const response = await fetch("/api/emergency-lockdown", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          activate: newLockdownState,
-        }),
-      })
+      // Call the appropriate function based on the desired state
+      const result = newLockdownState ? await activateLockdown() : await deactivateLockdown()
 
-      const result = await response.json()
-
-      if (!response.ok) {
+      if (!result.success) {
         throw new Error(result.error || "Failed to update lockdown status")
       }
 
@@ -63,11 +53,9 @@ export default function EmergencyButtons({ onLockdownChange, isLockdown: initial
 
       // Show alert with result
       alert(result.message)
-    } catch (error) {
-      console.error("Error updating lockdown status:", error)
-      alert("Error: " + (error.message || "Failed to update lockdown status"))
-    } finally {
-      setIsLoading(false)
+    } catch (err) {
+      console.error("Error updating lockdown status:", err)
+      alert("Error: " + (err.message || "Failed to update lockdown status"))
     }
   }
 
@@ -98,6 +86,9 @@ export default function EmergencyButtons({ onLockdownChange, isLockdown: initial
           Contact Authorities
         </button>
       </div>
+
+      {error && <div className={styles.errorMessage}>Error: {error}</div>}
     </div>
   )
 }
+
