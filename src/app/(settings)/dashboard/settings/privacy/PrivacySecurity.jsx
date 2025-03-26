@@ -29,7 +29,6 @@ const PrivacySecurity = () => {
   const userId = user?.uid
 
   const [thirdPartyAppInfo, setThirdPartyAppInfo] = useState("")
-  const [isThirdPartyOpen, setIsThirdPartyOpen] = useState(false)
   const [enabledSecurity, setEnabledSecurity] = useState([])
   const [isSavingSecurity, setIsSavingSecurity] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
@@ -225,34 +224,28 @@ const PrivacySecurity = () => {
     }
   }, [])
 
-  // Modify the handleAppClick function to check if data sharing is enabled
+  // Handle app linking/unlinking
   const handleAppClick = (id) => {
-    // Check if data sharing with third-party apps is enabled
-    if (isSecurityEnabled("allow data sharing with third-party apps")) {
-      toast.error("Please enable 'Allow data sharing with third-party apps' to link third-party integrations")
-      return
+    const app = devices.find((app) => app.id === id)
+
+    if (app.integrated) {
+      // If already integrated, unlink it
+      let linkedThirdPartyApp = JSON.parse(localStorage.getItem("linkedThirdPartyApp")) || []
+      linkedThirdPartyApp = linkedThirdPartyApp.filter((name) => name !== app.name)
+      localStorage.setItem("linkedThirdPartyApp", JSON.stringify(linkedThirdPartyApp))
+
+      setDevices((prevDevices) =>
+        prevDevices.map((d) => (d.id === id ? { ...d, integrated: false, status: "Unlinked" } : d)),
+      )
+
+      toast.success(`${app.name} has been unlinked`)
+    } else {
+      // If not integrated, link it
+      const appLoginURL = loginLinks[app.name]
+      setDevices((prevDevices) => prevDevices.map((d) => (d.id === id ? { ...d, status: "Integrating..." } : d)))
+      sessionStorage.setItem("integratingApp", app.name)
+      window.location.href = appLoginURL
     }
-
-    const app = devices.find((app) => app.id === id)
-    const appLoginURL = loginLinks[app.name]
-
-    setDevices((prevDevices) => prevDevices.map((d) => (d.id === id ? { ...d, status: "Integrating..." } : d)))
-
-    sessionStorage.setItem("integratingApp", app.name)
-
-    window.location.href = appLoginURL
-  }
-
-  const handleUnintegrate = (id) => {
-    const app = devices.find((app) => app.id === id)
-
-    let linkedThirdPartyApp = JSON.parse(localStorage.getItem("linkedThirdPartyApp")) || []
-    linkedThirdPartyApp = linkedThirdPartyApp.filter((name) => name !== app.name)
-    localStorage.setItem("linkedThirdPartyApp", JSON.stringify(linkedThirdPartyApp))
-
-    setDevices((prevDevices) =>
-      prevDevices.map((d) => (d.id === id ? { ...d, integrated: false, status: "Unlinked" } : d)),
-    )
   }
 
   // Helper function to check if a security setting is enabled
@@ -260,11 +253,16 @@ const PrivacySecurity = () => {
     return enabledSecurity.includes(setting)
   }
 
+  // Check if data sharing is enabled
+  const isDataSharingEnabled = isSecurityEnabled("allow data sharing with third-party apps")
+
   if (isLoading) {
     return (
       <div className="privacyContainer">
-        <div className="loadingSpinner"></div>
-        <p className="loadingText">Loading security settings...</p>
+        <div className="loading-container">
+          <div className="loadingSpinner"></div>
+          <p className="loadingText">Loading security settings...</p>
+        </div>
       </div>
     )
   }
@@ -298,19 +296,21 @@ const PrivacySecurity = () => {
         </div>
 
         {/* Third-party Integrations - Redesigned without scrollbar */}
-        <div className="card integrations">
+        <div className={`card integrations ${!isDataSharingEnabled ? "disabled-card" : ""}`}>
           <div className="cardheader">
             <MdCastConnected className="icon" style={{ color: "#2563eb" }} />
             <h3>Your third-party integrations</h3>
           </div>
 
-          <div className="integration-list">
-            {isSecurityEnabled("allow data sharing with third-party apps") && (
-              <div className="integration-warning">
-                Please enable "Allow data sharing with third-party apps" in the Security section to link third-party
-                integrations.
+          {!isDataSharingEnabled && (
+            <div className="disabled-overlay">
+              <div className="disabled-message">
+                Enable "Allow data sharing with third-party apps" in Security settings to manage integrations
               </div>
-            )}
+            </div>
+          )}
+
+          <div className="integration-list">
             {devices.map((app) => (
               <div key={app.id} className="integration-item">
                 <div className="integration-app">
@@ -318,19 +318,13 @@ const PrivacySecurity = () => {
                   {app.name}
                 </div>
                 <button
-                  className={`integration-button ${isSecurityEnabled("allow data sharing with third-party apps") && !app.integrated ? "disabled-button" : ""}`}
-                  onClick={() => (app.integrated ? handleUnintegrate(app.id) : handleAppClick(app.id))}
+                  className={`integration-button ${app.integrated ? "unlinked" : "linked"}`}
+                  onClick={() => handleAppClick(app.id)}
                 >
-                  Link {app.name}
+                  {app.integrated ? "Unlink" : "Link"}
                 </button>
               </div>
             ))}
-          </div>
-
-          <div className="bottom-button-container">
-            <button className="manage-btn" onClick={() => setIsThirdPartyOpen(true)}>
-              Manage Linked Apps
-            </button>
           </div>
         </div>
 
@@ -358,7 +352,7 @@ const PrivacySecurity = () => {
               <input
                 type="checkbox"
                 className="toggles"
-                checked={isSecurityEnabled("allow data sharing with third-party apps")}
+                checked={isDataSharingEnabled}
                 onChange={() => toggleSecurity("allow data sharing with third-party apps")}
                 disabled={isSavingSecurity}
               />
@@ -425,35 +419,6 @@ const PrivacySecurity = () => {
           </div>
         </div>
       </div>
-
-      {/* View All Modal */}
-      {isThirdPartyOpen && (
-        <div className="modalOverlay">
-          <div className="modal">
-            <button className="close-btn" onClick={() => setIsThirdPartyOpen(false)}>
-              ✖
-            </button>
-            <h3>Your third-party integrations</h3>
-            {devices.map((app) => (
-              <div key={app.id} className="list-app">
-                <div>
-                  <p className="app-name">{app.name}</p>
-                  {app.integrated}
-                </div>
-                {app.integrated ? (
-                  <button className="unlink-btn" onClick={() => handleUnintegrate(app.id)}>
-                    Unlink
-                  </button>
-                ) : (
-                  <button className="link-btn" onClick={() => handleAppClick(app.id)}>
-                    Link
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </div>
   )
 }

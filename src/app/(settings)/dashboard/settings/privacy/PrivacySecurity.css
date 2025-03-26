@@ -4,6 +4,7 @@
   overflow-y: auto;
   height: 100%;
   box-sizing: border-box;
+  position: relative;
 }
 
 .title {
@@ -264,6 +265,16 @@
   background-color: #bfdbfe;
 }
 
+.integration-button.linked {
+  background-color: #dbeafe;
+  color: #2563eb;
+}
+
+.integration-button.unlinked {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
 .manage-btn {
   width: 100%;
   padding: 12px;
@@ -395,6 +406,20 @@
 }
 
 /* Loading state */
+.loading-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 10;
+}
+
 .loadingSpinner {
   border: 4px solid rgba(0, 0, 0, 0.1);
   border-left-color: #2563eb;
@@ -402,13 +427,14 @@
   width: 40px;
   height: 40px;
   animation: spin 1s linear infinite;
-  margin: 40px auto 20px;
+  margin: 0 auto 16px;
 }
 
 .loadingText {
   text-align: center;
   color: #4a5568;
   font-size: 16px;
+  font-weight: 500;
 }
 
 @keyframes spin {
@@ -439,6 +465,38 @@
 .disabled-button {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.disabled-card {
+  opacity: 0.7;
+  pointer-events: none;
+  position: relative;
+}
+
+.disabled-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 16px;
+  z-index: 5;
+}
+
+.disabled-message {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  max-width: 80%;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Mobile responsiveness */
@@ -494,3 +552,4 @@
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
