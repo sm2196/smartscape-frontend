@@ -658,3 +658,19 @@
   }
 }
 
+.loading-error {
+  color: #ef4444;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  max-width: 80%;
+  text-align: center;
+}
+
+.loading button {
+  margin-top: 1rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+

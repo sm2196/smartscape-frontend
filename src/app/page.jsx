@@ -21,8 +21,8 @@ import NotificationCenter from "./components/NotificationCenter"
 import DashboardNavbar from "./components/DashboardNavbar"
 import WeatherWidget from "./components/WeatherWidget"
 import ExportOptions from "./components/ExportOptions"
-import "./styles.css"
 import PeakHourInfoBar from "./components/PeakHourInfoBar"
+import "./styles.css"
 
 // Wrap the main component with the FirebaseProvider
 export default function PageWrapper() {
@@ -62,7 +62,12 @@ function Page() {
   // Function to refresh data
   const refreshData = useCallback(() => {
     setRefreshKey((prev) => prev + 1)
-  }, [])
+
+    // Also refresh Firebase data if needed
+    if (firebase.fetchRoomsAndDevices) {
+      firebase.fetchRoomsAndDevices()
+    }
+  }, [firebase])
 
   // Auto-refresh data every 30 seconds for dynamic updates
   useEffect(() => {

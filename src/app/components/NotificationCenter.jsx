@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Bell, X, Check, AlertTriangle, Clock } from "lucide-react"
-import { useFirebase } from "@/app/firebase/FirebaseContext"
+import { useFirebase } from "../firebase/FirebaseContext"
 
 export default function NotificationCenter() {
   const { notificationHistory, markNotificationAsRead, clearAllNotifications } = useFirebase()
