@@ -3,7 +3,7 @@
 import { useState } from "react"
 import styles from "./DeviceCard.module.css"
 import { DeviceControlPopup } from "./DeviceControlPopup"
-import { useDeviceState } from "./backend/useDeviceState"
+import { useDeviceState } from "./hooks/useDeviceState"
 
 export function DeviceCard({ title, status, icon: Icon, isActive = false, onClick, statusColor, id }) {
   const [showControls, setShowControls] = useState(false)

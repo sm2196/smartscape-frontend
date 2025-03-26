@@ -1,5 +1,5 @@
-import DashboardContent from "./DashboardContent.jsx";
-import { FirebaseProvider } from "./backend/FirebaseContext.jsx";
+import DashboardContent from "./DashboardContent";
+import { FirebaseProvider } from "./hooks/FirebaseContext";
 
 export default function DashboardPage() {
   return (

@@ -24,7 +24,7 @@ import { DeviceCard } from "./DeviceCard"
 import { RoomSection } from "./RoomSection"
 import { VoltageAlert } from "./VoltageAlert"
 import styles from "./DashboardContent.module.css"
-import { useFirebase } from "./backend/FirebaseContext"
+import { useFirebase } from "./hooks/FirebaseContext"
 import { useAuth } from "@/hooks/useAuth"
 
 // Map device types to their respective icons
