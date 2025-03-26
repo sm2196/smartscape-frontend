@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
-import { collection, getDocs, doc, updateDoc, onSnapshot } from "firebase/firestore"
+import { collection, getDocs, doc, updateDoc, onSnapshot, addDoc, setDoc, serverTimestamp } from "firebase/firestore"
 import { db, auth } from "./config"
 import { generateMockHourlyData } from "../utils/mockHourlyData"
 
@@ -170,18 +170,72 @@ export const FirebaseProvider = ({ children }) => {
 
         // Add to notification history
         const now = new Date()
-        setNotificationHistory((prev) => [
-          ...prev,
-          {
-            id: now.getTime(),
-            timestamp: now,
-            message: `Peak hour alert: Consumption of ${total}W exceeds threshold of ${VOLTAGE_THRESHOLD}W`,
-            read: false,
-          },
-        ])
+        const newNotification = {
+          id: now.getTime(),
+          timestamp: now,
+          message: `Peak hour alert: Consumption of ${total}W exceeds threshold of ${VOLTAGE_THRESHOLD}W`,
+          read: false,
+        }
+
+        setNotificationHistory((prev) => [...prev, newNotification])
+
+        // Record the peak hour alert in Firebase if not in mock mode
+        if (!MOCK_MODE) {
+          try {
+            // Create a notification document in Firebase
+            const notificationRef = collection(db, "Notifications")
+            addDoc(notificationRef, {
+              timestamp: serverTimestamp(),
+              message: newNotification.message,
+              totalVoltage: total,
+              threshold: VOLTAGE_THRESHOLD,
+              read: false,
+            }).catch((error) => {
+              console.error("Error recording notification in Firebase:", error)
+            })
+
+            // Also update a "CurrentStatus" document to reflect the current state
+            const statusRef = doc(db, "Dashboard", "CurrentStatus")
+            setDoc(
+              statusRef,
+              {
+                isPeakHour: true,
+                totalVoltage: total,
+                lastUpdated: serverTimestamp(),
+                exceededThreshold: true,
+              },
+              { merge: true },
+            ).catch((error) => {
+              console.error("Error updating status in Firebase:", error)
+            })
+          } catch (error) {
+            console.error("Error recording peak hour alert in Firebase:", error)
+          }
+        }
       } else {
         setIsPeakHour(isPeak)
         setShowVoltageAlert(false)
+
+        // Update the status in Firebase even when not in peak hour
+        if (!MOCK_MODE && isPeak) {
+          try {
+            const statusRef = doc(db, "Dashboard", "CurrentStatus")
+            setDoc(
+              statusRef,
+              {
+                isPeakHour: true,
+                totalVoltage: total,
+                lastUpdated: serverTimestamp(),
+                exceededThreshold: false,
+              },
+              { merge: true },
+            ).catch((error) => {
+              console.error("Error updating status in Firebase:", error)
+            })
+          } catch (error) {
+            console.error("Error updating status in Firebase:", error)
+          }
+        }
       }
     },
     [devices, VOLTAGE_THRESHOLD],
