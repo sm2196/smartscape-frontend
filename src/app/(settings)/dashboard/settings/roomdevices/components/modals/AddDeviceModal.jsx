@@ -1,4 +1,6 @@
-import React, { useRef } from "react"
+"use client"
+
+import { useRef } from "react"
 import { MdClose, MdSearch, MdCheck } from "react-icons/md"
 import styles from "../../RoomDeviceManagement.module.css"
 
@@ -24,6 +26,14 @@ const AddDeviceModal = ({
 }) => {
   const deviceTypeDropdownRef = useRef(null)
 
+  const isDeviceNameValid = newDeviceName && newDeviceName.trim().length > 0
+  const isDeviceCategoryValid = newDeviceCategory && newDeviceCategory.trim().length > 0
+  const isDeviceTypeValid = newDeviceType && newDeviceType.trim().length > 0
+  const isIconRequired = newDeviceType && DEVICE_ICONS[newDeviceType] && DEVICE_ICONS[newDeviceType].length > 1
+  const isIconValid = !isIconRequired || (selectedDeviceIcon && selectedDeviceIcon.trim().length > 0)
+
+  const isFormValid = isDeviceNameValid && isDeviceCategoryValid && isDeviceTypeValid && isIconValid
+
   return (
     <>
       <div className={styles.modalHeader}>
@@ -37,11 +47,15 @@ const AddDeviceModal = ({
           <label>Device Name</label>
           <input
             type="text"
-            value={newDeviceName}
+            value={newDeviceName || ""}
             onChange={(e) => setNewDeviceName(e.target.value)}
             placeholder="Enter device name"
             className={styles.input}
+            maxLength={50}
           />
+          {newDeviceName !== undefined && newDeviceName.trim() === "" && (
+            <p className={styles.errorText}>Device name cannot be empty</p>
+          )}
         </div>
         <div className={styles.formGroup} ref={deviceTypeDropdownRef}>
           <label>Device Type</label>
@@ -49,7 +63,7 @@ const AddDeviceModal = ({
             <div className={styles.searchInputWrapper}>
               <input
                 type="text"
-                value={deviceTypeSearch}
+                value={deviceTypeSearch || ""}
                 onChange={(e) => {
                   setDeviceTypeSearch(e.target.value)
                   setShowDeviceTypeDropdown(true)
@@ -82,12 +96,15 @@ const AddDeviceModal = ({
               </div>
             )}
           </div>
+          {!isDeviceTypeValid && deviceTypeSearch && (
+            <p className={styles.errorText}>Please select a valid device type</p>
+          )}
         </div>
 
         {/* Icon selection for device types with icons */}
         {newDeviceType && DEVICE_ICONS[newDeviceType] && (
           <div className={styles.formGroup}>
-            <label>Select Icon</label>
+            <label>Select Icon {isIconRequired && <span className={styles.requiredField}>*</span>}</label>
             <div className={styles.iconSelectionGrid}>
               {DEVICE_ICONS[newDeviceType].map((iconConfig) => {
                 const IconComponent = iconConfig.icon
@@ -106,13 +123,16 @@ const AddDeviceModal = ({
                 )
               })}
             </div>
+            {isIconRequired && !isIconValid && (
+              <p className={styles.errorText}>Please select an icon for this device</p>
+            )}
           </div>
         )}
 
         <div className={styles.formGroup}>
           <label>Room</label>
           <select
-            value={newDeviceCategory}
+            value={newDeviceCategory || ""}
             onChange={(e) => setNewDeviceCategory(e.target.value)}
             className={styles.select}
           >
@@ -123,6 +143,7 @@ const AddDeviceModal = ({
               </option>
             ))}
           </select>
+          {!isDeviceCategoryValid && <p className={styles.errorText}>Please select a room</p>}
         </div>
       </div>
       <div className={styles.modalFooter}>
@@ -130,11 +151,9 @@ const AddDeviceModal = ({
           Cancel
         </button>
         <button
-          className={`${styles.primaryButton} ${
-            !newDeviceName.trim() || !newDeviceCategory || !newDeviceType ? styles.disabledButton : ""
-          }`}
+          className={`${styles.primaryButton} ${!isFormValid ? styles.disabledButton : ""}`}
           onClick={handleSaveDevice}
-          disabled={!newDeviceName.trim() || !newDeviceCategory || !newDeviceType}
+          disabled={!isFormValid}
         >
           Add Device
         </button>
@@ -144,3 +163,4 @@ const AddDeviceModal = ({
 }
 
 export default AddDeviceModal
+

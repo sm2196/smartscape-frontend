@@ -1,8 +1,10 @@
-import React from "react"
+"use client"
 import { MdClose } from "react-icons/md"
 import styles from "../../RoomDeviceManagement.module.css"
 
 const AddRoomModal = ({ newRoomName, setNewRoomName, closePopup, handleSaveRoom }) => {
+  const isRoomNameValid = newRoomName && newRoomName.trim().length > 0
+
   return (
     <>
       <div className={styles.modalHeader}>
@@ -20,7 +22,11 @@ const AddRoomModal = ({ newRoomName, setNewRoomName, closePopup, handleSaveRoom 
             onChange={(e) => setNewRoomName(e.target.value)}
             placeholder="Enter room name"
             className={styles.input}
+            maxLength={50}
           />
+          {newRoomName !== undefined && newRoomName.trim() === "" && (
+            <p className={styles.errorText}>Room name cannot be empty</p>
+          )}
         </div>
       </div>
       <div className={styles.modalFooter}>
@@ -28,9 +34,9 @@ const AddRoomModal = ({ newRoomName, setNewRoomName, closePopup, handleSaveRoom 
           Cancel
         </button>
         <button
-          className={`${styles.primaryButton} ${!newRoomName.trim() ? styles.disabledButton : ""}`}
+          className={`${styles.primaryButton} ${!isRoomNameValid ? styles.disabledButton : ""}`}
           onClick={handleSaveRoom}
-          disabled={!newRoomName.trim()}
+          disabled={!isRoomNameValid}
         >
           Add Room
         </button>
@@ -40,3 +46,4 @@ const AddRoomModal = ({ newRoomName, setNewRoomName, closePopup, handleSaveRoom 
 }
 
 export default AddRoomModal
+
