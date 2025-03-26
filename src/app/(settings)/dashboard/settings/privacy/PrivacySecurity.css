@@ -1,7 +1,6 @@
 .privacyContainer {
   width: 100%;
   padding: 32px;
-  /* Add these properties to fix scrolling issues */
   overflow-y: auto;
   height: 100%;
   box-sizing: border-box;
@@ -15,14 +14,13 @@
   margin-bottom: 8px;
 }
 
-/* Update the subtitle styling to handle the link better */
 .subtitle {
   text-align: left;
   color: #4a5568;
   margin-bottom: 32px;
   font-size: 16px;
   display: flex;
-  flex-wrap: wrap; /* Allow wrapping for better responsive behavior */
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
 }
@@ -32,7 +30,7 @@
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
-  display: inline-flex; /* Better alignment */
+  display: inline-flex;
   align-items: center;
 }
 
@@ -41,11 +39,29 @@
   text-decoration: underline;
 }
 
-/* Updated grid layout for 2x2 cards */
-.grid-container {
+/* Grid layout */
+.privacy-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    "browser integrations"
+    "security security";
   gap: 24px;
+}
+
+.browser-logins {
+  grid-area: browser;
+  background-color: white;
+}
+
+.integrations {
+  grid-area: integrations;
+  background-color: #f0f7ff;
+}
+
+.security {
+  grid-area: security;
+  background-color: white;
 }
 
 .card {
@@ -62,26 +78,10 @@
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
 }
 
-.logins {
-  background-color: white;
-}
-
-.apps {
-  background-color: #f0f7ff;
-}
-
-.alert {
-  background-color: #fef2f2;
-}
-
-.security {
-  background-color: white;
-}
-
 .cardheader {
   display: flex;
   align-items: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
   gap: 12px;
   color: var(--oxford-blue);
 }
@@ -97,23 +97,56 @@
   height: 24px;
 }
 
-.alert-item {
+/* Compact Browser Login styles */
+.browser-session {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
   padding: 12px 16px;
   background-color: white;
   border-radius: 12px;
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.alert-item p {
+.session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.session-device {
   margin: 0;
   font-size: 14px;
   color: #1f2937;
+  font-weight: 500;
 }
 
+.session-location {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.session-info-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.session-info-btn:hover {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+/* Toggle switch styles */
 .toggles {
   position: relative;
   height: 24px;
@@ -147,31 +180,29 @@
   transform: translateX(20px);
 }
 
-.alert-btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 12px;
-  background-color: #dc2626;
-  color: white;
+.toggles:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Security settings styles */
+.security-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.permissions-title {
+  margin: 16px 0 8px 0;
+  font-size: 16px;
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  margin-top: 8px;
+  color: #1f2937;
 }
 
-.alert-btn:hover {
-  background-color: #b91c1c;
-}
-
-.alert-itemSub {
-  padding: 0 16px;
-}
-
-.alert-itemSub p {
-  margin: 0;
-  font-size: 13px;
-  color: #6b7280;
+.permissions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
 }
 
 .setting {
@@ -181,7 +212,6 @@
   padding: 12px 16px;
   background-color: white;
   border-radius: 12px;
-  margin-bottom: 12px;
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
@@ -190,44 +220,48 @@
   color: #1f2937;
 }
 
-/* Update app-list and app-card styles */
-.app-list {
+/* Redesigned Third-party Integrations */
+.integration-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 20px;
+  width: 100%;
 }
 
-.app-card {
-  padding: 16px;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  transition: background-color 0.2s ease;
-  cursor: pointer;
+.integration-item {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.app-card:hover {
-  background-color: #f8fafc;
+.integration-item:last-child {
+  border-bottom: none;
 }
 
-.app-name {
+.integration-app {
   display: flex;
   align-items: center;
-  gap: 12px;
   font-size: 14px;
-  color: #1f2937;
-  margin: 0;
   font-weight: 500;
+  color: #1f2937;
 }
 
-.integrated-status {
-  font-size: 13px;
-  color: #6b7280;
-  margin: 0;
+/* Updated button style to match the image */
+.integration-button {
+  padding: 6px 12px;
+  background-color: #dbeafe;
+  color: #2563eb;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.integration-button:hover {
+  background-color: #bfdbfe;
 }
 
 .manage-btn {
@@ -240,13 +274,14 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-top: 16px;
 }
 
 .manage-btn:hover {
   background-color: #1d4ed8;
 }
 
-/* Modal styles - shared across modal components */
+/* Modal styles */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -258,7 +293,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  padding: 1rem; /* Add padding to prevent modals from touching screen edges */
+  padding: 1rem;
 }
 
 .modal {
@@ -266,15 +301,14 @@
   border-radius: 16px;
   width: 100%;
   max-width: 500px;
-  max-height: 90vh; /* Limit height on small screens */
+  max-height: 90vh;
   overflow-y: auto;
   animation: slideUp 0.3s ease-out;
-  position: relative; /* Ensure relative positioning for the close button */
-  padding: 24px; /* Add padding inside the modal */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Add shadow for better visibility */
+  position: relative;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* Add animation for modal appearance */
 @keyframes slideUp {
   from {
     opacity: 0;
@@ -355,54 +389,73 @@
   background-color: #bfdbfe;
 }
 
-.modal-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
+/* Bottom button container */
+.bottom-button-container {
+  width: 100%;
 }
 
-.confirm-btn,
-.cancel-btn {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
+/* Loading state */
+.loadingSpinner {
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  border-left-color: #2563eb;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 40px auto 20px;
+}
+
+.loadingText {
+  text-align: center;
+  color: #4a5568;
+  font-size: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.app-name {
   font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+  margin-bottom: 4px;
 }
 
-.confirm-btn {
-  background-color: #dc2626;
-  color: white;
+/* New styles for the integration warning and disabled buttons */
+.integration-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  border-left: 4px solid #ffeeba;
 }
 
-.confirm-btn:hover {
-  background-color: #b91c1c;
-}
-
-.cancel-btn {
-  background-color: #e5e7eb;
-  color: #1f2937;
-}
-
-.cancel-btn:hover {
-  background-color: #d1d5db;
+.disabled-button {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 /* Mobile responsiveness */
 @media (max-width: 1023px) {
   .privacyContainer {
     padding: 16px;
-    /* Ensure proper height and scrolling on mobile */
-    height: calc(100vh - 64px); /* Account for header height */
+    height: calc(100vh - 64px);
     overflow-y: auto;
-    padding-bottom: 80px; /* Add padding at the bottom to prevent content from being hidden */
+    padding-bottom: 80px;
   }
 
-  .grid-container {
+  .privacy-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    grid-template-areas:
+      "browser"
+      "integrations"
+      "security";
   }
 
   .title {
@@ -427,20 +480,17 @@
     margin-bottom: 16px;
   }
 
-  .alert-item,
-  .setting {
-    padding: 10px 12px;
+  .permissions-grid {
+    grid-template-columns: 1fr;
   }
 
-  /* Fix the Manage Linked Apps button positioning */
   .manage-btn {
-    margin-bottom: 24px; /* Add margin to ensure it's not at the very bottom */
+    margin-bottom: 16px;
   }
 }
 
-/* Add a container for the bottom button to ensure proper spacing */
-.bottom-button-container {
-  margin-bottom: 24px;
-  width: 100%;
+@media (min-width: 768px) {
+  .privacy-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
-

@@ -349,7 +349,7 @@ input:checked + .toggleSlider:before {
   color: #0f172a;
 }
 
-.supportEmail {
+.supportPhone {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -660,7 +660,7 @@ input:checked + .toggleSlider:before {
     margin-bottom: 1rem;
   }
 
-  .supportEmail {
+  .supportPhone {
     justify-content: flex-start;
     margin: 0.75rem 0;
   }
@@ -740,7 +740,7 @@ input:checked + .toggleSlider:before {
     transform: translateX(1.5rem);
   }
 
-  .supportEmail {
+  .supportPhone {
     font-size: 0.9rem;
   }
 

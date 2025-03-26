@@ -10,12 +10,12 @@ import {
   MdPersonAdd,
   MdContentCopy,
   MdClose,
-  MdEmail,
+  MdPhone,
   MdAdminPanelSettings,
   MdPerson,
 } from "react-icons/md"
 import styles from "./AdminSettings.module.css"
-import homeIdStyles from "../components/HomeIdCodeModal.module.css"
+import homeIdStyles from "./HomeIdCodeModal.module.css"
 import { useAuth } from "@/hooks/useAuth"
 import { useFirestoreData } from "@/hooks/useFirestoreData"
 import { saveRelatedCollectionsToCache, clearRelatedCollectionsCache } from "@/lib/cacheUtils"
@@ -614,11 +614,11 @@ const AdminSettings = () => {
             <section className={styles.section}>
               <h2>24/7 Support</h2>
               <p>Our dedicated support team is available round the clock</p>
-              <div className={styles.supportEmail}>
-                <MdEmail size={20} />
-                smartscape.grp15@gmail.com
+              <div className={styles.supportPhone}>
+                <MdPhone size={20} />
+                800-SCAPE
               </div>
-              <a href="mailto:smartscape.grp15@gmail.com" className={styles.actionButton}>
+              <a href="tel:+800-SCAPE" className={styles.actionButton}>
                 Contact Support
               </a>
             </section>

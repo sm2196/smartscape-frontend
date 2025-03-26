@@ -19,10 +19,10 @@ const CACHE_COLLECTIONS = ["Users"]
 import ProfileHeader from "./components/ProfileHeader"
 import AccountActions from "./components/AccountActions"
 import PersonalInfoSection from "./components/PersonalInfoSection"
-import EditFieldModal from "./components/EditFieldModal"
-import DeleteAccountModal from "./components/DeleteAccountModal"
-import SignOutModal from "./components/SignOutModal"
-import ChangePasswordModal from "./components/ChangePasswordModal"
+import EditFieldModal from "./components/modals/EditFieldModal"
+import DeleteAccountModal from "./components/modals/DeleteAccountModal"
+import SignOutModal from "./components/modals/SignOutModal"
+import ChangePasswordModal from "./components/modals/ChangePasswordModal"
 
 // At the top of the file, add these constants for caching
 const CACHE_EXPIRATION = 30 * 60 * 1000 // 30 minutes in milliseconds

@@ -1,22 +1,39 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { MdErrorOutline, MdOutlineSecurity, MdDevices, MdCastConnected } from "react-icons/md"
+import { useState, useEffect, useCallback } from "react"
+import { MdOutlineSecurity, MdDevices, MdCastConnected, MdInfo } from "react-icons/md"
 import { FaSpotify, FaApple, FaWhatsapp, FaInstagram, FaYoutube } from "react-icons/fa"
+import { doc, getDoc, updateDoc } from "firebase/firestore"
+import { db } from "@/lib/firebase/config"
+import { useAuth } from "@/hooks/useAuth"
+import { toast } from "react-toastify"
+import { clearRelatedCollectionsCache, saveRelatedCollectionsToCache } from "@/lib/cacheUtils"
 import "./PrivacySecurity.css"
 
+// Define cache constants for consistency
+const CACHE_COLLECTIONS = ["Users"]
+
+// Define available security settings
+const AVAILABLE_SECURITY_SETTINGS = [
+  "enable two-factor authentication",
+  "allow data sharing with third-party apps",
+  "allow camera",
+  "allow calendar",
+  "allow microphone",
+  "allow location",
+  "allow notifications",
+]
+
 const PrivacySecurity = () => {
-  const [isLockDownEnabled, setisLockDownEnabled] = useState(false)
+  const { user } = useAuth()
+  const userId = user?.uid
+
   const [thirdPartyAppInfo, setThirdPartyAppInfo] = useState("")
   const [isThirdPartyOpen, setIsThirdPartyOpen] = useState(false)
-  const [is2FAEnabled, setIs2FAEnabled] = useState(false)
-  const [permissions, setPermissions] = useState({
-    camera: false,
-    calendar: false,
-    microphone: false,
-    location: false,
-    notifications: false,
-  })
+  const [enabledSecurity, setEnabledSecurity] = useState([])
+  const [isSavingSecurity, setIsSavingSecurity] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
   const [devices, setDevices] = useState([
     { id: 1, name: "Spotify", status: "Unlinked", integrated: false, preferences: {} },
     { id: 2, name: "Apple Music", status: "Unlinked", integrated: false, preferences: {} },
@@ -25,8 +42,125 @@ const PrivacySecurity = () => {
     { id: 5, name: "YouTube", status: "Unlinked", integrated: false, preferences: {} },
   ])
 
+  // Fetch user data with caching
+  const fetchUserData = useCallback(
+    async (skipCache = true) => {
+      try {
+        if (!userId) return
+
+        setIsLoading(true)
+
+        // Directly fetch from Firestore, bypassing all caches
+        const userDocRef = doc(db, "Users", userId)
+        const userDocSnap = await getDoc(userDocRef)
+
+        if (userDocSnap.exists()) {
+          const freshUserData = userDocSnap.data()
+          console.log("Direct from Firestore - enabledSecurity:", freshUserData.enabledSecurity)
+
+          // Set enabled security settings from Firestore
+          if (freshUserData.enabledSecurity && Array.isArray(freshUserData.enabledSecurity)) {
+            setEnabledSecurity(freshUserData.enabledSecurity)
+          } else {
+            setEnabledSecurity([])
+          }
+
+          // Force clear and update cache
+          clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+          saveRelatedCollectionsToCache(CACHE_COLLECTIONS, [freshUserData])
+
+          return freshUserData
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+        toast.error("Failed to load user data. Please try again.")
+      } finally {
+        setIsLoading(false)
+      }
+    },
+    [userId],
+  )
+
+  // Initial data load
+  useEffect(() => {
+    let mounted = true
+
+    const fetchData = async () => {
+      // First clear any cached data
+      clearRelatedCollectionsCache(CACHE_COLLECTIONS)
+
+      // Directly fetch from Firestore
+      const userDocRef = doc(db, "Users", userId)
+      try {
+        const userDocSnap = await getDoc(userDocRef)
+
+        if (userDocSnap.exists() && mounted) {
+          const freshData = userDocSnap.data()
+          console.log("Direct Firestore fetch - enabledSecurity:", freshData.enabledSecurity)
+
+          // Set enabled security settings from Firestore
+          if (freshData.enabledSecurity && Array.isArray(freshData.enabledSecurity)) {
+            setEnabledSecurity(freshData.enabledSecurity)
+          } else {
+            setEnabledSecurity([])
+          }
+        }
+      } catch (error) {
+        console.error("Error in direct Firestore fetch:", error)
+      } finally {
+        if (mounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    if (userId) {
+      fetchData()
+    }
+
+    return () => {
+      mounted = false
+    }
+  }, [userId])
+
+  // Toggle security setting and update Firestore
+  const toggleSecurity = async (setting) => {
+    try {
+      setIsSavingSecurity(true)
+
+      // Update local state first for immediate UI feedback
+      let updatedSecurity = [...enabledSecurity]
+
+      if (updatedSecurity.includes(setting)) {
+        // Remove setting if it exists
+        updatedSecurity = updatedSecurity.filter((p) => p !== setting)
+      } else {
+        // Add setting if it doesn't exist
+        updatedSecurity.push(setting)
+      }
+
+      setEnabledSecurity(updatedSecurity)
+
+      // Update Firestore
+      const userDocRef = doc(db, "Users", userId)
+      await updateDoc(userDocRef, {
+        enabledSecurity: updatedSecurity,
+      })
+
+      toast.success("Security settings updated successfully")
+    } catch (error) {
+      console.error("Error updating security settings:", error)
+      toast.error("Failed to update security settings")
+
+      // Revert to previous state if there was an error
+      fetchUserData(true)
+    } finally {
+      setIsSavingSecurity(false)
+    }
+  }
+
   const getThirdPartyAppIcon = (name) => {
-    const iconStyle = { fontSize: "20px", marginRight: "10px" } // Increased size
+    const iconStyle = { fontSize: "20px", marginRight: "10px" }
 
     switch (name) {
       case "Spotify":
@@ -42,14 +176,6 @@ const PrivacySecurity = () => {
       default:
         return null
     }
-  }
-
-  const handleLockdownClick = () => {
-    setisLockDownEnabled(true)
-  }
-
-  const handleCloseModal = () => {
-    setisLockDownEnabled(false)
   }
 
   useEffect(() => {
@@ -99,7 +225,14 @@ const PrivacySecurity = () => {
     }
   }, [])
 
+  // Modify the handleAppClick function to check if data sharing is enabled
   const handleAppClick = (id) => {
+    // Check if data sharing with third-party apps is enabled
+    if (isSecurityEnabled("allow data sharing with third-party apps")) {
+      toast.error("Please enable 'Allow data sharing with third-party apps' to link third-party integrations")
+      return
+    }
+
     const app = devices.find((app) => app.id === id)
     const appLoginURL = loginLinks[app.name]
 
@@ -122,6 +255,20 @@ const PrivacySecurity = () => {
     )
   }
 
+  // Helper function to check if a security setting is enabled
+  const isSecurityEnabled = (setting) => {
+    return enabledSecurity.includes(setting)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="privacyContainer">
+        <div className="loadingSpinner"></div>
+        <p className="loadingText">Loading security settings...</p>
+      </div>
+    )
+  }
+
   return (
     <div className="privacyContainer">
       <h2 className="title">Privacy and Security</h2>
@@ -132,95 +279,50 @@ const PrivacySecurity = () => {
         </a>
       </p>
 
-      {/* Cards Section - Redesigned without General settings */}
-      <div className="grid-container">
-        {/* First Row */}
-        <div className="card alert">
-          <div className="cardheader">
-            <MdErrorOutline className="icon" style={{ color: "#dc2626" }} />
-            <h3>Alerts</h3>
-          </div>
-          <div className="alert-item">
-            <p>Main door opened for more than 30 seconds</p>
-            <input type="checkbox" className="toggles" />
-          </div>
-          <div className="alert-item">
-            <p>Break-in detected</p>
-            <input type="checkbox" className="toggles" />
-          </div>
-          <button className="alert-btn" onClick={handleLockdownClick}>
-            Lockdown
-          </button>
-        </div>
-
-        <div className="card logins">
+      <div className="privacy-grid">
+        {/* Browser Logins - Compact Version */}
+        <div className="card browser-logins">
           <div className="cardheader">
             <MdDevices className="icon" style={{ color: "#2563eb" }} />
             <h3>Browser logins</h3>
-          </div>{" "}
-          <div className="alert-item">
-            <p>1 session on {thirdPartyAppInfo}</p>{" "}
           </div>
-          <div className="alert-itemSub">
-            <p>Dubai, United Arab Emirates</p>
-          </div>
-        </div>
-
-        {/* Second Row */}
-        <div className="card security">
-          <div className="cardheader">
-            <MdOutlineSecurity className="icon" style={{ color: "#0f172a" }} />
-            <h3>Security</h3>
-          </div>
-
-          <div className="setting">
-            <label>Enable Two-Factor Authentication (2FA)</label>
-            <input
-              type="checkbox"
-              className="toggles"
-              checked={is2FAEnabled}
-              onChange={() => setIs2FAEnabled(!is2FAEnabled)}
-            />
-          </div>
-          <div className="setting" style={{ marginTop: "15px" }}>
-            <label>Allow data sharing with third-party apps</label>
-            <input type="checkbox" className="toggles" />
-          </div>
-
-          <h4 style={{ marginTop: "2rem" }}>Web App Permissions</h4>
-          {Object.keys(permissions).map((perm) => (
-            <div key={perm} className="setting">
-              <label>Allow {perm.charAt(0).toUpperCase() + perm.slice(1)}</label>
-              <input
-                type="checkbox"
-                className="toggles"
-                style={{ marginTop: "2px" }}
-                checked={permissions[perm]}
-                onChange={() => setPermissions({ ...permissions, [perm]: !permissions[perm] })}
-              />
+          <div className="browser-session">
+            <div className="session-info">
+              <p className="session-device">1 session on {thirdPartyAppInfo}</p>
+              <p className="session-location">Dubai, United Arab Emirates</p>
             </div>
-          ))}
+            <button className="session-info-btn">
+              <MdInfo />
+            </button>
+          </div>
         </div>
 
-        <div className="card apps">
+        {/* Third-party Integrations - Redesigned without scrollbar */}
+        <div className="card integrations">
           <div className="cardheader">
             <MdCastConnected className="icon" style={{ color: "#2563eb" }} />
             <h3>Your third-party integrations</h3>
           </div>
 
-          {/* Scrollable app List */}
-          <div className="app-list">
+          <div className="integration-list">
+            {isSecurityEnabled("allow data sharing with third-party apps") && (
+              <div className="integration-warning">
+                Please enable "Allow data sharing with third-party apps" in the Security section to link third-party
+                integrations.
+              </div>
+            )}
             {devices.map((app) => (
-              <div key={app.id} className="app-card" onClick={() => !app.integrated && handleAppClick(app.id)}>
-                <div className="app-name">
+              <div key={app.id} className="integration-item">
+                <div className="integration-app">
                   {getThirdPartyAppIcon(app.name)}
                   {app.name}
                 </div>
-                {app.integrated ? (
-                  <p className="integrated-status">Linked</p>
-                ) : (
-                  <p className="integrated-status">Link {app.name}</p>
-                )}
+                <button
+                  className={`integration-button ${isSecurityEnabled("allow data sharing with third-party apps") && !app.integrated ? "disabled-button" : ""}`}
+                  onClick={() => (app.integrated ? handleUnintegrate(app.id) : handleAppClick(app.id))}
+                >
+                  Link {app.name}
+                </button>
               </div>
             ))}
           </div>
@@ -229,6 +331,97 @@ const PrivacySecurity = () => {
             <button className="manage-btn" onClick={() => setIsThirdPartyOpen(true)}>
               Manage Linked Apps
             </button>
+          </div>
+        </div>
+
+        {/* Security Section */}
+        <div className="card security">
+          <div className="cardheader">
+            <MdOutlineSecurity className="icon" style={{ color: "#0f172a" }} />
+            <h3>Security</h3>
+          </div>
+
+          <div className="security-settings">
+            <div className="setting">
+              <label>Enable Two-Factor Authentication (2FA)</label>
+              <input
+                type="checkbox"
+                className="toggles"
+                checked={isSecurityEnabled("enable two-factor authentication")}
+                onChange={() => toggleSecurity("enable two-factor authentication")}
+                disabled={isSavingSecurity}
+              />
+            </div>
+
+            <div className="setting">
+              <label>Allow data sharing with third-party apps</label>
+              <input
+                type="checkbox"
+                className="toggles"
+                checked={isSecurityEnabled("allow data sharing with third-party apps")}
+                onChange={() => toggleSecurity("allow data sharing with third-party apps")}
+                disabled={isSavingSecurity}
+              />
+            </div>
+
+            <h4 className="permissions-title">Web App Permissions</h4>
+
+            <div className="permissions-grid">
+              <div className="setting">
+                <label>Allow Camera</label>
+                <input
+                  type="checkbox"
+                  className="toggles"
+                  checked={isSecurityEnabled("allow camera")}
+                  onChange={() => toggleSecurity("allow camera")}
+                  disabled={isSavingSecurity}
+                />
+              </div>
+
+              <div className="setting">
+                <label>Allow Calendar</label>
+                <input
+                  type="checkbox"
+                  className="toggles"
+                  checked={isSecurityEnabled("allow calendar")}
+                  onChange={() => toggleSecurity("allow calendar")}
+                  disabled={isSavingSecurity}
+                />
+              </div>
+
+              <div className="setting">
+                <label>Allow Microphone</label>
+                <input
+                  type="checkbox"
+                  className="toggles"
+                  checked={isSecurityEnabled("allow microphone")}
+                  onChange={() => toggleSecurity("allow microphone")}
+                  disabled={isSavingSecurity}
+                />
+              </div>
+
+              <div className="setting">
+                <label>Allow Location</label>
+                <input
+                  type="checkbox"
+                  className="toggles"
+                  checked={isSecurityEnabled("allow location")}
+                  onChange={() => toggleSecurity("allow location")}
+                  disabled={isSavingSecurity}
+                />
+              </div>
+
+              <div className="setting">
+                <label>Allow Notifications</label>
+                <input
+                  type="checkbox"
+                  className="toggles"
+                  checked={isSecurityEnabled("allow notifications")}
+                  onChange={() => toggleSecurity("allow notifications")}
+                  disabled={isSavingSecurity}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -258,23 +451,6 @@ const PrivacySecurity = () => {
                 )}
               </div>
             ))}
-          </div>
-        </div>
-      )}
-
-      {/* Lockdown Modal  */}
-      {isLockDownEnabled && (
-        <div className="modalOverlay">
-          <div className="modal">
-            <button className="close-btn" onClick={handleCloseModal}>
-              ✖
-            </button>
-            <h3>Confirm Action</h3>
-            <p>Do you also want to contact the authorities?</p>
-            <div className="modal-buttons">
-              <button className="confirm-btn">Lockdown Only</button>
-              <button className="cancel-btn">Contact Authorities</button>
-            </div>
           </div>
         </div>
       )}

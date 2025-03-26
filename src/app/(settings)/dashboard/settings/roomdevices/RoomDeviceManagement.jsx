@@ -5,7 +5,6 @@ import { collection, query, where, getDocs, deleteDoc, doc, addDoc, updateDoc } 
 import { useAuth } from "@/hooks/useAuth"
 import { db } from "@/lib/firebase/config"
 import styles from "./RoomDeviceManagement.module.css"
-import { getUserId } from "@/lib/cacheUtils"
 import { DEVICE_TYPES, DEVICE_ICONS, getDeviceTypeProperties } from "./constants/deviceTypes"
 import { useFirestoreRooms } from "./hooks/useFirestoreRooms"
 import { renderDeviceIcon, getAllDevices } from "./utils/iconUtils"
@@ -46,8 +45,18 @@ const DeviceManagement = () => {
 
   // Use useEffect to get userId on client-side only
   useEffect(() => {
-    // Get user ID with priority from cache first, then from auth object
-    setUserId(getUserId(user))
+    // Get user ID from auth object
+    setUserId(user?.uid || null)
+
+    // Clear any potential cached data in localStorage
+    if (typeof window !== "undefined") {
+      const keys = Object.keys(localStorage)
+      keys.forEach((key) => {
+        if (key.includes("Rooms") || key.includes("Devices")) {
+          localStorage.removeItem(key)
+        }
+      })
+    }
   }, [user])
 
   // Use the custom hook to fetch rooms and devices
