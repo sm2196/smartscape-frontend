@@ -95,6 +95,7 @@ const Modal = ({
             newDeviceCategory={newDeviceCategory}
             setNewDeviceCategory={setNewDeviceCategory}
             newDeviceType={newDeviceType}
+            setNewDeviceType={setNewDeviceType}
             deviceTypeSearch={deviceTypeSearch}
             setDeviceTypeSearch={setDeviceTypeSearch}
             showDeviceTypeDropdown={showDeviceTypeDropdown}
