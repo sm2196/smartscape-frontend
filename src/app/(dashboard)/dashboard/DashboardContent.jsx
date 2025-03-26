@@ -72,6 +72,24 @@ export default function DashboardContent() {
     getIdFromRef,
   } = useFirebase()
 
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+  // Check if mobile menu is open
+  useEffect(() => {
+    const checkMobileMenu = () => {
+      setIsMobileMenuOpen(document.body.classList.contains("mobile-menu-open"))
+    }
+
+    // Initial check
+    checkMobileMenu()
+
+    // Set up observer to watch for class changes
+    const observer = new MutationObserver(checkMobileMenu)
+    observer.observe(document.body, { attributes: true, attributeFilter: ["class"] })
+
+    return () => observer.disconnect()
+  }, [])
+
   // Ensure rooms and devices are loaded
   useEffect(() => {
     if (user) {
@@ -289,7 +307,7 @@ export default function DashboardContent() {
       {/* Add padding div for action bar */}
       <div className={"tw:pb-14 tw:max-lg:pb-24"} />
 
-      <div className={styles.actionBar}>
+      <div className={`${styles.actionBar} ${isMobileMenuOpen ? styles.hidden : ""}`}>
         <button className={styles.actionButton} onClick={turnOffLightsAndFans}>
           <FaPowerOff />
           Turn Off All Lights and Fans
@@ -315,5 +333,17 @@ export default function DashboardContent() {
       )}
     </div>
   )
+}
+
+// Add this at the end of the file, after all the component code
+// This is a runtime style addition, not a static CSS file change
+if (typeof document !== "undefined") {
+  const style = document.createElement("style")
+  style.textContent = `
+    .mobile-menu-open .${styles.actionBar} {
+      display: none !important;
+    }
+  `
+  document.head.appendChild(style)
 }
 

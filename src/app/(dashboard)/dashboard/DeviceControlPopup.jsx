@@ -594,11 +594,7 @@ const DoorControls = ({ initialState = "Locked", onUpdate, autoClose }) => {
         <button
           className={`${styles.doorButton} ${initialState === "Locked" ? styles.active : ""}`}
           onClick={() => {
-            onUpdate({
-              status: "Locked",
-              isActive: false,
-              statusColor: "",
-            })
+            onUpdate({status: "Locked", isActive: false, statusColor: "" })
             if (autoClose) setTimeout(autoClose, 300)
           }}
         >
@@ -607,11 +603,7 @@ const DoorControls = ({ initialState = "Locked", onUpdate, autoClose }) => {
         <button
           className={`${styles.doorButton} ${initialState === "Unlocked" ? styles.active : ""}`}
           onClick={() => {
-            onUpdate({
-              status: "Unlocked",
-              isActive: false,
-              statusColor: "",
-            })
+            onUpdate({status: "Unlocked",isActive: false,statusColor: "" })
             if (autoClose) setTimeout(autoClose, 300)
           }}
         >
@@ -633,7 +625,7 @@ const BlindsControls = ({ initialState = "Closed", onUpdate }) => {
           <button
             key={position}
             className={`${styles.blindsButton} ${initialState === position ? styles.active : ""}`}
-            onClick={() => onUpdate({ status: position })}
+            onClick={() => onUpdate({ status: position, isActive: false, statusColor: "" })}
           >
             {position}
           </button>
