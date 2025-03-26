@@ -111,20 +111,52 @@ export async function POST(request) {
       }
     }
 
+    // Add a more detailed error message for the case when a user tries to delete themselves
+    if (managedUserIdsToDelete.includes(adminUserId)) {
+      console.error("Admin attempted to delete themselves:", adminUserId)
+      return NextResponse.json(
+        {
+          success: false,
+          error:
+            "You cannot delete your own account through this endpoint. Please use the delete-user endpoint instead.",
+        },
+        {
+          status: 403,
+          headers: corsHeaders,
+        },
+      )
+    }
+
     console.log(`Found ${managedUserIdsToDelete.length} managed users to delete:`, managedUserIdsToDelete)
 
     // Delete each managed user from Authentication
     const deletionPromises = []
 
+    // Add more detailed logging for each user being deleted
     for (const managedUserId of managedUserIdsToDelete) {
-      console.log(`Attempting to delete managed user ${managedUserId} from Authentication`)
+      console.log(`Attempting to delete managed user ${managedUserId} from Authentication and Firestore`)
 
       deletionPromises.push(
+        // First delete from Authentication
         adminAuth
           .deleteUser(managedUserId)
-          .then(() => {
+          .then(async () => {
             console.log(`Successfully deleted managed user ${managedUserId} from Authentication`)
-            return { success: true, userId: managedUserId }
+
+            // Then delete the user document from Firestore
+            try {
+              await adminDb.collection("Users").doc(managedUserId).delete()
+              console.log(`Successfully deleted managed user ${managedUserId} from Firestore`)
+              return { success: true, userId: managedUserId }
+            } catch (firestoreError) {
+              console.error(`Error deleting managed user ${managedUserId} from Firestore:`, firestoreError)
+              return {
+                partialSuccess: true,
+                authSuccess: true,
+                firestoreError,
+                userId: managedUserId,
+              }
+            }
           })
           .catch((error) => {
             console.error(`Error deleting managed user ${managedUserId}:`, error)

@@ -13,6 +13,7 @@ import {
   MdPhone,
   MdAdminPanelSettings,
   MdPerson,
+  MdDelete, // Add this import
 } from "react-icons/md"
 import styles from "./AdminSettings.module.css"
 import homeIdStyles from "./HomeIdCodeModal.module.css"
@@ -50,6 +51,11 @@ const AdminSettings = () => {
   const [isSavingPermissions, setIsSavingPermissions] = useState(false)
   // Add a new state variable for tracking family members loading
   const [familyMembersLoading, setFamilyMembersLoading] = useState(false)
+
+  // Add a new state for the delete confirmation modal
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [memberToDelete, setMemberToDelete] = useState(null)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   // Get the current user
   const { user } = useAuth()
@@ -368,6 +374,98 @@ const AdminSettings = () => {
     }
   }
 
+  // Add this function to handle delete member click
+  const handleDeleteMember = (member) => {
+    if (member.isAdmin) return // Don't allow deleting admin users
+    setMemberToDelete(member)
+    setShowDeleteModal(true)
+  }
+
+  // Add this function to confirm and execute the deletion
+  const confirmDeleteMember = async () => {
+    if (!memberToDelete || !userId) return
+
+    setIsDeleting(true)
+
+    try {
+      // Get the current user's ID token
+      const idToken = await user.getIdToken()
+
+      // Call the API to delete the managed user
+      const response = await fetch("/api/auth/delete-managed-users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          idToken,
+          adminUserId: userId,
+          managedUserIds: [memberToDelete.id],
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        toast.success(`Successfully removed ${memberToDelete.name} from your family members`)
+
+        // Update the family members list
+        setFamilyMembers(familyMembers.filter((member) => member.id !== memberToDelete.id))
+      } else {
+        console.error("Error deleting member:", result.error)
+        toast.error(`Failed to remove ${memberToDelete.name}. ${result.error || "Please try again."}`)
+      }
+    } catch (error) {
+      console.error("Error deleting member:", error)
+      toast.error("An error occurred while removing the family member")
+    } finally {
+      setIsDeleting(false)
+      setShowDeleteModal(false)
+      setMemberToDelete(null)
+    }
+  }
+
+  // Add this DeleteMemberModal component inside the AdminSettings component
+  const DeleteMemberModal = () => {
+    if (!showDeleteModal || !memberToDelete) return null
+
+    return (
+      <div className={styles.modalOverlay} onClick={() => setShowDeleteModal(false)}>
+        <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.modalHeader}>
+            <h2 className={styles.modalTitle}>Remove Family Member</h2>
+            <button className={styles.modalCloseButton} onClick={() => setShowDeleteModal(false)}>
+              <MdClose size={20} />
+            </button>
+          </div>
+          <div className={styles.modalContent}>
+            <div className={styles.deleteWarning}>
+              <MdDelete size={48} className={styles.deleteIcon} />
+              <p>
+                Are you sure you want to remove <strong>{memberToDelete.name}</strong> from your family members?
+              </p>
+              <p className={styles.warningText}>
+                This action cannot be undone. The user will lose access to your smart home devices.
+              </p>
+            </div>
+          </div>
+          <div className={styles.modalFooter}>
+            <button
+              className={styles.modalButtonSecondary}
+              onClick={() => setShowDeleteModal(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </button>
+            <button className={styles.modalButtonDanger} onClick={confirmDeleteMember} disabled={isDeleting}>
+              {isDeleting ? "Removing..." : "Remove Member"}
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   if (dataLoading) {
     return (
       <div className={styles.pinContainer}>
@@ -558,6 +656,15 @@ const AdminSettings = () => {
                           <span className={styles.statusDot}></span>
                           {member.online ? "Online" : "Offline"}
                         </div>
+                        {!member.isAdmin && (
+                          <button
+                            className={styles.deleteButton}
+                            onClick={() => handleDeleteMember(member)}
+                            aria-label={`Remove ${member.name}`}
+                          >
+                            <MdDelete size={18} />
+                          </button>
+                        )}
                       </div>
                     </div>
                   ))
@@ -625,6 +732,9 @@ const AdminSettings = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Member Modal */}
+      <DeleteMemberModal />
 
       {/* Home ID Modal */}
       <HomeIdModal />

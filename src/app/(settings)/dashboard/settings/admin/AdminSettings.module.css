@@ -207,10 +207,11 @@
   font-size: 0.875rem;
 }
 
+/* Adjust the member card to accommodate the delete button */
 .memberActions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 8px;
 }
 
 .statusBadge {
@@ -758,5 +759,63 @@ input:checked + .toggleSlider:before {
   .pinInputContainer {
     gap: 0.5rem;
   }
+}
+
+/* Add these styles for the delete button and modal */
+.deleteButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #ff4d4f;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  margin-left: 8px;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover {
+  background-color: rgba(255, 77, 79, 0.1);
+}
+
+.deleteIcon {
+  color: #ff4d4f;
+  margin-bottom: 16px;
+}
+
+.deleteWarning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 16px;
+}
+
+.warningText {
+  color: #ff4d4f;
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.modalButtonDanger {
+  background-color: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.modalButtonDanger:hover {
+  background-color: #ff7875;
+}
+
+.modalButtonDanger:disabled {
+  background-color: #ffccc7;
+  cursor: not-allowed;
 }
 
