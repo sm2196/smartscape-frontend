@@ -489,7 +489,7 @@ const AdminSettings = () => {
             </div>
             <div className={styles.infoCardContent}>
               <p>License Number ******678</p>
-              <p>Expiry Date 13/02/2025</p>
+              <p>Expiry Date 13/02/2030</p>
               <button className={styles.actionButton}>
                 <MdDescription size={16} />
                 Terms and Conditions
@@ -517,7 +517,7 @@ const AdminSettings = () => {
               <h3>Monthly Savings</h3>
             </div>
             <div className={styles.infoCardContent}>
-              <div className={styles.savingsAmount}>$1,250</div>
+              <div className={styles.savingsAmount}>1250 AED</div>
               <p className={styles.updatedText}>Updated 2 hours ago</p>
             </div>
           </div>

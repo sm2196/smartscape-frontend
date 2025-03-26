@@ -32,14 +32,28 @@ const simulateUpload = (progressCallback) => {
   }, 500);
 };
 
-const generateHomeId = () => {
-  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let homeId = "SMART-";
-  for (let i = 0; i < 6; i++) {
-    homeId += characters.charAt(Math.floor(Math.random() * characters.length));
+const generateHomeId = async () => {
+  let isUnique = false
+  let homeId = ""
+
+  while (!isUnique) {
+    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+    homeId = "SMART-"
+    for (let i = 0; i < 6; i++) {
+      homeId += characters.charAt(Math.floor(Math.random() * characters.length))
+    }
+
+    // Check if this homeId already exists in the database
+    const usersRef = collection(db, "Users")
+    const homeIdQuery = query(usersRef, where("homeId", "==", homeId))
+    const querySnapshot = await getDocs(homeIdQuery)
+
+    // If no documents found with this homeId, it's unique
+    isUnique = querySnapshot.empty
   }
-  return homeId;
-};
+
+  return homeId
+}
 
 function FileUploading() {
   const router = useRouter();
