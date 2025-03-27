@@ -147,7 +147,7 @@ const OTPVerification = () => {
         </button>
 
         <a className="RSLinks" onClick={handleResend}>
-          Didn't receive a code? Resend again
+          Didn&apos;t receive a code? Resend again
         </a>
 
         <button className="ChangebuttonPhone" onClick={handleChangePhone}>

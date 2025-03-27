@@ -52,7 +52,7 @@ const AboutUs = () => {
           <h2>About Us</h2>
           <h3>Innovative Solution for a Smarter, Simpler & Greener Home</h3>
           <p>
-            At SmartScape, we're revolutionizing the way you live by transforming your home into a smarter, more
+            At SmartScape, we&apos;re revolutionizing the way you live by transforming your home into a smarter, more
             sustainable space. From monitoring your energy and water usage to enhancing security and reducing
             environmental impact, we empower you to take control of your home effortlessly.
           </p>
@@ -159,7 +159,7 @@ const Cards = () => {
   return (
     <Parallax translateY={[-15, 15]} className="SMcards">
       <h1>
-        <span>What's special about us?</span>
+        <span>What&apos;s special about us?</span>
       </h1>
       <div className="SMcards__container">
         <div className="SMcards__wrapper">

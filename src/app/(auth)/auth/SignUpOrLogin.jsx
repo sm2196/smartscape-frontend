@@ -9,6 +9,7 @@ import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVe
 import { auth, db } from "@/lib/firebase/config"
 import { setDoc, doc, getDoc, updateDoc } from "firebase/firestore"
 import { ToastContainer, toast } from "react-toastify"
+import Link from "next/link"
 
 function SignupOrLogin() {
   const router = useRouter()
@@ -220,7 +221,7 @@ function SignupOrLogin() {
   return (
     <div className="RSUserSignUpLogIn">
       <div className="HeaderPhone">
-      <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" /> </a>
+      <Link href="/"> <img src="/auth/nobg.png" alt="Logo" className="HeaderPhoneLogo" /> </Link>
       </div>
       <ToastContainer />
       <Components.RSSignUp $userSignIn={signIn}>
@@ -289,7 +290,7 @@ function SignupOrLogin() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                SmartScape's Terms
+                SmartScape&apos;s Terms
               </a>{" "}
               and{" "}
               <a
@@ -337,7 +338,7 @@ function SignupOrLogin() {
       <Components.RSLRCoverBG $userSignIn={signIn}>
         <Components.RSCover $userSignIn={signIn}>
           <Components.RSLeftSlider $userSignIn={signIn}>
-          <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" /> </a>
+          <Link href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImagee" /> </Link>
             <h1 className="RSHeader">Already have an account?</h1>
             <p className="RSSliderText">
               Please log in and enjoy a personalized experience and manage your home seamlessly
@@ -348,7 +349,7 @@ function SignupOrLogin() {
           </Components.RSLeftSlider>
 
           <Components.RSRightSlider $userSignIn={signIn}>
-          <a href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImage" /> </a>
+          <Link href="/"> <img src="/auth/nobg.png" alt="Logo" className="RSLogoImage" /> </Link>
             <h1 className="RSHeader">Your smart home experience awaits!</h1>
             <p className="RSSliderText">Join us to control, automate, and monitor your home effortlessly</p>
             <button className="RSButtonCover" onClick={() => toggle(false)}>

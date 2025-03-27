@@ -71,7 +71,7 @@ const FAQ = () => {
             <div className="SMfaq-hero-title">ASKED QUESTIONS</div>
             <div className="SMfaq-hero-text">
               <p>
-                Here's some answers to the most common questions we get asked.
+                Here&apos;s some answers to the most common questions we get asked.
               </p>
             </div>
           </div>

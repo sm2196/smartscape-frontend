@@ -41,7 +41,7 @@ export default function PeakHourNotification() {
           Your current power consumption ({totalVoltage}W) exceeds the recommended threshold ({VOLTAGE_THRESHOLD}W)
           during peak hours (6PM-8PM).
         </p>
-        <p className="notification-details">Current usage is {percentOfPeak}% of today's peak consumption.</p>
+        <p className="notification-details">Current usage is {percentOfPeak}% of today&apos;s peak consumption.</p>
         <p className="notification-tip">Consider turning off non-essential devices to reduce consumption.</p>
       </div>
       <button onClick={handleDismiss} className="notification-dismiss" aria-label="Dismiss notification">

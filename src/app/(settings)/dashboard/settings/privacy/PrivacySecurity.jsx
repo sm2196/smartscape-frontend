@@ -305,7 +305,7 @@ const PrivacySecurity = () => {
           {!isDataSharingEnabled && (
             <div className="disabled-overlay">
               <div className="disabled-message">
-                Enable "Allow data sharing with third-party apps" in Security settings to manage integrations
+                Enable &quot;Allow data sharing with third-party apps&quot; in Security settings to manage integrations
               </div>
             </div>
           )}

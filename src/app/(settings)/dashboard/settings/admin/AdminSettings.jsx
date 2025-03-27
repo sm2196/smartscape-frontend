@@ -538,7 +538,7 @@ const AdminSettings = () => {
             <div className={homeIdStyles.homeIdContainer}>
               <MdPersonAdd className={homeIdStyles.homeIcon} size={48} />
               <p className={homeIdStyles.homeIdDescription}>
-                Share this code with family members to let them join your Smart Home. They'll need to enter this code
+                Share this code with family members to let them join your Smart Home. They&apos;ll need to enter this code
                 during account registration.
               </p>
               <div className={homeIdStyles.codeWrapper}>
@@ -557,7 +557,7 @@ const AdminSettings = () => {
                   <li>Share this code with the family member you want to add</li>
                   <li>Ask them to create a new SmartScape account</li>
                   <li>During registration, they should enter this Home ID code</li>
-                  <li>Once registered, they'll have access to your smart home devices</li>
+                  <li>Once registered, they&apos;ll have access to your smart home devices</li>
                 </ol>
               </div>
             </div>

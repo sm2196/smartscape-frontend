@@ -158,7 +158,7 @@ function Services() {
       <div className="SMservices-section">
         <div className="SMsection-header">
           <h2>Our Core Services</h2>
-          <p>Discover how we're revolutionizing home automation</p>
+          <p>Discover how we&apos;re revolutionizing home automation</p>
         </div>
         <div className="SMservices-grid">
           {services.map((service, index) => (

@@ -79,7 +79,7 @@ export default function EditFieldModal({
           </button>
         </div>
         <p className={styles.modalDescription}>
-          Make changes to your {fieldDisplayName.toLowerCase()}. Click save when you're done.
+          Make changes to your {fieldDisplayName.toLowerCase()}. Click save when you&apos;re done.
         </p>
         <div className={styles.modalContent}>
           {field === "name" ? (

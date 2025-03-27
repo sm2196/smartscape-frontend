@@ -95,9 +95,9 @@ function AboutUsPage() {
             </div>
             <h3>Innovation</h3>
             <p>
-              We continuously push the boundaries of what's possible in home
+              We continuously push the boundaries of what&apos;s possible in home
               automation, developing cutting-edge solutions that anticipate and
-              meet our customers' needs.
+              meet our customers&apos; needs.
             </p>
           </Parallax>
           <Parallax
@@ -149,7 +149,7 @@ function AboutUsPage() {
           <div className="SMvision-content">
             <div className="SMvision-text">
               <h2>OUR VISION</h2>
-              <h3>Creating Tomorrow's Homes Today</h3>
+              <h3>Creating Tomorrow&apos;s Homes Today</h3>
               <p>
                 At SmartScape, we envision a future where every home device is
                 connected and effortlessly smart. Our smart home app puts

@@ -31,7 +31,7 @@ const ThankYou = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            SmartScape's Terms
+            SmartScape&apos;s Terms
           </a>
           {" | "}
           <a
