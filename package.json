@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.9",
+    "eslint": "^9.23.0",
+    "eslint-config-next": "^15.2.4",
     "firebase": "^11.4.0",
     "firebase-admin": "^13.2.0",
     "lucide-react": "^0.484.0",
