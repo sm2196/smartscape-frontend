@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "@tailwindcss/postcss": "^4.0.9",
-    "emailjs-com": "^3.2.0",
     "firebase": "^11.4.0",
     "firebase-admin": "^13.2.0",
     "lucide-react": "^0.484.0",
