@@ -131,14 +131,18 @@ export function getUserId(authUser = null) {
   if (authUser && authUser.uid) return authUser.uid
 
   // If we have access to the Firebase auth object, try that as last resort
-  try {
-    const { auth } = require("./firebase/config")
-    const currentUser = auth.currentUser
-    return currentUser?.uid || null
-  } catch (error) {
-    console.error("Error accessing Firebase auth:", error)
-    return null
+  if (typeof window !== "undefined") {
+    try {
+      const { auth } = require("./firebase/config")
+      const currentUser = auth.currentUser
+      return currentUser?.uid || null
+    } catch (error) {
+      console.error("Error accessing Firebase auth:", error)
+      return null
+    }
   }
+
+  return null
 }
 
 /**
@@ -262,11 +266,13 @@ export function clearCollectionCache(collection) {
 
       // Also clear any in-memory cache for this collection
       try {
-        const { cache } = require("@/hooks/useFirestoreData")
-        if (cache) {
-          for (const key of cache.keys()) {
-            if (key.startsWith(collection)) {
-              cache.delete(key)
+        if (typeof window !== "undefined") {
+          const { cache } = require("@/hooks/useFirestoreData")
+          if (cache) {
+            for (const key of cache.keys()) {
+              if (key.startsWith(collection)) {
+                cache.delete(key)
+              }
             }
           }
         }
