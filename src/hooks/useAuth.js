@@ -14,9 +14,6 @@ export function useAuth() {
 
   // Set up auth state listener
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     setLoading(true)
 
     const unsubscribe = onAuthStateChanged(
@@ -45,9 +42,6 @@ export function useAuth() {
 
   // Set up real-time listener for profile updates
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     if (!user) return
 
     const userDocRef = doc(db, "Users", user.uid)
@@ -76,12 +70,10 @@ export function useAuth() {
           setError(null)
 
           // Update cached user information
-          if (typeof window !== "undefined") {
-            cacheUserInfo({
-              ...user,
-              isAdmin: profileData.isAdmin === true,
-            })
-          }
+          cacheUserInfo({
+            ...user,
+            isAdmin: profileData.isAdmin === true,
+          })
         } else {
           setProfile(null)
           setError("Profile data not found")
@@ -99,9 +91,6 @@ export function useAuth() {
   // Update the presence system to properly handle online status
   // Add a presence system to track online status
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     if (user) {
       // Create a reference to the user's document
       const userStatusRef = doc(db, "Users", user.uid)

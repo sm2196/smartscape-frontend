@@ -1,49 +1,29 @@
 "use client"
 
-import { useRouter, usePathname } from "next/navigation"
+import { useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/useAuth"
-import { useEffect, useState } from "react"
+import { clearAllCache } from "@/hooks/useFirestoreData" // Import the cache clearing function
+import { getUserId } from "@/lib/cacheUtils" // Import the getUserId function
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
   const router = useRouter()
-  const pathname = usePathname()
-  const [isClient, setIsClient] = useState(false)
-
-  // Set isClient to true when component mounts (client-side only)
-  useEffect(() => {
-    setIsClient(true)
-  }, [])
 
   useEffect(() => {
-    // Only run this effect on the client side
-    if (!isClient) return
+    // Try to get user ID from cache or auth
+    const userId = getUserId(user)
 
-    // Skip this check during loading
-    if (loading) return
-
-    // If user is not authenticated and not on a public path, redirect to login
-    if (!user) {
-      const isPublicPath =
-        pathname.startsWith("/auth") ||
-        pathname === "/" ||
-        pathname === "/about" ||
-        pathname === "/services" ||
-        pathname === "/contact" ||
-        pathname === "/faq"
-
-      if (!isPublicPath) {
-        router.push("/auth")
-      }
+    // Only redirect if we're not loading and there's no user ID available
+    if (!loading && !userId) {
+      // Clear all cache when logging out to prevent data leakage
+      clearAllCache()
+      router.replace("/")
     }
-  }, [user, loading, router, pathname, isClient])
+  }, [user, loading, router])
 
-  // During server-side rendering or initial load, return children
-  // This prevents the flash of redirect before hydration
-  if (!isClient || loading) {
-    return children
-  }
-
+  // Always render children - this prevents the loading flash
+  // The middleware.js will handle unauthorized access
   return children
 }
 

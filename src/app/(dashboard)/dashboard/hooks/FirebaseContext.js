@@ -38,7 +38,10 @@ export const FirebaseProvider = ({ children }) => {
 
     // Process all queued updates
     Object.entries(updateQueue.current).forEach(([deviceId, newState]) => {
-      if (JSON.stringify(updatedDevices[deviceId]) !== JSON.stringify({ ...updatedDevices[deviceId], ...newState })) {
+      if (
+        JSON.stringify(updatedDevices[deviceId]) !==
+        JSON.stringify({ ...updatedDevices[deviceId], ...newState })
+      ) {
         updatedDevices[deviceId] = {
           ...updatedDevices[deviceId],
           ...newState,
@@ -66,62 +69,68 @@ export const FirebaseProvider = ({ children }) => {
 
   // Fetch rooms and devices from Firestore
   const fetchRoomsAndDevices = useCallback(async () => {
-    if (!user || isInitialLoadDone.current) return
+    if (!user || isInitialLoadDone.current) return;
 
     try {
       // Clear maps before fetching
-      deviceDocToLocalId.clear()
-      roomIdToName.clear()
+      deviceDocToLocalId.clear();
+      roomIdToName.clear();
 
-      let effectiveUserId
+      let effectiveUserId;
 
       // Fetch the user's document to get the adminRef field
-      const userDocSnap = await getDoc(doc(db, "Users", user.uid))
+      const userDocSnap = await getDoc(doc(db, "Users", user.uid));
       if (userDocSnap.exists()) {
         // Ensure adminRef is a simple doc id, not a full path.
-        const adminRefRaw = userDocSnap.data().adminRef
-        if (adminRefRaw) effectiveUserId = getIdFromRef(adminRefRaw)
-        else effectiveUserId = user.uid
+        const adminRefRaw = userDocSnap.data().adminRef;
+        if (adminRefRaw) effectiveUserId = getIdFromRef(adminRefRaw);
+        else effectiveUserId = user.uid;
       } else {
-        console.error("User document does not exist!")
-        return
+        console.error("User document does not exist!");
+        return;
       }
 
       // Build the user document reference using the effective id
-      const userDocRef = doc(db, "Users", effectiveUserId)
+      const userDocRef = doc(db, "Users", effectiveUserId);
 
       // Fetch rooms for the current user (or admin)
-      const roomsRef = collection(db, "Rooms")
-      const roomsQuery = query(roomsRef, where("userRef", "==", userDocRef))
-      const roomsSnapshot = await getDocs(roomsQuery)
+      const roomsRef = collection(db, "Rooms");
+      const roomsQuery = query(roomsRef, where("userRef", "==", userDocRef));
+      const roomsSnapshot = await getDocs(roomsQuery);
 
-      const roomsData = []
+      const roomsData = [];
       roomsSnapshot.forEach((roomDoc) => {
         const roomData = {
           id: roomDoc.id,
           ...roomDoc.data(),
-        }
-        roomsData.push(roomData)
+        };
+        roomsData.push(roomData);
 
         // Store room name for later use
-        roomIdToName.set(roomDoc.id, roomData.roomName)
-      })
-      setRooms(roomsData)
+        roomIdToName.set(roomDoc.id, roomData.roomName);
+      });
+      setRooms(roomsData);
 
       // Fetch devices for each room
-      const devicesData = {}
+      const devicesData = {};
       for (const room of roomsData) {
-        const devicesRef = collection(db, "Devices")
-        const devicesQuery = query(devicesRef, where("roomRef", "==", doc(db, "Rooms", room.id)))
-        const devicesSnapshot = await getDocs(devicesQuery)
+        const devicesRef = collection(db, "Devices");
+        const devicesQuery = query(
+          devicesRef,
+          where("roomRef", "==", doc(db, "Rooms", room.id))
+        );
+        const devicesSnapshot = await getDocs(devicesQuery);
 
         devicesSnapshot.forEach((deviceDoc) => {
-          const deviceData = deviceDoc.data()
+          const deviceData = deviceDoc.data();
           // Create a unique ID for the device that includes room info
-          const deviceId = `${room.id.substring(0, 4)}_${deviceDoc.id.substring(0, 8)}`
+          const deviceId = `${room.id.substring(0, 4)}_${deviceDoc.id.substring(
+            0,
+            8
+          )}`;
 
           // Store mapping for future reference
-          deviceDocToLocalId.set(deviceDoc.id, deviceId)
+          deviceDocToLocalId.set(deviceDoc.id, deviceId);
 
           // Store only the necessary data in the devices state
           devicesData[deviceId] = {
@@ -133,17 +142,17 @@ export const FirebaseProvider = ({ children }) => {
             deviceType: deviceData.deviceType || "",
             deviceIcon: deviceData.deviceIcon || "",
             roomRef: deviceData.roomRef || null,
-          }
-        })
+          };
+        });
       }
 
-      setDevices(devicesData)
-      calculateTotalVoltage(devicesData)
-      isInitialLoadDone.current = true
+      setDevices(devicesData);
+      calculateTotalVoltage(devicesData);
+      isInitialLoadDone.current = true;
     } catch (error) {
-      console.error("Error fetching rooms and devices:", error)
+      console.error("Error fetching rooms and devices:", error);
     }
-  }, [user])
+  }, [user]);
 
   // Calculate total voltage based on active devices
   const calculateTotalVoltage = useCallback(
@@ -166,7 +175,7 @@ export const FirebaseProvider = ({ children }) => {
         setIsPeakHour(false)
       }
     },
-    [devices, VOLTAGE_THRESHOLD],
+    [devices, VOLTAGE_THRESHOLD]
   )
 
   // Update device state in Firestore and local state
@@ -174,7 +183,9 @@ export const FirebaseProvider = ({ children }) => {
     async (deviceId, newState) => {
       try {
         // Find the Firestore document ID for this device
-        const deviceDocId = Array.from(deviceDocToLocalId.entries()).find(([_, localId]) => localId === deviceId)?.[0]
+        const deviceDocId = Array.from(deviceDocToLocalId.entries()).find(
+          ([_, localId]) => localId === deviceId
+        )?.[0]
 
         if (!deviceDocId) {
           console.error("Device document ID not found for:", deviceId)
@@ -201,7 +212,7 @@ export const FirebaseProvider = ({ children }) => {
         console.error("Error updating device state:", error)
       }
     },
-    [processUpdateQueue],
+    [processUpdateQueue]
   )
 
   // Trigger voltage alert
@@ -216,9 +227,6 @@ export const FirebaseProvider = ({ children }) => {
 
   // Set up real-time listeners for devices
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     if (!user || !isInitialLoadDone.current || isListenerActive.current) return
 
     // Set up a single listener for the Devices collection
@@ -234,7 +242,10 @@ export const FirebaseProvider = ({ children }) => {
           const deviceDocId = change.doc.id
           const localDeviceId = deviceDocToLocalId.get(deviceDocId)
 
-          if (localDeviceId && (change.type === "modified" || change.type === "added")) {
+          if (
+            localDeviceId &&
+            (change.type === "modified" || change.type === "added")
+          ) {
             const newData = change.doc.data()
 
             // Only update if there's an actual change
@@ -263,7 +274,7 @@ export const FirebaseProvider = ({ children }) => {
       },
       (error) => {
         console.error("Error in device listener:", error)
-      },
+      }
     )
 
     isListenerActive.current = true
@@ -276,9 +287,6 @@ export const FirebaseProvider = ({ children }) => {
 
   // Initial data fetch
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     if (user && !isInitialLoadDone.current) {
       fetchRoomsAndDevices()
     }
@@ -296,9 +304,6 @@ export const FirebaseProvider = ({ children }) => {
 
   // Simulate peak hours based on time of day (for demo purposes)
   useEffect(() => {
-    // Only run in browser environment
-    if (typeof window === "undefined") return
-
     const checkPeakHour = () => {
       const hour = new Date().getHours()
       // Peak hours: 7-9 AM and 6-8 PM
@@ -348,4 +353,3 @@ export const useFirebase = () => {
   }
   return context
 }
-
