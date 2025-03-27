@@ -46,10 +46,10 @@ const SMfooter = () => {
           </div>
           <div className="SMfooter-link-items">
             <h2>Connect</h2>
-            <Link href="/">Instagram</Link>
-            <Link href="/">Facebook</Link>
-            <Link href="/">Youtube</Link>
-            <Link href="/">Twitter</Link>
+            <Link href="https://instagram.com/smartscape_grp15">Instagram</Link>
+            <Link href="https://facebook.com">Facebook</Link>
+            <Link href="https://youtube.com">Youtube</Link>
+            <Link href="https://x.com">Twitter</Link>
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@ const SMfooter = () => {
             </a>
             <a
               className="social-icon-link instagram"
-              href="https://instagram.com"
+              href="https://instagram.com/smartscape_grp15"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
@@ -85,7 +85,7 @@ const SMfooter = () => {
             </a>
             <a
               className="social-icon-link twitter"
-              href="https://twitter.com"
+              href="https://x.com"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Twitter"
