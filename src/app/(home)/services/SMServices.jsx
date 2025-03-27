@@ -15,6 +15,7 @@ import {
   FaMicrosoft,
 } from 'react-icons/fa';
 import { MdSecurity } from 'react-icons/md';
+import Link from "next/link";
 
 function Services() {
   const services = [
@@ -237,7 +238,7 @@ function Services() {
           <h2>Ready to Transform Your Home?</h2>
           <p>Join thousands of satisfied homeowners in the smart living revolution</p>
           <div className="SMservices-register-button">
-            <button><span>Register Today</span></button>
+          <Link href="/auth"><button><span>Register Today</span></button></Link>
           </div>
         </div>
       </div>

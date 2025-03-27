@@ -25,13 +25,15 @@ const MainPicSection = () => {
       <br></br>
       <br></br>
       <div className="SM-joinButton-us-wrapper">
-        <button>
-          <span>Register today</span>
-        </button>
+        <Link href="/auth">
+          <button>
+            <span>Register today</span>
+          </button>
+        </Link>
       </div>
     </Parallax>
-  )
-}
+  );
+};
 
 const AboutUs = () => {
   const router = useRouter() // Replace useNavigate with useRouter
