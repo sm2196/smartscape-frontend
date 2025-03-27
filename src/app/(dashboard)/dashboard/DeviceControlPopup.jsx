@@ -1019,181 +1019,54 @@ const DefaultControls = ({ title, status, onUpdate }) => {
   )
 }
 
-// Add the VisitorLogControls component before the renderControls function (around line 750):
-
-const VisitorLogControls = ({ initialState = "0 Today", onUpdate }) => {
-  // Generate visitor log data
-  const [visitorCount, setVisitorCount] = useState(Number.parseInt(initialState.split(" ")[0]) || 0)
-  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
-  const [visitorLog, setVisitorLog] = useState([])
-
-  useEffect(() => {
-    // Generate random visitor events
-    const now = new Date()
-    const events = []
-
-    // Create random visitor events
-    for (let i = 0; i < visitorCount; i++) {
-      const minutesAgo = Math.floor(Math.random() * 720) // Random minutes within 12 hours
-      const eventTime = new Date(now.getTime() - minutesAgo * 60000)
-      const duration = Math.floor(Math.random() * 10) + 1 // 1-10 minutes
-
-      events.push({
-        id: i,
-        type: Math.random() > 0.3 ? "Person" : "Package Delivery",
-        time: eventTime,
-        minutesAgo: minutesAgo,
-        duration: duration,
-      })
-    }
-
-    // Sort by most recent first
-    events.sort((a, b) => a.minutesAgo - b.minutesAgo)
-
-    setVisitorLog(events)
-  }, [visitorCount])
-
-  const formatTimeAgo = (minutes) => {
-    if (minutes < 60) {
-      return `${minutes} minute${minutes !== 1 ? "s" : ""} ago`
-    } else if (minutes < 1440) {
-      const hours = Math.floor(minutes / 60)
-      return `${hours} hour${hours !== 1 ? "s" : ""} ago`
-    } else {
-      const days = Math.floor(minutes / 1440)
-      return `${days} day${days !== 1 ? "s" : ""} ago`
-    }
-  }
-
-  const formatTime = (date) => {
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-  }
-
-  const handleNotificationsToggle = () => {
-    setNotificationsEnabled(!notificationsEnabled)
-    onUpdate({
-      status: `${visitorCount} Today`,
-      notificationsEnabled: !notificationsEnabled,
-    })
-  }
-
-  return (
-    <div className={styles.controlsContainer}>
-      <div className={styles.visitorSummary}>
-        <div className={styles.visitorCount}>{visitorCount}</div>
-        <div className={styles.visitorCountLabel}>Visitors Today</div>
-      </div>
-
-      <div className={styles.visitorSettings}>
-        <div className={styles.toggleContainer}>
-          <span>Notifications</span>
-          <button
-            className={`${styles.toggleButton} ${notificationsEnabled ? styles.active : ""}`}
-            onClick={handleNotificationsToggle}
-          >
-            {notificationsEnabled ? "On" : "Off"}
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.visitorList}>
-        {visitorLog.map((event) => (
-          <div key={event.id} className={styles.visitorItem}>
-            <div className={styles.visitorIcon}>{event.type === "Person" ? "👤" : "📦"}</div>
-            <div className={styles.visitorDetails}>
-              <div className={styles.visitorType}>{event.type}</div>
-              <div className={styles.visitorTime}>
-                {formatTime(event.time)} • {formatTimeAgo(event.minutesAgo)}
-              </div>
-            </div>
-            <div className={styles.visitorDuration}>{event.duration} min</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// Now, let's update the renderControls function to use our new FreezerControls component
-
-// Determine which control component to render based on device type and title
+// Determine which control component to render based on deviceType
 const renderControls = (device, onUpdate, handleClose) => {
-  const { title, status, icon } = device
-  const iconName = icon.name
+  const { title, status, deviceType } = device
+  const deviceName = device.deviceName || title
 
-  // Motion controls
-  if (iconName === "MdTimer" || title.includes("Motion")) {
-    return <MotionControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Fan controls
-  else if (iconName === "MdWindPower" || title.includes("Fan")) {
-    return <FanControls initialSpeed={status} onUpdate={onUpdate} />
-  }
-  // Light controls
-  else if (
-    iconName === "MdLightbulb" ||
-    iconName === "LuLamp" ||
-    iconName === "LuLampDesk" ||
-    iconName === "MdOutlineLight" ||
-    title.includes("Light") ||
-    title.includes("Lamp")
-  ) {
-    return <LightControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Water Heater controls
-  else if (title.includes("Water Heater")) {
-    return <WaterHeaterControls initialTemp={status} onUpdate={onUpdate} />
-  }
-  // Freezer controls
-  else if (title.includes("Freezer")) {
-    return <FreezerControls initialTemp={status} onUpdate={onUpdate} />
-  }
-  // Temperature controls
-  else if (
-    iconName === "LuHeater" ||
-    iconName === "TbAirConditioning" ||
-    iconName === "MdThermostat" ||
-    title.includes("Heater") ||
-    title.includes("AC") ||
-    title.includes("Temp")
-  ) {
-    return <HeaterControls initialTemp={status} onUpdate={onUpdate} />
-  }
-  // TV controls
-  else if (iconName === "MdTv" || title.includes("TV")) {
-    return <TVControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Door controls - with auto-close
-  else if (iconName === "MdDoorFront" || iconName === "MdGarage" || title.includes("Door")) {
-    return <DoorControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
-  }
-  // Blinds controls
-  else if (iconName === "LuBlinds" || title.includes("Blind")) {
-    return <BlindsControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Speaker controls
-  else if (iconName === "BsSpeaker" || title.includes("Speaker") || title.includes("JBL")) {
-    return <SpeakerControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Projector controls
-  else if (iconName === "LuProjector" || title.includes("Projector")) {
-    return <ProjectorControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Visitor Log controls
-  else if (title.includes("Visitor Log")) {
-    return <VisitorLogControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Washing machine controls
-  else if (iconName === "LuWashingMachine" || title.includes("Washing Machine")) {
-    return <WashingMachineControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Recycling controls
-  else if (iconName === "MdRecycling" || title.includes("Recycling")) {
-    return <RecyclingControls initialState={status} onUpdate={onUpdate} />
-  }
-  // Default controls for other devices
-  else {
-    return <DefaultControls title={title} status={status} onUpdate={onUpdate} />
+  // Use deviceType for determining which controls to show
+  switch (deviceType) {
+    case "Motion":
+      return <MotionControls initialState={status} onUpdate={onUpdate} />
+
+    case "Fan":
+      return <FanControls initialSpeed={status} onUpdate={onUpdate} />
+
+    case "Light":
+      return <LightControls initialState={status} onUpdate={onUpdate} />
+
+    case "Water_Heater":
+      return <WaterHeaterControls initialTemp={status} onUpdate={onUpdate} />
+
+    case "Freezer":
+      return <FreezerControls initialTemp={status} onUpdate={onUpdate} />
+
+    case "Room_Heater":
+      return <HeaterControls initialTemp={status} onUpdate={onUpdate} />
+
+    case "TV":
+      return <TVControls initialState={status} onUpdate={onUpdate} />
+
+    case "Door":
+      return <DoorControls initialState={status} onUpdate={onUpdate} autoClose={handleClose} />
+
+    case "Blinds":
+      return <BlindsControls initialState={status} onUpdate={onUpdate} />
+
+    case "Speaker":
+      return <SpeakerControls initialState={status} onUpdate={onUpdate} />
+
+    case "Projector":
+      return <ProjectorControls initialState={status} onUpdate={onUpdate} />
+
+    case "Washer":
+      return <WashingMachineControls initialState={status} onUpdate={onUpdate} />
+
+    case "Recycling":
+      return <RecyclingControls initialState={status} onUpdate={onUpdate} />
+
+    default:
+      return <DefaultControls title={deviceName} status={status} onUpdate={onUpdate} />
   }
 }
 

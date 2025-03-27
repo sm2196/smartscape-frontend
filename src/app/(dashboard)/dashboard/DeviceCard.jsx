@@ -49,7 +49,7 @@ export function DeviceCard({ title, status, icon: Icon, isActive = false, onClic
 
       {showControls && (
         <DeviceControlPopup
-          device={{ title, status: deviceState.status, icon: Icon }}
+          device={{ title, status: deviceState.status, icon: Icon, deviceType: deviceState.deviceType }}
           onClose={() => setShowControls(false)}
           onUpdate={handleUpdateSettings}
         />
