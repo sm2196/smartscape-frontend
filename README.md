@@ -3,6 +3,12 @@
 
 A Smart home system that allows users to monitor their household devices on their fingertips!
 
+## Features
+
+- Emergency shutdown
+- Consumption analysis of energy and water usage
+- Control all your home devices with your family
+- Track peak hours
 
 ## Deployment
 
@@ -37,12 +43,4 @@ You can start editing the page by modifying app/page.js. The page auto-updates a
 
 
 ![Logo](https://github.com/sm2196/smartscapelogo/blob/main/Logo.jpg?raw=true)
-
-
-## Features
-
-- Emergency shutdown
-- Consumption analysis of energy and water usage
-- Control all your home devices with your family
-- Track peak hours
 
